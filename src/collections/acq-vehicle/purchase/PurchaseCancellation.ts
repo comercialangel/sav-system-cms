@@ -171,23 +171,45 @@ export const PurchaseCancellation: CollectionConfig = {
           data.updatedBy = user.id
         }
         if ((operation === 'create' || operation === 'update') && data.purchase) {
-          const purchase = await payload.findByID({
-            collection: 'purchase',
-            id: data.purchase,
-            req,
-          })
+          const isManualStatusUpdate = typeof data.statuscreditnote !== 'undefined'
 
-          //modificamos 'data' directamente
-          const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
-          data.statuscreditnote = creditNoteStatus
+          if (!isManualStatusUpdate || operation === 'create') {
+            try {
+              const purchase = await payload.findByID({
+                collection: 'purchase',
+                id: data.purchase,
+                req,
+              })
 
-          //guardamos la información de la compra en el request para usarla en afterchange
-          req.context = { ...req.context, purchaseInfo: purchase }
+              // Solo calculamos si NO viene un dato manual
+              if (!isManualStatusUpdate) {
+                const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
+                data.statuscreditnote = creditNoteStatus
+              }
 
-          try {
-          } catch (e) {
-            console.log('Error actualizando cancelación', e)
+              // Guardamos en contexto para afterChange
+              req.context = { ...req.context, purchaseInfo: purchase }
+            } catch (e) {
+              console.log('Error obteniendo compra en beforeChange', e)
+            }
           }
+          // const purchase = await payload.findByID({
+          //   collection: 'purchase',
+          //   id: data.purchase,
+          //   req,
+          // })
+
+          // //modificamos 'data' directamente
+          // const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
+          // data.statuscreditnote = creditNoteStatus
+
+          // //guardamos la información de la compra en el request para usarla en afterchange
+          // req.context = { ...req.context, purchaseInfo: purchase }
+
+          // try {
+          // } catch (e) {
+          //   console.log('Error actualizando cancelación', e)
+          // }
         }
         return data
       },
@@ -213,6 +235,13 @@ export const PurchaseCancellation: CollectionConfig = {
         }
 
         if (purchase) {
+          if (
+            purchase.statuspayment === 'retornado' ||
+            purchase.statuspayment === 'retorno parcial'
+          ) {
+            return
+          }
+
           const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
 
           // Solo actualizamos la OTRA colección
