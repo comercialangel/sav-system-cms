@@ -107,7 +107,7 @@ export const PurchaseCancellation: CollectionConfig = {
       //maxDepth: 3,
       admin: {
         description: 'Devoluciones asociadas a esta cancelación.',
-        // readOnly: false, // Añade esto para hacer el campo de solo lectura en la interfaz de administración
+        //readOnly: false, // Añade esto para hacer el campo de solo lectura en la interfaz de administración
         // hidden: true,
       },
     },
@@ -164,179 +164,168 @@ export const PurchaseCancellation: CollectionConfig = {
     beforeChange: [
       async ({ req, data, operation }) => {
         const { user, payload } = req
+
+        // 1. Auditoría (Create/Update)
         if (user) {
           if (operation === 'create') {
             data.createdBy = user.id
           }
           data.updatedBy = user.id
         }
-        if ((operation === 'create' || operation === 'update') && data.purchase) {
-          const isManualStatusUpdate = typeof data.statuscreditnote !== 'undefined'
 
-          if (!isManualStatusUpdate || operation === 'create') {
-            try {
-              const purchase = await payload.findByID({
-                collection: 'purchase',
-                id: data.purchase,
-                req,
-              })
+        // 2. Lógica de Inicialización (SOLO CREATE)
+        // Solo calculamos el estado inicial cuando nace el registro.
+        if (operation === 'create' && data.purchase) {
+          try {
+            const purchase = await payload.findByID({
+              collection: 'purchase',
+              id: data.purchase,
+              req,
+            })
 
-              // Solo calculamos si NO viene un dato manual
-              if (!isManualStatusUpdate) {
-                const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
-                data.statuscreditnote = creditNoteStatus
-              }
+            // Si es create, calculamos el estado inicial automático
+            const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
+            data.statuscreditnote = creditNoteStatus
 
-              // Guardamos en contexto para afterChange
-              req.context = { ...req.context, purchaseInfo: purchase }
-            } catch (e) {
-              console.log('Error obteniendo compra en beforeChange', e)
-            }
+            // Guardamos en contexto para usarlo en afterChange sin buscar de nuevo
+            req.context = { ...req.context, purchaseInfo: purchase }
+          } catch (e) {
+            console.log('Error obteniendo compra en beforeChange', e)
           }
-          // const purchase = await payload.findByID({
-          //   collection: 'purchase',
-          //   id: data.purchase,
-          //   req,
-          // })
-
-          // //modificamos 'data' directamente
-          // const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
-          // data.statuscreditnote = creditNoteStatus
-
-          // //guardamos la información de la compra en el request para usarla en afterchange
-          // req.context = { ...req.context, purchaseInfo: purchase }
-
-          // try {
-          // } catch (e) {
-          //   console.log('Error actualizando cancelación', e)
-          // }
         }
+
         return data
       },
     ],
 
     afterChange: [
-      async ({ doc, req, context }) => {
+      async ({ doc, req, context, operation }) => {
         if (context.skipHook) return
 
-        if (doc.statuscreditnote === 'registrada') {
-          return
-        }
+        // 3. Sincronización con Compra (SOLO CREATE)
+        // Esto evita que al editar la cancelación (Paso 3) se reseteen los estados de la compra.
+        if (operation === 'create') {
+          let purchase = req.context?.purchaseInfo as Purchase
 
-        // Recuperamos la info que guardamos en beforeChange o la buscamos de nuevo
-        let purchase = req.context?.purchaseInfo as Purchase
-
-        if (!purchase && doc.purchase) {
-          purchase = await req.payload.findByID({
-            collection: 'purchase',
-            id: doc.purchase,
-            req,
-          })
-        }
-
-        if (purchase) {
-          if (
-            purchase.statuspayment === 'retornado' ||
-            purchase.statuspayment === 'retorno parcial'
-          ) {
-            return
+          // Fallback por si no vino del contexto
+          if (!purchase && doc.purchase) {
+            try {
+              purchase = await req.payload.findByID({
+                collection: 'purchase',
+                id: doc.purchase,
+                req,
+              })
+            } catch (e) {
+              console.error(e)
+            }
           }
 
-          const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
+          if (purchase) {
+            const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
 
-          // Solo actualizamos la OTRA colección
-          await req.payload.update({
-            collection: 'purchase',
-            id: doc.purchase,
-            data: {
-              status: 'anulado',
-              statuspayment: 'por retornar',
-              statusreception: 'cancelado',
-              statusreceipt: receiptStatus,
-              cancellation: doc.id,
-            },
-            context: { skipHook: true },
-            req, // Siempre pasar req
-          })
+            // Inicializamos la compra como "por retornar".
+            // Como esto solo pasa en CREATE, nunca sobrescribirá un "retornado" futuro.
+            await req.payload.update({
+              collection: 'purchase',
+              id: doc.purchase,
+              data: {
+                status: 'anulado',
+                statuspayment: 'por retornar',
+                statusreception: 'cancelado',
+                statusreceipt: receiptStatus,
+                cancellation: doc.id,
+              },
+              context: { skipHook: true },
+              req,
+            })
+          }
         }
       },
     ],
-
-    // afterChange: [
-    //   async ({ doc, operation, req, context }) => {
-    //     // Evitar bucle si ya estamos en una ejecución de hook
-    //     if (context.skipHook) return
-
-    //     if (doc.statuscreditnote === 'registrada') {
-    //       return
-    //     }
-
-    //     const { payload } = req
-
-    //     if ((operation === 'create' || operation === 'update') && doc.purchase) {
-    //       try {
-    //         // 1. Obtener compra actual
-    //         const currentPurchase = await payload.findByID({
-    //           collection: 'purchase',
-    //           id: doc.purchase,
-    //           depth: 0,
-    //         })
-
-    //         console.log('Datos compra:', {
-    //           // Debug 2
-    //           invoice: currentPurchase.invoice,
-    //           status: currentPurchase.status,
-    //         })
-
-    //         // 2. Determinar estados
-    //         const receiptStatus = currentPurchase.invoice ? 'anulado' : 'cancelado'
-    //         const creditNoteStatus = currentPurchase.invoice ? 'pendiente' : 'no aplicable'
-
-    //         // 3. Actualizar Purchase (compra principal)
-    //         await payload.update({
-    //           collection: 'purchase',
-    //           id: doc.purchase,
-    //           data: {
-    //             status: 'anulado',
-    //             statuspayment: 'por retornar',
-    //             statusreception: 'cancelado',
-    //             statusreceipt: receiptStatus,
-    //             cancellation: doc.id,
-    //           },
-    //           context: { skipHook: true }, // Evita hooks en Purchase
-    //         })
-
-    //         console.log('Compra anulada correctamente') // Debug 4
-
-    //         // 4. Actualizar PurchaseCancellation (esta misma colección)
-    //         await payload.update({
-    //           collection: 'purchasecancellation',
-    //           id: doc.id,
-    //           data: {
-    //             statuscreditnote: creditNoteStatus,
-    //           },
-    //           context: { skipHook: true }, // ¡IMPORTANTE! Evita bucle
-    //           depth: 0,
-    //         })
-
-    //         console.log('Proceso completado:', {
-    //           // Debug final
-    //           compra: doc.purchase,
-    //           cancelacion: doc.id,
-    //           statuscreditnote: creditNoteStatus,
-    //         })
-    //         return doc
-    //       } catch (error) {
-    //         console.error('Error crítico:', {
-    //           message: error,
-    //           stack: error,
-    //           operation,
-    //           docId: doc.id,
-    //         })
-    //         throw error // Propaga el error para manejo superior
-    //       }
-    //     }
-    //   },
-    // ],
   },
+  // hooks: {
+  //   beforeChange: [
+  //     async ({ req, data, operation }) => {
+  //       const { user, payload } = req
+  //       if (user) {
+  //         if (operation === 'create') {
+  //           data.createdBy = user.id
+  //         }
+  //         data.updatedBy = user.id
+  //       }
+  //       if (operation === 'create' && data.purchase) {
+  //         const isManualStatusUpdate = typeof data.statuscreditnote !== 'undefined'
+
+  //         if (!isManualStatusUpdate || operation === 'create') {
+  //           try {
+  //             const purchase = await payload.findByID({
+  //               collection: 'purchase',
+  //               id: data.purchase,
+  //               req,
+  //             })
+
+  //             // Solo calculamos si NO viene un dato manual
+  //             if (!isManualStatusUpdate) {
+  //               const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
+  //               data.statuscreditnote = creditNoteStatus
+  //             }
+
+  //             // Guardamos en contexto para afterChange
+  //             req.context = { ...req.context, purchaseInfo: purchase }
+  //           } catch (e) {
+  //             console.log('Error obteniendo compra en beforeChange', e)
+  //           }
+  //         }
+  //       }
+  //       return data
+  //     },
+  //   ],
+
+  //   afterChange: [
+  //     async ({ doc, req, context }) => {
+  //       if (context.skipHook) return
+
+  //       if (doc.statuscreditnote === 'registrada') {
+  //         return
+  //       }
+
+  //       // Recuperamos la info que guardamos en beforeChange o la buscamos de nuevo
+  //       let purchase = req.context?.purchaseInfo as Purchase
+
+  //       if (!purchase && doc.purchase) {
+  //         purchase = await req.payload.findByID({
+  //           collection: 'purchase',
+  //           id: doc.purchase,
+  //           req,
+  //         })
+  //       }
+
+  //       if (purchase) {
+  //         if (
+  //           purchase.statuspayment === 'retornado' ||
+  //           purchase.statuspayment === 'retorno parcial'
+  //         ) {
+  //           return
+  //         }
+
+  //         const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
+
+  //         // Solo actualizamos la OTRA colección
+  //         await req.payload.update({
+  //           collection: 'purchase',
+  //           id: doc.purchase,
+  //           data: {
+  //             status: 'anulado',
+  //             statuspayment: 'por retornar',
+  //             statusreception: 'cancelado',
+  //             statusreceipt: receiptStatus,
+  //             cancellation: doc.id,
+  //           },
+  //           context: { skipHook: true },
+  //           req, // Siempre pasar req
+  //         })
+  //       }
+  //     },
+  //   ],
+  // },
 }
