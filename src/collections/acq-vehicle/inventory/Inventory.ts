@@ -293,6 +293,18 @@ export const Inventory: CollectionConfig = {
             const dealershipId = typeof d === 'string' ? d : (d?.idcode ?? '')
             const dealershipName = typeof d === 'string' ? '' : (d?.companyname ?? '')
             const dealershipRuc = typeof d === 'string' ? '' : (d?.identificationnumber ?? '')
+            // === NUEVO: LOCATION (almacén) ===
+            const locationName = item.location
+              ? typeof item.location === 'string'
+                ? 'Desconocido'
+                : item.location.warehousename || 'Sin nombre'
+              : 'Sin ubicación'
+
+            const locationID = item.location
+              ? typeof item.location === 'string'
+                ? item.location
+                : item.location.id || null
+              : null
 
             return {
               vehicle: vehicleStr,
@@ -306,6 +318,8 @@ export const Inventory: CollectionConfig = {
               dealershipName,
               dealershipRuc,
               inventoryId: item.id,
+              locationName,
+              locationID,
             }
           })
 
