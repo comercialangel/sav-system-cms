@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "sav-backend",
   "version": "1.0.0",
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
@@ -19,8 +19,10 @@
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "3.64.0",
+    "@payloadcms/email-resend": "^3.64.0",
     "@payloadcms/next": "3.64.0",
     "@payloadcms/richtext-lexical": "3.64.0",
+    "@payloadcms/storage-gcs": "^3.64.0",
     "@payloadcms/ui": "3.64.0",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",

@@ -1,0 +1,437 @@
+// // src/custom.scss   (o en la raíz, donde prefieras)
+// @import '~@payloadcms/ui/scss';
+
+// // =============================================
+// // 1. Forzamos el tema claro (opcional pero recomendado)
+// // =============================================
+// :root {
+//   --theme: light !important;
+// }
+
+// // =============================================
+// // 2. TU PALETA EXACTA – Fondo claro + azul personalizado
+// // =============================================
+// :root,
+// [data-theme='light'] {
+//   // Fondo general del admin (dashboard, sidebar, tarjetas, etc.)
+//   --theme-bg: oklch(98.4% 0.003 247.858); // tu fondo exacto
+
+//   // Textos
+//   --theme-text: oklch(18% 0.02 250); // casi negro
+//   --theme-text-reverse: oklch(98% 0.01 250); // blanco (por si algo lo necesita)
+
+//   // TU AZUL EXACTO como color primario
+//   --theme-primary: oklch(62.3% 0.214 259.815);
+//   --theme-primary-reverse: #ffffff;
+
+//   // Success / Warning / Error (los dejamos bonitos y accesibles)
+//   --theme-success: oklch(64% 0.18 150); // verde esmeralda
+//   --theme-warning: oklch(75% 0.2 80); // ámbar
+//   --theme-danger: oklch(65% 0.25 30); // rojo
+
+//   // Elevaciones (sombras y fondos de tarjetas)
+//   --theme-elevation-0: oklch(99% 0.002 247); // casi blanco
+//   --theme-elevation-1: oklch(96% 0.005 247 / 0.7); // tarjeta sutil
+//   --theme-elevation-2: oklch(94% 0.008 247 / 0.8);
+//   --theme-elevation-3: oklch(92% 0.01 247 / 0.9);
+
+//   // Bordes e inputs
+//   --theme-border: oklch(90% 0.01 250 / 0.2);
+//   --theme-input-bg: oklch(99.5% 0.001 247);
+// }
+
+// // Dark mode (lo desactivamos visualmente, pero por si alguien lo fuerza)
+// [data-theme='dark'] {
+//   --theme-bg: oklch(15% 0.02 250);
+//   --theme-text: oklch(92% 0.01 250);
+//   --theme-primary: oklch(68% 0.2 259.815);
+// }
+
+// // =============================================
+// // 3. Pequeños ajustes para que quede impecable
+// // =============================================
+
+// // Sidebar más limpia
+// .nav {
+//   background: oklch(98.5% 0.002 247.839) !important; /* un blanco muy suave con leve tinte */
+//   border-right: 1px solid var(--theme-border);
+//   gap: 8px !important;
+//   // Espaciado interno más cómodo
+//   padding: 16px 8px !important;
+// }
+
+// // Cada ítem del menú
+// .nav__item {
+//   margin-bottom: 4px !important;
+//   border-radius: 10px !important;
+//   transition: all 0.22s ease;
+
+//   // Texto más legible
+//   .nav__label {
+//     font-weight: 500 !important;
+//     font-size: 0.95rem !important;
+//     letter-spacing: -0.01em;
+//   }
+
+//   // Hover sutil pero elegante
+//   &:hover {
+//     background: oklch(62.3% 0.214 259.815 / 0.09) !important;
+//     transform: translateX(4px);
+//   }
+
+//   // Ítem activo (el que estás viendo)
+//   &.nav__item--active {
+//     background: var(--theme-primary) !important;
+//     color: white !important;
+//     font-weight: 600 !important;
+
+//     .nav__icon svg {
+//       fill: white !important;
+//     }
+
+//     &:hover {
+//       background: oklch(57% 0.23 259.815) !important; // un poco más oscuro
+//     }
+//   }
+// }
+
+// // Iconos del menú
+// .nav__icon {
+//   width: 20px !important;
+//   height: 20px !important;
+//   margin-right: 10px !important;
+
+//   svg {
+//     fill: oklch(40% 0.04 250) !important;
+//     transition: fill 0.2s ease;
+//   }
+// }
+
+// // Ítems activos → icono blanco
+// .nav__item--active .nav__icon svg {
+//   fill: white !important;
+// }
+
+// // =============================================
+// // 2. SUBMENÚS (COLLECTIONS CON SUB-ÍTEMS)
+// // =============================================
+
+// // Por defecto colapsados (¡esto es lo que querías!)
+// .nav__group > .nav__item {
+//   // El botón del grupo (el que tiene flechita)
+//   > .nav__link {
+//     padding: 10px 12px !important;
+//   }
+// }
+
+// // Forzamos que los submenús estén colapsados al inicio
+// .nav__group .nav__children {
+//   display: none !important; // colapsado
+// }
+
+// .nav__group.nav__group--open .nav__children {
+//   display: block !important; // solo se abre cuando haces clic
+// }
+
+// // Estilo del submenú cuando está abierto
+// .nav__group--open > .nav__item {
+//   background: oklch(62.3% 0.214 259.815 / 0.08) !important;
+//   border-radius: 10px 10px 0 0 !important;
+// }
+
+// // Ítems dentro del submenú (indentados y más pequeños)
+// .nav__children .nav__item {
+//   // padding-left: 42px !important;
+//   font-size: 0.9rem !important;
+//   background: oklch(62.3% 0.214 259.815 / 0.04) !important;
+
+//   &:hover {
+//     background: oklch(62.3% 0.214 259.815 / 0.12) !important;
+//   }
+
+//   &.nav__item--active {
+//     background: var(--theme-primary) !important;
+//     color: white !important;
+//     border-radius: 8px !important;
+//     margin: 4px 8px !important;
+//     font-weight: 600 !important;
+//   }
+// }
+
+// // Flechita del menú colapsable
+// .nav__toggle {
+//   svg {
+//     width: 14px !important;
+//     height: 14px !important;
+//     transition: transform 0.25s ease !important;
+//   }
+// }
+
+// .nav__group--open .nav__toggle svg {
+//   transform: rotate(90deg) !important;
+// }
+
+// // Tarjetas del dashboard
+// .dashboard .card,
+// .collection-list .card {
+//   background: var(--theme-elevation-1) !important;
+//   border: 1px solid var(--theme-border);
+//   box-shadow: 0 4px 12px oklch(62.3% 0.214 259.815 / 0.08);
+//   transition: all 0.2s ease;
+
+//   &:hover {
+//     box-shadow: 0 8px 25px oklch(62.3% 0.214 259.815 / 0.15);
+//     transform: translateY(-2px);
+//   }
+// }
+
+// // Botones primarios (usarán tu azul automáticamente)
+// .btn--style-primary,
+// .button--primary {
+//   background: var(--theme-primary) !important;
+//   border-color: var(--theme-primary) !important;
+// }
+
+// // Inputs y campos
+// .input,
+// .textarea {
+//   background: var(--theme-input-bg) !important;
+//   border-color: var(--theme-border) !important;
+//   color: var(--theme-text) !important;
+// }
+
+// // FIX 100% FUNCIONAL: Bulk actions visibles en TODAS las listas
+// // =============================================
+
+// /* 1. El contenedor principal de la cabecera de lista */
+// .list-header {
+//   overflow: visible !important;
+//   position: relative !important;
+//   z-index: 900 !important;
+// }
+
+// /* 2. El wrapper de las acciones cuando seleccionas filas */
+// .list-header__actions,
+// .list-selection,
+// .list-selection__actions {
+//   overflow: visible !important;
+//   position: relative !important;
+//   z-index: 999 !important;
+// }
+
+// /* 3. Los botones que aparecen (Editar / Eliminar) */
+// .list-selection__button,
+// .edit-many__toggle,
+// .delete-documents__toggle {
+//   position: relative !important;
+//   z-index: 999 !important;
+//   overflow: visible !important;
+// }
+
+// /* 4. Forzamos que nada corte el contenido */
+// .list-controls,
+// .template-default,
+// .collection-list,
+// .list {
+//   overflow: visible !important;
+// }
+
+// /* 5. Fix extra para cuando el sidebar está colapsado o hay scroll lateral */
+// .payload__app {
+//   overflow: visible !important;
+// }
+
+// /* 6. Bonus: que los botones se vean más bonitos y con tu azul */
+// .list-selection__button {
+//   background: transparent !important;
+//   color: var(--theme-text) !important;
+//   padding: 6px 12px !important;
+//   font-weight: 500 !important;
+//   transition: all 0.2s ease;
+
+//   &:hover {
+//     background: var(--theme-primary) !important;
+//     color: white !important;
+//   }
+
+//   /* El botón de eliminar → rojo sutil */
+//   &.delete-documents__toggle {
+//     border-color: var(--theme-danger) !important;
+//     color: var(--theme-danger) !important;
+
+//     &:hover {
+//       background: var(--theme-danger) !important;
+//       color: white !important;
+//     }
+//   }
+// }
+
+// src/custom.scss
+@import '~@payloadcms/ui/scss';
+
+// =============================================
+// 1. Tema claro forzado + paleta personalizada
+// =============================================
+:root,
+[data-theme='light'] {
+  --theme: light !important;
+
+  --theme-bg: oklch(98.4% 0.003 247.858);
+  --theme-text: oklch(18% 0.02 250);
+  --theme-text-reverse: oklch(98% 0.01 250);
+
+  --theme-primary: oklch(62.3% 0.214 259.815);
+  --theme-primary-reverse: #ffffff;
+
+  --theme-success: oklch(64% 0.18 150);
+  --theme-warning: oklch(75% 0.2 80);
+  --theme-danger: oklch(65% 0.25 30);
+
+  --theme-elevation-0: oklch(99% 0.002 247);
+  --theme-elevation-1: oklch(96% 0.005 247 / 0.7);
+  --theme-elevation-2: oklch(94% 0.008 247 / 0.8);
+
+  --theme-border: oklch(90% 0.01 250 / 0.2);
+  --theme-input-bg: oklch(99.5% 0.001 247);
+}
+
+// =============================================
+// 2. Sidebar profesional + menús colapsados
+// =============================================
+.nav {
+  background: oklch(98.5% 0.002 247.839) !important;
+  border-right: 1px solid var(--theme-border) !important;
+  padding: 16px 8px !important;
+  gap: 8px !important;
+}
+
+.nav__item {
+  margin-bottom: 4px !important;
+  border-radius: 10px !important;
+  transition: all 0.22s ease;
+
+  .nav__label {
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+  }
+
+  &:hover {
+    background: oklch(62.3% 0.214 259.815 / 0.09) !important;
+    transform: translateX(4px);
+  }
+
+  &.nav__item--active {
+    background: var(--theme-primary) !important;
+    color: white !important;
+    font-weight: 600 !important;
+
+    .nav__icon svg {
+      fill: white !important;
+    }
+    &:hover {
+      background: oklch(57% 0.23 259.815) !important;
+    }
+  }
+}
+
+.nav__icon svg {
+  fill: oklch(40% 0.04 250) !important;
+}
+
+// Submenús colapsados por defecto
+.nav__group .nav__children {
+  display: none !important;
+}
+.nav__group.nav__group--open .nav__children {
+  display: block !important;
+}
+.nav__group--open > .nav__item {
+  background: oklch(62.3% 0.214 259.815 / 0.08) !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.nav__children .nav__item {
+  font-size: 0.9rem !important;
+  background: oklch(62.3% 0.214 259.815 / 0.04) !important;
+  &:hover {
+    background: oklch(62.3% 0.214 259.815 / 0.12) !important;
+  }
+  &.nav__item--active {
+    background: var(--theme-primary) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    margin: 4px 8px !important;
+    font-weight: 600 !important;
+  }
+}
+
+.nav__toggle svg {
+  transition: transform 0.25s ease !important;
+}
+.nav__group--open .nav__toggle svg {
+  transform: rotate(90deg) !important;
+}
+
+// =============================================
+// 3. Tarjetas del dashboard + botones primarios
+// =============================================
+.dashboard .card,
+.collection-list .card {
+  background: var(--theme-elevation-1) !important;
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: 0 4px 12px oklch(62.3% 0.214 259.815 / 0.08);
+  transition: all 0.2s ease;
+  &:hover {
+    box-shadow: 0 8px 25px oklch(62.3% 0.214 259.815 / 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+.btn--style-primary,
+.button--primary {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+// =============================================
+// 4. Bulk actions bonitos y siempre visibles
+// =============================================
+.list-header,
+.list-header__actions,
+.list-selection,
+.template-default,
+.payload__app {
+  overflow: visible !important;
+}
+
+.list-selection__button {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  padding: 6px 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--theme-primary) !important;
+    color: white !important;
+  }
+
+  &.delete-documents__toggle {
+    border-color: var(--theme-danger) !important;
+    color: var(--theme-danger) !important;
+    &:hover {
+      background: var(--theme-danger) !important;
+      color: white !important;
+    }
+  }
+}
+
+// =============================================
+// 5. Inputs limpios
+// =============================================
+.input,
+.textarea {
+  background: var(--theme-input-bg) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}

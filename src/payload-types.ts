@@ -59,7 +59,8 @@ export type SupportedTimezones =
   | 'Pacific/Guam'
   | 'Pacific/Noumea'
   | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | 'Pacific/Fiji'
+  | 'America/Lima';
 
 export interface Config {
   auth: {
@@ -67,8 +68,183 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    purchase: Purchase;
+    purchasepayment: Purchasepayment;
+    purchasecancellation: Purchasecancellation;
+    purchaserefund: Purchaserefund;
+    purchaseinvoice: Purchaseinvoice;
+    purchasetransportation: Purchasetransportation;
+    purchasereceptions: Purchasereception;
+    motivecancellationpurchase: Motivecancellationpurchase;
+    mediapurchase: Mediapurchase;
+    mediapurchasepayment: Mediapurchasepayment;
+    mediapurchaseinvoice: Mediapurchaseinvoice;
+    mediapurchasetransportation: Mediapurchasetransportation;
+    mediapurchaserefund: Mediapurchaserefund;
+    mediapurchasecancellation: Mediapurchasecancellation;
+    supplier: Supplier;
+    supplieraddress: Supplieraddress;
+    suppliercontact: Suppliercontact;
+    supplierbankaccount: Supplierbankaccount;
+    internalplates: Internalplate;
+    externalplates: Externalplate;
+    ownerexternalplates: Ownerexternalplate;
+    mediainternalplates: Mediainternalplate;
+    motivecancellationinternalplates: Motivecancellationinternalplate;
+    inventory: Inventory;
+    movements: Movement;
+    relocation: Relocation;
+    receptionrelocation: Receptionrelocation;
+    relocationwarehouses: Relocationwarehouse;
+    expense: Expense;
+    mediarelocation: Mediarelocation;
+    assignmentgps: Assignmentgp;
+    installationgps: Installationgp;
+    periodusegps: Periodusegp;
+    renewalsgps: Renewalsgp;
+    gpscancellation: Gpscancellation;
+    devicegps: Devicegp;
+    cardsim: Cardsim;
+    suppliergps: Suppliergp;
+    ownersim: Ownersim;
+    installergps: Installergp;
+    typesino: Typesino;
+    typegps: Typegp;
+    typeoperator: Typeoperator;
+    otherplaceinstallation: Otherplaceinstallation;
+    motivecancellationdevice: Motivecancellationdevice;
+    motivecancellationcardsim: Motivecancellationcardsim;
+    motivecancellationgps: Motivecancellationgp;
+    mediagps: Mediagp;
+    mediainstallation: Mediainstallation;
+    mediagpscancellation: Mediagpscancellation;
+    mediarenewal: Mediarenewal;
+    mediatypesino: Mediatypesino;
+    vehicle: Vehicle;
+    priceassignment: Priceassignment;
+    pricelists: Pricelist;
+    brand: Brand;
+    model: Model;
+    version: Version;
+    color: Color;
+    fuel: Fuel;
+    carbody: Carbody;
+    category: Category;
+    traction: Traction;
+    typerim: Typerim;
+    transmission: Transmission;
+    typeuse: Typeuse;
+    basicequipment: Basicequipment;
+    internalequipment: Internalequipment;
+    externalequipment: Externalequipment;
+    expenseaditionalvehicle: Expenseaditionalvehicle;
+    mediavehicle: Mediavehicle;
+    mediareferenceimage: Mediareferenceimage;
+    mediagallery: Mediagallery;
+    mediaplates: Mediaplate;
+    mediaequipment: Mediaequipment;
+    mediaexpensevehicle: Mediaexpensevehicle;
+    vehicleregistrationprocedure: Vehicleregistrationprocedure;
+    licenseplateissuanceprocedure: Licenseplateissuanceprocedure;
+    vehicletitletransferprocedure: Vehicletitletransferprocedure;
+    proceduresunarp: Proceduresunarp;
+    procedureaap: Procedureaap;
+    typeproceduresunarp: Typeproceduresunarp;
+    typeprocedureaap: Typeprocedureaap;
+    registryofficeprocedure: Registryofficeprocedure;
+    registrationprocessor: Registrationprocessor;
+    expenseproceduresunarp: Expenseproceduresunarp;
+    expenseproceduretitletransfer: Expenseproceduretitletransfer;
+    expenseprocedureaap: Expenseprocedureaap;
+    mediaprocedureregistration: Mediaprocedureregistration;
+    mediaregistration: Mediaregistration;
+    mediative: Mediative;
+    mediaproceduretitletransfer: Mediaproceduretitletransfer;
+    mediaproceduresunarp: Mediaproceduresunarp;
+    mediaexpenseproceduresunarp: Mediaexpenseproceduresunarp;
+    mediaprocedureaap: Mediaprocedureaap;
+    mediaexpenseprocedureaap: Mediaexpenseprocedureaap;
+    buyer: Buyer;
+    activity: Activity;
+    mediabuyer: Mediabuyer;
+    'internal-sales': InternalSale;
+    finalsale: Finalsale;
+    salereservation: Salereservation;
+    saleorder: Saleorder;
+    salehomewarranty: Salehomewarranty;
+    periodpayment: Periodpayment;
+    motivecancellationsale: Motivecancellationsale;
+    motivecancellationreservation: Motivecancellationreservation;
+    mediainternalsale: Mediainternalsale;
+    mediasale: Mediasale;
+    mediasaledownpayment: Mediasaledownpayment;
+    mediareservation: Mediareservation;
+    mediaordersale: Mediaordersale;
+    mediahomewarranty: Mediahomewarranty;
+    creditinstallment: Creditinstallment;
+    creditpayment: Creditpayment;
+    creditplan: Creditplan;
+    receiptcreditpayment: Receiptcreditpayment;
+    receiptsale: Receiptsale;
+    motivecancellationreceiptsale: Motivecancellationreceiptsale;
+    mediareceipt: Mediareceipt;
+    vehicledelivery: Vehicledelivery;
+    mediavehicledelivery: Mediavehicledelivery;
+    transfersale: Transfersale;
+    vouchertransfersale: Vouchertransfersale;
+    notary: Notary;
+    mediatransfersale: Mediatransfersale;
+    mediatransfervoucher: Mediatransfervoucher;
+    notification: Notification;
+    documentaditional: Documentaditional;
+    typedocumentaditional: Typedocumentaditional;
+    mediadocumentaditional: Mediadocumentaditional;
+    medianotification: Medianotification;
+    vehicletax: Vehicletax;
+    infractionvehicle: Infractionvehicle;
+    typeinfraction: Typeinfraction;
+    sanctioningentity: Sanctioningentity;
+    mediavehicletax: Mediavehicletax;
+    mediainfraction: Mediainfraction;
+    courtcases: Courtcase;
+    counselcourtcases: Counselcourtcase;
+    mediacourtcases: Mediacourtcase;
+    company: Company;
+    companyinformation: Companyinformation;
+    accountcompany: Accountcompany;
+    establishment: Establishment;
+    warehouse: Warehouse;
+    mediacompany: Mediacompany;
+    collaborator: Collaborator;
+    laborinformation: Laborinformation;
+    driver: Driver;
+    typecollaborator: Typecollaborator;
+    laborarea: Laborarea;
+    jobposition: Jobposition;
+    pensionsystem: Pensionsystem;
+    typeafp: Typeafp;
+    familyrelation: Familyrelation;
+    mediacollaborator: Mediacollaborator;
+    mediaafp: Mediaafp;
+    mediacts: Mediact;
     media: Media;
+    users: User;
+    modulesystem: Modulesystem;
+    role: Role;
+    mediauser: Mediauser;
+    typeidentificationdocument: Typeidentificationdocument;
+    civilstatus: Civilstatus;
+    genre: Genre;
+    typeaccount: Typeaccount;
+    typebank: Typebank;
+    typecurrency: Typecurrency;
+    typereceipt: Typereceipt;
+    typepayment: Typepayment;
+    paymentperiod: Paymentperiod;
+    country: Country;
+    departamento: Departamento;
+    provincia: Provincia;
+    distrito: Distrito;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,8 +252,183 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    purchase: PurchaseSelect<false> | PurchaseSelect<true>;
+    purchasepayment: PurchasepaymentSelect<false> | PurchasepaymentSelect<true>;
+    purchasecancellation: PurchasecancellationSelect<false> | PurchasecancellationSelect<true>;
+    purchaserefund: PurchaserefundSelect<false> | PurchaserefundSelect<true>;
+    purchaseinvoice: PurchaseinvoiceSelect<false> | PurchaseinvoiceSelect<true>;
+    purchasetransportation: PurchasetransportationSelect<false> | PurchasetransportationSelect<true>;
+    purchasereceptions: PurchasereceptionsSelect<false> | PurchasereceptionsSelect<true>;
+    motivecancellationpurchase: MotivecancellationpurchaseSelect<false> | MotivecancellationpurchaseSelect<true>;
+    mediapurchase: MediapurchaseSelect<false> | MediapurchaseSelect<true>;
+    mediapurchasepayment: MediapurchasepaymentSelect<false> | MediapurchasepaymentSelect<true>;
+    mediapurchaseinvoice: MediapurchaseinvoiceSelect<false> | MediapurchaseinvoiceSelect<true>;
+    mediapurchasetransportation: MediapurchasetransportationSelect<false> | MediapurchasetransportationSelect<true>;
+    mediapurchaserefund: MediapurchaserefundSelect<false> | MediapurchaserefundSelect<true>;
+    mediapurchasecancellation: MediapurchasecancellationSelect<false> | MediapurchasecancellationSelect<true>;
+    supplier: SupplierSelect<false> | SupplierSelect<true>;
+    supplieraddress: SupplieraddressSelect<false> | SupplieraddressSelect<true>;
+    suppliercontact: SuppliercontactSelect<false> | SuppliercontactSelect<true>;
+    supplierbankaccount: SupplierbankaccountSelect<false> | SupplierbankaccountSelect<true>;
+    internalplates: InternalplatesSelect<false> | InternalplatesSelect<true>;
+    externalplates: ExternalplatesSelect<false> | ExternalplatesSelect<true>;
+    ownerexternalplates: OwnerexternalplatesSelect<false> | OwnerexternalplatesSelect<true>;
+    mediainternalplates: MediainternalplatesSelect<false> | MediainternalplatesSelect<true>;
+    motivecancellationinternalplates: MotivecancellationinternalplatesSelect<false> | MotivecancellationinternalplatesSelect<true>;
+    inventory: InventorySelect<false> | InventorySelect<true>;
+    movements: MovementsSelect<false> | MovementsSelect<true>;
+    relocation: RelocationSelect<false> | RelocationSelect<true>;
+    receptionrelocation: ReceptionrelocationSelect<false> | ReceptionrelocationSelect<true>;
+    relocationwarehouses: RelocationwarehousesSelect<false> | RelocationwarehousesSelect<true>;
+    expense: ExpenseSelect<false> | ExpenseSelect<true>;
+    mediarelocation: MediarelocationSelect<false> | MediarelocationSelect<true>;
+    assignmentgps: AssignmentgpsSelect<false> | AssignmentgpsSelect<true>;
+    installationgps: InstallationgpsSelect<false> | InstallationgpsSelect<true>;
+    periodusegps: PeriodusegpsSelect<false> | PeriodusegpsSelect<true>;
+    renewalsgps: RenewalsgpsSelect<false> | RenewalsgpsSelect<true>;
+    gpscancellation: GpscancellationSelect<false> | GpscancellationSelect<true>;
+    devicegps: DevicegpsSelect<false> | DevicegpsSelect<true>;
+    cardsim: CardsimSelect<false> | CardsimSelect<true>;
+    suppliergps: SuppliergpsSelect<false> | SuppliergpsSelect<true>;
+    ownersim: OwnersimSelect<false> | OwnersimSelect<true>;
+    installergps: InstallergpsSelect<false> | InstallergpsSelect<true>;
+    typesino: TypesinoSelect<false> | TypesinoSelect<true>;
+    typegps: TypegpsSelect<false> | TypegpsSelect<true>;
+    typeoperator: TypeoperatorSelect<false> | TypeoperatorSelect<true>;
+    otherplaceinstallation: OtherplaceinstallationSelect<false> | OtherplaceinstallationSelect<true>;
+    motivecancellationdevice: MotivecancellationdeviceSelect<false> | MotivecancellationdeviceSelect<true>;
+    motivecancellationcardsim: MotivecancellationcardsimSelect<false> | MotivecancellationcardsimSelect<true>;
+    motivecancellationgps: MotivecancellationgpsSelect<false> | MotivecancellationgpsSelect<true>;
+    mediagps: MediagpsSelect<false> | MediagpsSelect<true>;
+    mediainstallation: MediainstallationSelect<false> | MediainstallationSelect<true>;
+    mediagpscancellation: MediagpscancellationSelect<false> | MediagpscancellationSelect<true>;
+    mediarenewal: MediarenewalSelect<false> | MediarenewalSelect<true>;
+    mediatypesino: MediatypesinoSelect<false> | MediatypesinoSelect<true>;
+    vehicle: VehicleSelect<false> | VehicleSelect<true>;
+    priceassignment: PriceassignmentSelect<false> | PriceassignmentSelect<true>;
+    pricelists: PricelistsSelect<false> | PricelistsSelect<true>;
+    brand: BrandSelect<false> | BrandSelect<true>;
+    model: ModelSelect<false> | ModelSelect<true>;
+    version: VersionSelect<false> | VersionSelect<true>;
+    color: ColorSelect<false> | ColorSelect<true>;
+    fuel: FuelSelect<false> | FuelSelect<true>;
+    carbody: CarbodySelect<false> | CarbodySelect<true>;
+    category: CategorySelect<false> | CategorySelect<true>;
+    traction: TractionSelect<false> | TractionSelect<true>;
+    typerim: TyperimSelect<false> | TyperimSelect<true>;
+    transmission: TransmissionSelect<false> | TransmissionSelect<true>;
+    typeuse: TypeuseSelect<false> | TypeuseSelect<true>;
+    basicequipment: BasicequipmentSelect<false> | BasicequipmentSelect<true>;
+    internalequipment: InternalequipmentSelect<false> | InternalequipmentSelect<true>;
+    externalequipment: ExternalequipmentSelect<false> | ExternalequipmentSelect<true>;
+    expenseaditionalvehicle: ExpenseaditionalvehicleSelect<false> | ExpenseaditionalvehicleSelect<true>;
+    mediavehicle: MediavehicleSelect<false> | MediavehicleSelect<true>;
+    mediareferenceimage: MediareferenceimageSelect<false> | MediareferenceimageSelect<true>;
+    mediagallery: MediagallerySelect<false> | MediagallerySelect<true>;
+    mediaplates: MediaplatesSelect<false> | MediaplatesSelect<true>;
+    mediaequipment: MediaequipmentSelect<false> | MediaequipmentSelect<true>;
+    mediaexpensevehicle: MediaexpensevehicleSelect<false> | MediaexpensevehicleSelect<true>;
+    vehicleregistrationprocedure: VehicleregistrationprocedureSelect<false> | VehicleregistrationprocedureSelect<true>;
+    licenseplateissuanceprocedure: LicenseplateissuanceprocedureSelect<false> | LicenseplateissuanceprocedureSelect<true>;
+    vehicletitletransferprocedure: VehicletitletransferprocedureSelect<false> | VehicletitletransferprocedureSelect<true>;
+    proceduresunarp: ProceduresunarpSelect<false> | ProceduresunarpSelect<true>;
+    procedureaap: ProcedureaapSelect<false> | ProcedureaapSelect<true>;
+    typeproceduresunarp: TypeproceduresunarpSelect<false> | TypeproceduresunarpSelect<true>;
+    typeprocedureaap: TypeprocedureaapSelect<false> | TypeprocedureaapSelect<true>;
+    registryofficeprocedure: RegistryofficeprocedureSelect<false> | RegistryofficeprocedureSelect<true>;
+    registrationprocessor: RegistrationprocessorSelect<false> | RegistrationprocessorSelect<true>;
+    expenseproceduresunarp: ExpenseproceduresunarpSelect<false> | ExpenseproceduresunarpSelect<true>;
+    expenseproceduretitletransfer: ExpenseproceduretitletransferSelect<false> | ExpenseproceduretitletransferSelect<true>;
+    expenseprocedureaap: ExpenseprocedureaapSelect<false> | ExpenseprocedureaapSelect<true>;
+    mediaprocedureregistration: MediaprocedureregistrationSelect<false> | MediaprocedureregistrationSelect<true>;
+    mediaregistration: MediaregistrationSelect<false> | MediaregistrationSelect<true>;
+    mediative: MediativeSelect<false> | MediativeSelect<true>;
+    mediaproceduretitletransfer: MediaproceduretitletransferSelect<false> | MediaproceduretitletransferSelect<true>;
+    mediaproceduresunarp: MediaproceduresunarpSelect<false> | MediaproceduresunarpSelect<true>;
+    mediaexpenseproceduresunarp: MediaexpenseproceduresunarpSelect<false> | MediaexpenseproceduresunarpSelect<true>;
+    mediaprocedureaap: MediaprocedureaapSelect<false> | MediaprocedureaapSelect<true>;
+    mediaexpenseprocedureaap: MediaexpenseprocedureaapSelect<false> | MediaexpenseprocedureaapSelect<true>;
+    buyer: BuyerSelect<false> | BuyerSelect<true>;
+    activity: ActivitySelect<false> | ActivitySelect<true>;
+    mediabuyer: MediabuyerSelect<false> | MediabuyerSelect<true>;
+    'internal-sales': InternalSalesSelect<false> | InternalSalesSelect<true>;
+    finalsale: FinalsaleSelect<false> | FinalsaleSelect<true>;
+    salereservation: SalereservationSelect<false> | SalereservationSelect<true>;
+    saleorder: SaleorderSelect<false> | SaleorderSelect<true>;
+    salehomewarranty: SalehomewarrantySelect<false> | SalehomewarrantySelect<true>;
+    periodpayment: PeriodpaymentSelect<false> | PeriodpaymentSelect<true>;
+    motivecancellationsale: MotivecancellationsaleSelect<false> | MotivecancellationsaleSelect<true>;
+    motivecancellationreservation: MotivecancellationreservationSelect<false> | MotivecancellationreservationSelect<true>;
+    mediainternalsale: MediainternalsaleSelect<false> | MediainternalsaleSelect<true>;
+    mediasale: MediasaleSelect<false> | MediasaleSelect<true>;
+    mediasaledownpayment: MediasaledownpaymentSelect<false> | MediasaledownpaymentSelect<true>;
+    mediareservation: MediareservationSelect<false> | MediareservationSelect<true>;
+    mediaordersale: MediaordersaleSelect<false> | MediaordersaleSelect<true>;
+    mediahomewarranty: MediahomewarrantySelect<false> | MediahomewarrantySelect<true>;
+    creditinstallment: CreditinstallmentSelect<false> | CreditinstallmentSelect<true>;
+    creditpayment: CreditpaymentSelect<false> | CreditpaymentSelect<true>;
+    creditplan: CreditplanSelect<false> | CreditplanSelect<true>;
+    receiptcreditpayment: ReceiptcreditpaymentSelect<false> | ReceiptcreditpaymentSelect<true>;
+    receiptsale: ReceiptsaleSelect<false> | ReceiptsaleSelect<true>;
+    motivecancellationreceiptsale: MotivecancellationreceiptsaleSelect<false> | MotivecancellationreceiptsaleSelect<true>;
+    mediareceipt: MediareceiptSelect<false> | MediareceiptSelect<true>;
+    vehicledelivery: VehicledeliverySelect<false> | VehicledeliverySelect<true>;
+    mediavehicledelivery: MediavehicledeliverySelect<false> | MediavehicledeliverySelect<true>;
+    transfersale: TransfersaleSelect<false> | TransfersaleSelect<true>;
+    vouchertransfersale: VouchertransfersaleSelect<false> | VouchertransfersaleSelect<true>;
+    notary: NotarySelect<false> | NotarySelect<true>;
+    mediatransfersale: MediatransfersaleSelect<false> | MediatransfersaleSelect<true>;
+    mediatransfervoucher: MediatransfervoucherSelect<false> | MediatransfervoucherSelect<true>;
+    notification: NotificationSelect<false> | NotificationSelect<true>;
+    documentaditional: DocumentaditionalSelect<false> | DocumentaditionalSelect<true>;
+    typedocumentaditional: TypedocumentaditionalSelect<false> | TypedocumentaditionalSelect<true>;
+    mediadocumentaditional: MediadocumentaditionalSelect<false> | MediadocumentaditionalSelect<true>;
+    medianotification: MedianotificationSelect<false> | MedianotificationSelect<true>;
+    vehicletax: VehicletaxSelect<false> | VehicletaxSelect<true>;
+    infractionvehicle: InfractionvehicleSelect<false> | InfractionvehicleSelect<true>;
+    typeinfraction: TypeinfractionSelect<false> | TypeinfractionSelect<true>;
+    sanctioningentity: SanctioningentitySelect<false> | SanctioningentitySelect<true>;
+    mediavehicletax: MediavehicletaxSelect<false> | MediavehicletaxSelect<true>;
+    mediainfraction: MediainfractionSelect<false> | MediainfractionSelect<true>;
+    courtcases: CourtcasesSelect<false> | CourtcasesSelect<true>;
+    counselcourtcases: CounselcourtcasesSelect<false> | CounselcourtcasesSelect<true>;
+    mediacourtcases: MediacourtcasesSelect<false> | MediacourtcasesSelect<true>;
+    company: CompanySelect<false> | CompanySelect<true>;
+    companyinformation: CompanyinformationSelect<false> | CompanyinformationSelect<true>;
+    accountcompany: AccountcompanySelect<false> | AccountcompanySelect<true>;
+    establishment: EstablishmentSelect<false> | EstablishmentSelect<true>;
+    warehouse: WarehouseSelect<false> | WarehouseSelect<true>;
+    mediacompany: MediacompanySelect<false> | MediacompanySelect<true>;
+    collaborator: CollaboratorSelect<false> | CollaboratorSelect<true>;
+    laborinformation: LaborinformationSelect<false> | LaborinformationSelect<true>;
+    driver: DriverSelect<false> | DriverSelect<true>;
+    typecollaborator: TypecollaboratorSelect<false> | TypecollaboratorSelect<true>;
+    laborarea: LaborareaSelect<false> | LaborareaSelect<true>;
+    jobposition: JobpositionSelect<false> | JobpositionSelect<true>;
+    pensionsystem: PensionsystemSelect<false> | PensionsystemSelect<true>;
+    typeafp: TypeafpSelect<false> | TypeafpSelect<true>;
+    familyrelation: FamilyrelationSelect<false> | FamilyrelationSelect<true>;
+    mediacollaborator: MediacollaboratorSelect<false> | MediacollaboratorSelect<true>;
+    mediaafp: MediaafpSelect<false> | MediaafpSelect<true>;
+    mediacts: MediactsSelect<false> | MediactsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    modulesystem: ModulesystemSelect<false> | ModulesystemSelect<true>;
+    role: RoleSelect<false> | RoleSelect<true>;
+    mediauser: MediauserSelect<false> | MediauserSelect<true>;
+    typeidentificationdocument: TypeidentificationdocumentSelect<false> | TypeidentificationdocumentSelect<true>;
+    civilstatus: CivilstatusSelect<false> | CivilstatusSelect<true>;
+    genre: GenreSelect<false> | GenreSelect<true>;
+    typeaccount: TypeaccountSelect<false> | TypeaccountSelect<true>;
+    typebank: TypebankSelect<false> | TypebankSelect<true>;
+    typecurrency: TypecurrencySelect<false> | TypecurrencySelect<true>;
+    typereceipt: TypereceiptSelect<false> | TypereceiptSelect<true>;
+    typepayment: TypepaymentSelect<false> | TypepaymentSelect<true>;
+    paymentperiod: PaymentperiodSelect<false> | PaymentperiodSelect<true>;
+    country: CountrySelect<false> | CountrySelect<true>;
+    departamento: DepartamentoSelect<false> | DepartamentoSelect<true>;
+    provincia: ProvinciaSelect<false> | ProvinciaSelect<true>;
+    distrito: DistritoSelect<false> | DistritoSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -117,10 +468,102 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchase".
+ */
+export interface Purchase {
+  id: string;
+  purchaseNumber: string;
+  company: string | Company;
+  typepurchase: 'Convencional' | 'Pedido' | 'Interna' | 'Consignación';
+  purchasedate: string;
+  purchasedate_tz: SupportedTimezones;
+  supplier: string | Supplier;
+  suppliercontact?: (string | null) | Suppliercontact;
+  typecurrency: string | Typecurrency;
+  pricepurchase: number;
+  amountpaid?: number | null;
+  vehicle: {
+    brand: string | Brand;
+    model: string | Model;
+    version: string | Version;
+    color: string | Color;
+    yearmodel: number;
+    fuel: string | Fuel;
+    condition: 'Nuevo' | 'Usado';
+    licensePlatesNumber?: string | null;
+    licensePlateUsageType?: (string | null) | Typeuse;
+  };
+  purchasefiles?:
+    | {
+        mediapurchase?: (string | null) | Mediapurchase;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'aprobado' | 'anulado';
+  statusreception?: ('en transito' | 'recepcionado' | 'pendiente' | 'cancelado') | null;
+  statuspayment: 'pendiente' | 'parcial' | 'completado' | 'por retornar' | 'retorno parcial' | 'retornado';
+  statusreceipt: 'no aplicable' | 'pendiente' | 'recibido' | 'cancelado' | 'anulado';
+  transportation?: (string | null) | Purchasetransportation;
+  cancellation?: (string | null) | Purchasecancellation;
+  payment?: (string | Purchasepayment)[] | null;
+  invoice?: (string | null) | Purchaseinvoice;
+  receptions?: (string | null) | Purchasereception;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "company".
+ */
+export interface Company {
+  id: string;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  companyname: string;
+  tradename: string;
+  namedocument?: string | null;
+  idcode: string;
+  registryentry?: string | null;
+  logo?: (string | null) | Mediacompany;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeidentificationdocument".
+ */
+export interface Typeidentificationdocument {
+  id: string;
+  codedocument: string;
+  abbreviatedname: string;
+  name: string;
+  status: 'active' | 'inactive';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Usuarios con acceso al sistema
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: string;
+  mediauser?: (string | null) | Mediauser;
+  collaborator?: (string | null) | Collaborator;
+  rolcollaborator: (string | Role)[];
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -141,6 +584,3751 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediauser".
+ */
+export interface Mediauser {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collaborator".
+ */
+export interface Collaborator {
+  id: string;
+  photo?: (string | null) | Mediacollaborator;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  fullname?: string | null;
+  name: string;
+  paternallastname: string;
+  motherlastname: string;
+  civilstatus: string | Civilstatus;
+  genre: string | Genre;
+  datebirth?: string | null;
+  nationality: string | Country;
+  contactinformation: {
+    departamento: string | Departamento;
+    provincia: string | Provincia;
+    distrito: string | Distrito;
+    address: string;
+    numbermovil: string;
+    email?: string | null;
+  };
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacollaborator".
+ */
+export interface Mediacollaborator {
+  id: string;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "civilstatus".
+ */
+export interface Civilstatus {
+  id: string;
+  civilstatus: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genre".
+ */
+export interface Genre {
+  id: string;
+  genre: string;
+  status: 'active' | 'inactive';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "country".
+ */
+export interface Country {
+  id: string;
+  country: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "departamento".
+ */
+export interface Departamento {
+  id: string;
+  codigo: string;
+  departamento: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "provincia".
+ */
+export interface Provincia {
+  id: string;
+  departamento: string | Departamento;
+  codigoprovincia: string;
+  provincia: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "distrito".
+ */
+export interface Distrito {
+  id: string;
+  provincia: string | Provincia;
+  ubigeo: string;
+  distrito: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "role".
+ */
+export interface Role {
+  id: string;
+  name: string;
+  /**
+   * Define qué operaciones puede realizar este rol en cada módulo.
+   */
+  permissions: {
+    modulesystem?: (string | Modulesystem)[] | null;
+    operation: string;
+    canAccess: boolean;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "modulesystem".
+ */
+export interface Modulesystem {
+  id: string;
+  modulename: string;
+  slug: string;
+  operations?:
+    | {
+        slug: string;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacompany".
+ */
+export interface Mediacompany {
+  id: string;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplier".
+ */
+export interface Supplier {
+  id: string;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  namesupplier: string;
+  namedocument?: string | null;
+  suppliercontact?: (string | Suppliercontact)[] | null;
+  addresses?: (string | Supplieraddress)[] | null;
+  supplieraccount?: (string | Supplierbankaccount)[] | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliercontact".
+ */
+export interface Suppliercontact {
+  id: string;
+  supplier: string | Supplier;
+  namesuppliercontact: string;
+  jobposition: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplieraddress".
+ */
+export interface Supplieraddress {
+  id: string;
+  supplier: string | Supplier;
+  sede: string;
+  address: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplierbankaccount".
+ */
+export interface Supplierbankaccount {
+  id: string;
+  supplier: string | Supplier;
+  fullaccountbank?: string | null;
+  abbreviationaccountbank?: string | null;
+  typebank: string | Typebank;
+  typeaccount: string | Typeaccount;
+  typecurrency: string | Typecurrency;
+  accountnumber: string;
+  cci?: string | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typebank".
+ */
+export interface Typebank {
+  id: string;
+  bankname: string;
+  abbreviatedname: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeaccount".
+ */
+export interface Typeaccount {
+  id: string;
+  typeaccount: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typecurrency".
+ */
+export interface Typecurrency {
+  id: string;
+  typecurrency: string;
+  symbol: string;
+  codecurrency: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brand".
+ */
+export interface Brand {
+  id: string;
+  brand: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "model".
+ */
+export interface Model {
+  id: string;
+  brand: string | Brand;
+  model: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "version".
+ */
+export interface Version {
+  id: string;
+  model: string | Model;
+  version: string;
+  modelversion?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "color".
+ */
+export interface Color {
+  id: string;
+  color: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fuel".
+ */
+export interface Fuel {
+  id: string;
+  fuel: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeuse".
+ */
+export interface Typeuse {
+  id: string;
+  typeuse: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchase".
+ */
+export interface Mediapurchase {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasetransportation".
+ */
+export interface Purchasetransportation {
+  id: string;
+  purchase: string | Purchase;
+  optionsplate?: ('interna' | 'externa' | 'sin placa') | null;
+  internalplates?: (string | null) | Internalplate;
+  externalplates?: (string | null) | Externalplate;
+  driver?: (string | null) | Driver;
+  departuredate?: string | null;
+  departuredate_tz?: SupportedTimezones;
+  placeorigin?: (string | null) | Supplieraddress;
+  establishment?: (string | null) | Establishment;
+  transportationfiles?:
+    | {
+        mediatransportation: string | Mediapurchasetransportation;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Tipo de cambio para convertir gastos de PEN a USD.
+   */
+  exchangerate?: number | null;
+  expenselist?:
+    | {
+        conceptexpense: string | Expense;
+        typecurrency: string | Typecurrency;
+        expensevalue: number;
+        observationsexpense?: string | null;
+        mediaexpense?: (string | null) | Mediapurchasetransportation;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Suma total de gastos de traslado, redondeada a 2 decimales.
+   */
+  totalExpensesPEN?: number | null;
+  /**
+   * Suma total de gastos convertidos a dólares americanos (USD), usando el campo exchangerate
+   */
+  totalExpensesUSD?: number | null;
+  observations?: string | null;
+  status?: ('en transito' | 'completado' | 'cancelado') | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internalplates".
+ */
+export interface Internalplate {
+  id: string;
+  platenumber: string;
+  company: string | Company;
+  /**
+   * Para la adquisición de placas de exhibición es necesario realizar pagos de garantía además de los pagos por el uso anual de la placa
+   */
+  acquisitioninformation: {
+    dateacquisition: string;
+    typepaymentwarranty: string | Typepayment;
+    typecurrencywarranty: string | Typecurrency;
+    warrantyvalue: string;
+    observations?: string | null;
+    acquisitionfiles: {
+      mediaacquisition: string | Mediainternalplate;
+      id?: string | null;
+    }[];
+  };
+  perioduse: {
+    statususe: 'activo' | 'inactivo';
+    startinitial: string;
+    endinitial?: string | null;
+    typepaymentperiod: string | Typepayment;
+    typecurrencyperiodo: string | Typecurrency;
+    periodvalue: string;
+    observationsperiod?: string | null;
+    mediaperiodpayment: string | Mediainternalplate;
+    listcostaditional?:
+      | {
+          costdate: string;
+          costconcept: string;
+          typecurrencycost: string | Typecurrency;
+          exchangerate: string;
+          costvalue: string;
+          mediacost: string | Mediainternalplate;
+          observationscost?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  cancellation?: {
+    cancellationdate?: string | null;
+    motivecancellation?: (string | null) | Motivecancellationinternalplate;
+    returndate?: string | null;
+    typepaymentreturn?: (string | null) | Typepayment;
+    mediareturn?: (string | null) | Mediainternalplate;
+    observationsreturn?: string | null;
+  };
+  status: 'liberada' | 'asignada';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typepayment".
+ */
+export interface Typepayment {
+  id: string;
+  typepayment: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainternalplates".
+ */
+export interface Mediainternalplate {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationinternalplates".
+ */
+export interface Motivecancellationinternalplate {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalplates".
+ */
+export interface Externalplate {
+  id: string;
+  platenumber: string;
+  typeplate: 'exhibicion' | 'rotativa';
+  ownerexternalplates: string | Ownerexternalplate;
+  observations?: string | null;
+  status: 'liberada' | 'asignada';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ownerexternalplates".
+ */
+export interface Ownerexternalplate {
+  id: string;
+  owner: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "driver".
+ */
+export interface Driver {
+  id: string;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  fullname: string;
+  namelicense?: string | null;
+  licensenumber: string;
+  contactinformation: {
+    departamento: string | Departamento;
+    provincia: string | Provincia;
+    distrito: string | Distrito;
+    address: string;
+    numbermovil: string;
+    email?: string | null;
+  };
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "establishment".
+ */
+export interface Establishment {
+  id: string;
+  establishmentname: string;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  numbermovil: string;
+  email?: string | null;
+  company: (string | Company)[];
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchasetransportation".
+ */
+export interface Mediapurchasetransportation {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expense".
+ */
+export interface Expense {
+  id: string;
+  expense: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasecancellation".
+ */
+export interface Purchasecancellation {
+  id: string;
+  purchase: string | Purchase;
+  cancellationdate?: string | null;
+  cancellationdate_tz?: SupportedTimezones;
+  motivecancellationpurchase?: (string | null) | Motivecancellationpurchase;
+  purchasecancellationfiles?:
+    | {
+        mediapurchasecancellation?: (string | null) | Mediapurchasecancellation;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Suma total de los reembolsos asociados a esta cancelación.
+   */
+  totalRefunded?: number | null;
+  /**
+   * Devoluciones asociadas a esta cancelación.
+   */
+  purchaserefund?: (string | Purchaserefund)[] | null;
+  statuscreditnote: 'pendiente' | 'no aplicable' | 'registrada';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationpurchase".
+ */
+export interface Motivecancellationpurchase {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchasecancellation".
+ */
+export interface Mediapurchasecancellation {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchaserefund".
+ */
+export interface Purchaserefund {
+  id: string;
+  purchasecancellation: string | Purchasecancellation;
+  refunddate?: string | null;
+  refunddate_tz?: SupportedTimezones;
+  refundamount: number;
+  typepayment: string | Typepayment;
+  purchaserefundfiles?:
+    | {
+        mediapurchaserefund?: (string | null) | Mediapurchaserefund;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchaserefund".
+ */
+export interface Mediapurchaserefund {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasepayment".
+ */
+export interface Purchasepayment {
+  id: string;
+  purchase: string | Purchase;
+  paymentdate: string;
+  paymentdate_tz: SupportedTimezones;
+  typepayment: string | Typepayment;
+  typecurrency: string | Typecurrency;
+  monetaryvalue: number;
+  supplierbankaccount?: (string | null) | Supplierbankaccount;
+  operationnumber?: string | null;
+  observations?: string | null;
+  mediapayment?: (string | null) | Mediapurchasepayment;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchasepayment".
+ */
+export interface Mediapurchasepayment {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchaseinvoice".
+ */
+export interface Purchaseinvoice {
+  id: string;
+  purchase: string | Purchase;
+  /**
+   * Al elegir esta opción, solo se registrarán los datos de identificación del vehículo.La información del comprobante de compra no será guardada, pues este no es aplicable.
+   */
+  noreceipt?: boolean | null;
+  typereceipt?: (string | null) | Typereceipt;
+  receiptnumber?: string | null;
+  receiptdate?: string | null;
+  receiptdate_tz?: SupportedTimezones;
+  vehicle: {
+    vin: string;
+    motor: string;
+  };
+  invoicefiles?:
+    | {
+        mediainvoice?: (string | null) | Mediapurchaseinvoice;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typereceipt".
+ */
+export interface Typereceipt {
+  id: string;
+  codereceipt: string;
+  typereceipt: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchaseinvoice".
+ */
+export interface Mediapurchaseinvoice {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasereceptions".
+ */
+export interface Purchasereception {
+  id: string;
+  /**
+   * Compra a la que pertenece esta recepción
+   */
+  purchase: string | Purchase;
+  /**
+   * Traslado que se utilizó para transportar este vehículo
+   */
+  transportation?: (string | null) | Purchasetransportation;
+  datereception: string;
+  datereception_tz: SupportedTimezones;
+  warehouse?: (string | null) | Warehouse;
+  receivedby?: (string | null) | Collaborator;
+  observations?: string | null;
+  vehicle: {
+    brand: string | Brand;
+    model: string | Model;
+    version: string | Version;
+    color: string | Color;
+    yearmanufacture?: number | null;
+    yearmodel: number;
+    vin: string;
+    motor: string;
+    cylindercapacity: number;
+    fuel: string | Fuel;
+    transmission: string | Transmission;
+    traction: string | Traction;
+    carbody: string | Carbody;
+    category: string | Category;
+    seat: number;
+    rimnumber: number;
+    typerim: string | Typerim;
+    mileage?: string | null;
+    vehiclekey?: number | null;
+    licensePlatesNumber?: string | null;
+    licensePlateUsageType?: (string | null) | Typeuse;
+  };
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "warehouse".
+ */
+export interface Warehouse {
+  id: string;
+  establishment: string | Establishment;
+  warehousename: string;
+  address: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transmission".
+ */
+export interface Transmission {
+  id: string;
+  transmission: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "traction".
+ */
+export interface Traction {
+  id: string;
+  traction: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carbody".
+ */
+export interface Carbody {
+  id: string;
+  carbody: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category".
+ */
+export interface Category {
+  id: string;
+  category: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typerim".
+ */
+export interface Typerim {
+  id: string;
+  typerim: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inventory".
+ */
+export interface Inventory {
+  id: string;
+  quantity: number;
+  vehicle: string | Vehicle;
+  /**
+   * Vínculo al documento donde se registró la recepción del vehículo
+   */
+  purchaseReception: string | Purchasereception;
+  transactionDate?: string | null;
+  dealership: string | Company;
+  status: 'En Stock' | 'Reservado' | 'En Tránsito' | 'Vendido';
+  operation: 'Compra' | 'Venta';
+  /**
+   * Ubicación del vehículo (o "Entregado al cliente" si está entregado)
+   */
+  location: string | Warehouse;
+  /**
+   * Precio de venta para este vehículo.
+   */
+  priceAssignment?: (string | null) | Priceassignment;
+  /**
+   * Lista de precios activa para este vehículo.
+   */
+  activePricelist?: (string | Pricelist)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicle".
+ */
+export interface Vehicle {
+  id: string;
+  purchaseReception?: (string | null) | Purchasereception;
+  brand: string | Brand;
+  model: string | Model;
+  version: string | Version;
+  color: string | Color;
+  yearmanufacture?: number | null;
+  yearmodel: number;
+  vin: string;
+  motor: string;
+  cylindercapacity: number;
+  fuel: string | Fuel;
+  transmission: string | Transmission;
+  traction: string | Traction;
+  carbody: string | Carbody;
+  category: string | Category;
+  seat: number;
+  rimnumber: number;
+  typerim: string | Typerim;
+  referenceimage?: (string | null) | Mediareferenceimage;
+  galleryfiles?:
+    | {
+        mediagallery: string | Mediagallery;
+        id?: string | null;
+      }[]
+    | null;
+  vehicle?: string | null;
+  conditionvehicle: {
+    condition: 'Nuevo' | 'Usado';
+    mileage?: string | null;
+    note?: string | null;
+  };
+  equipmentbasic?: {
+    vehiclekey?: number | null;
+    basicequipment?: (string | Basicequipment)[] | null;
+  };
+  internalequipment: {
+    internalequipment?: (string | Internalequipment)[] | null;
+    internaladitional?:
+      | {
+          internaldate: string;
+          internaldate_tz: SupportedTimezones;
+          internalequipment: string | Internalequipment;
+          typecurrencyinternal: string | Typecurrency;
+          exchangerateinternal?: number | null;
+          internalvalue: number;
+          mediainternalequipment?: (string | null) | Mediaequipment;
+          observationsinternal?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    totalExpenseInUSD: number;
+    totalExpenseInPEN: number;
+  };
+  externalequipment: {
+    externalequipment?: (string | Externalequipment)[] | null;
+    externaladitional?:
+      | {
+          externaldate: string;
+          externaldate_tz: SupportedTimezones;
+          externalequipment: string | Externalequipment;
+          typecurrencyexternal: string | Typecurrency;
+          exchangerateexternal?: number | null;
+          externalvalue: number;
+          mediaexternalequipment?: (string | null) | Mediaequipment;
+          observationsexternal?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    totalExpenseExUSD: number;
+    totalExpenseExPEN: number;
+  };
+  vehicleRegistration?: {
+    vehicleRegistrationProcedure?: (string | null) | Vehicleregistrationprocedure;
+    vehicleTitleTransferProcedure?: (string | null) | Vehicletitletransferprocedure;
+  };
+  /**
+   * Esta sección debe ser llenada unicamente cuando el vehículo tiene la condición de USADO
+   */
+  tive?: {
+    mediative?: (string | null) | Mediative;
+  };
+  licensePlates?: {
+    licensePlatesNumber?: string | null;
+    licensePlateUsageType?: (string | null) | Typeuse;
+    licensePlateIssuanceProcedure?: (string | null) | Licenseplateissuanceprocedure;
+  };
+  procedureothers?: {
+    proceduresunarp?: (string | Proceduresunarp)[] | null;
+    procedureaap?: (string | Procedureaap)[] | null;
+  };
+  observations?: string | null;
+  assignmentgps?: (string | Assignmentgp)[] | null;
+  expenseaditional?: (string | Expenseaditionalvehicle)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareferenceimage".
+ */
+export interface Mediareferenceimage {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediagallery".
+ */
+export interface Mediagallery {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "basicequipment".
+ */
+export interface Basicequipment {
+  id: string;
+  basicequipment: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internalequipment".
+ */
+export interface Internalequipment {
+  id: string;
+  internalequipment: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaequipment".
+ */
+export interface Mediaequipment {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalequipment".
+ */
+export interface Externalequipment {
+  id: string;
+  externalequipment: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicleregistrationprocedure".
+ */
+export interface Vehicleregistrationprocedure {
+  id: string;
+  vehicle: string | Vehicle;
+  optionsprocedure?: ('procedureprovider' | 'procedurecompany') | null;
+  startdate: string;
+  startdate_tz: SupportedTimezones;
+  /**
+   * Esta sección será completada unicamente si el trámite será realizado por la empresa compradora de la unidad vehicular
+   */
+  procedurecompany?: {
+    registryofficeprocedure: string | Registryofficeprocedure;
+    titlenumber?: string | null;
+    registrationprocessor?: (string | null) | Registrationprocessor;
+  };
+  expenselist?:
+    | {
+        expensedate: string;
+        expensedate_tz: SupportedTimezones;
+        conceptexpense: string | Expenseproceduresunarp;
+        typecurrency: string | Typecurrency;
+        expensevalue: string;
+        mediaexpenseproceduresunarp?: (string | null) | Mediaexpenseproceduresunarp;
+        observations?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  registrationprocedurefiles?:
+    | {
+        mediaprocedureregistration: string | Mediaprocedureregistration;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Esta sección será completada unicamente si el trámite haya finalizado
+   */
+  procedurefinish?: {
+    enddate?: string | null;
+    enddate_tz?: SupportedTimezones;
+    licenseplate?: string | null;
+    licensePlateUsageType?: (string | null) | Typeuse;
+    mediaregistration?: (string | null) | Mediaregistration;
+    mediative?: (string | null) | Mediative;
+  };
+  status: 'En proceso' | 'Inscrito' | 'Tachado' | 'Cancelado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "registryofficeprocedure".
+ */
+export interface Registryofficeprocedure {
+  id: string;
+  registryofficeprocedure: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "registrationprocessor".
+ */
+export interface Registrationprocessor {
+  id: string;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  fullname: string;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseproceduresunarp".
+ */
+export interface Expenseproceduresunarp {
+  id: string;
+  expense: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpenseproceduresunarp".
+ */
+export interface Mediaexpenseproceduresunarp {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaprocedureregistration".
+ */
+export interface Mediaprocedureregistration {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaregistration".
+ */
+export interface Mediaregistration {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediative".
+ */
+export interface Mediative {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicletitletransferprocedure".
+ */
+export interface Vehicletitletransferprocedure {
+  id: string;
+  vehicle: string | Vehicle;
+  startdate: string;
+  startdate_tz: SupportedTimezones;
+  notary: string | Notary;
+  expenselist?:
+    | {
+        expensedate: string;
+        expensedate_tz: SupportedTimezones;
+        conceptexpense: string | Expenseproceduretitletransfer;
+        typecurrency: string | Typecurrency;
+        expensevalue: number;
+        mediaproceduretitletransfer?: (string | null) | Mediaproceduretitletransfer;
+        observations?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  registrationprocedurefiles?:
+    | {
+        mediaproceduretitletransfer: string | Mediaproceduretitletransfer;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Esta sección será completada unicamente si el trámite haya finalizado
+   */
+  procedurefinish?: {
+    enddate?: string | null;
+    enddate_tz?: SupportedTimezones;
+    mediaregistration?: (string | null) | Mediaregistration;
+    mediative?: (string | null) | Mediative;
+  };
+  status: 'En proceso' | 'Inscrito' | 'Tachado' | 'Cancelado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notary".
+ */
+export interface Notary {
+  id: string;
+  ruc?: string | null;
+  notaryname: string;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseproceduretitletransfer".
+ */
+export interface Expenseproceduretitletransfer {
+  id: string;
+  expense: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaproceduretitletransfer".
+ */
+export interface Mediaproceduretitletransfer {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licenseplateissuanceprocedure".
+ */
+export interface Licenseplateissuanceprocedure {
+  id: string;
+  vehicleregistration: string | Vehicleregistrationprocedure;
+  optionsprocedure?: ('procedureprovider' | 'procedurecompany') | null;
+  startdate?: string | null;
+  startdate_tz?: SupportedTimezones;
+  /**
+   * Esta sección será completada unicamente si el trámite será realizado por la empresa compradora de la unidad vehicular
+   */
+  procedurecompany?: {
+    registryofficeprocedure?: (string | null) | Registryofficeprocedure;
+    mediaprocedureaap?: (string | null) | Mediaprocedureaap;
+  };
+  expenselist?:
+    | {
+        expensedate: string;
+        expensedate_tz: SupportedTimezones;
+        conceptexpense: string | Expenseprocedureaap;
+        typecurrency: string | Typecurrency;
+        expensevalue: string;
+        expenseAAPfiles?:
+          | {
+              mediaexpenseprocedureaap: string | Mediaexpenseprocedureaap;
+              id?: string | null;
+            }[]
+          | null;
+        observations?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Esta sección será completada unicamente si el trámite haya finalizado
+   */
+  procedurefinish?: {
+    enddate?: string | null;
+    enddate_tz?: SupportedTimezones;
+    registrationprocessor?: (string | null) | Registrationprocessor;
+  };
+  status: 'Pendiente' | 'Pago pendiente' | 'Trámite en proceso' | 'Recibido';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaprocedureaap".
+ */
+export interface Mediaprocedureaap {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseprocedureaap".
+ */
+export interface Expenseprocedureaap {
+  id: string;
+  expense: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpenseprocedureaap".
+ */
+export interface Mediaexpenseprocedureaap {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "proceduresunarp".
+ */
+export interface Proceduresunarp {
+  id: string;
+  vehicle: string | Vehicle;
+  typeproceduresunarp: string | Typeproceduresunarp;
+  procedureconcept: string;
+  pregistryofficeprocedure: string | Registryofficeprocedure;
+  titlenumber?: string | null;
+  startdate?: string | null;
+  startdate_tz?: SupportedTimezones;
+  /**
+   * Si el colaborador no presenta el trámite, seleccione quién lo realiza; COMPRADOR o TERCERO
+   */
+  collaborator?: (string | null) | Collaborator;
+  expenselist?:
+    | {
+        expensedate: string;
+        expensedate_tz: SupportedTimezones;
+        conceptexpense: string | Expenseproceduresunarp;
+        typecurrency: string | Typecurrency;
+        expensevalue: string;
+        mediaexpenseproceduresunarp?: (string | null) | Mediaexpenseproceduresunarp;
+        observations?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  proceduredatafiles?:
+    | {
+        mediaprocedure: string | Mediaproceduresunarp;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Esta sección será completada unicamente si el trámite haya finalizado
+   */
+  procedurefinish?: {
+    enddate?: string | null;
+    enddate_tz?: SupportedTimezones;
+    mediaregistration?: (string | null) | Mediaregistration;
+    mediative?: (string | null) | Mediative;
+  };
+  status: 'En proceso' | 'Inscrito' | 'Tachado' | 'Cancelado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeproceduresunarp".
+ */
+export interface Typeproceduresunarp {
+  id: string;
+  typeprocedure: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaproceduresunarp".
+ */
+export interface Mediaproceduresunarp {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "procedureaap".
+ */
+export interface Procedureaap {
+  id: string;
+  vehicle: string | Vehicle;
+  typeprocedureaap: string | Typeprocedureaap;
+  procedureconcept: string;
+  pregistryofficeprocedure: string | Registryofficeprocedure;
+  paymentcode?: string | null;
+  startdate?: string | null;
+  expenselist?:
+    | {
+        expensedate: string;
+        expensedate_tz: SupportedTimezones;
+        conceptexpense: string | Expenseproceduresunarp;
+        typecurrency: string | Typecurrency;
+        expensevalue: string;
+        mediaexpenseproceduresunarp?: (string | null) | Mediaexpenseproceduresunarp;
+        observations?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  proceduredatafiles?:
+    | {
+        mediaprocedure: string | Mediaprocedureaap;
+        registrationprocessor?: (string | null) | Registrationprocessor;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Esta sección será completada unicamente si el trámite haya finalizado
+   */
+  procedurefinish?: {
+    enddate?: string | null;
+  };
+  status: 'activo' | 'inactivo';
+  processstatus: 'en proceso' | 'inscripto' | 'tachado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeprocedureaap".
+ */
+export interface Typeprocedureaap {
+  id: string;
+  typeprocedure: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "assignmentgps".
+ */
+export interface Assignmentgp {
+  id: string;
+  vehicle: string | Vehicle;
+  devicecode?: (string | null) | Devicegp;
+  /**
+   * Completar campo si el tipo de GPS seleccionado es Sinotrack
+   */
+  numbersim?: (string | null) | Cardsim;
+  gpsfiles?:
+    | {
+        mediagps: string | Mediagp;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  statusassignment: 'vigente' | 'no vigente';
+  statusinstallation: 'pendiente' | 'instalado';
+  installationgps?: (string | null) | Installationgp;
+  periodusegps?: (string | null) | Periodusegp;
+  gpscancellation?: (string | null) | Gpscancellation;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "devicegps".
+ */
+export interface Devicegp {
+  id: string;
+  dateacquisition: string;
+  dateacquisition_tz: SupportedTimezones;
+  suppliergps?: (string | null) | Suppliergp;
+  typegps: string | Typegp;
+  typecurrency: string | Typecurrency;
+  exchangerate?: number | null;
+  pricepurchase: number;
+  typesino?: (string | null) | Typesino;
+  devicecode?: string | null;
+  imei?: string | null;
+  totalExpenseUSD: number;
+  totalExpensePEN: number;
+  observations?: string | null;
+  sku: string;
+  cancellation?: {
+    cancellationdate?: string | null;
+    motivecancellationgps?: (string | null) | Motivecancellationdevice;
+  };
+  status: 'disponible' | 'asignado' | 'en uso' | 'uso finalizado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliergps".
+ */
+export interface Suppliergp {
+  id: string;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  namesupplier: string;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  numbermovil?: string | null;
+  email?: string | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typegps".
+ */
+export interface Typegp {
+  id: string;
+  typegps: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typesino".
+ */
+export interface Typesino {
+  id: string;
+  typesino: string;
+  image?: (string | null) | Mediatypesino;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediatypesino".
+ */
+export interface Mediatypesino {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationdevice".
+ */
+export interface Motivecancellationdevice {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cardsim".
+ */
+export interface Cardsim {
+  id: string;
+  dateacquisition: string;
+  dateacquisition_tz: SupportedTimezones;
+  ownersim: string | Ownersim;
+  typeoperator: string | Typeoperator;
+  codesim: string;
+  numbersim?: string | null;
+  typecurrency: string | Typecurrency;
+  exchangerate?: number | null;
+  pricepurchase: number;
+  totalExpenseUSD: number;
+  totalExpensePEN: number;
+  observations?: string | null;
+  cancellation?: {
+    cancellationdate?: string | null;
+    motivecancellationgps?: (string | null) | Motivecancellationdevice;
+  };
+  status: 'disponible' | 'asignado' | 'en uso' | 'uso finalizado' | 'averiado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ownersim".
+ */
+export interface Ownersim {
+  id: string;
+  typeidentificationdocument?: (string | null) | Typeidentificationdocument;
+  identificationnumber?: string | null;
+  fullname: string;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address?: string | null;
+  numbermovil: string;
+  email?: string | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeoperator".
+ */
+export interface Typeoperator {
+  id: string;
+  typeoperator: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediagps".
+ */
+export interface Mediagp {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "installationgps".
+ */
+export interface Installationgp {
+  id: string;
+  assignmentgps?: (string | null) | Assignmentgp;
+  installationdate?: string | null;
+  installationdate_tz?: SupportedTimezones;
+  installergps?: (string | null) | Installergp;
+  warehouse?: (string | null) | Warehouse;
+  otherplaceinstallation?: (string | null) | Otherplaceinstallation;
+  typepayment?: (string | null) | Typepayment;
+  typecurrencypayment?: (string | null) | Typecurrency;
+  exchangerate?: number | null;
+  paymentvalue?: number | null;
+  mediainstallation?: (string | null) | Mediainstallation;
+  observations?: string | null;
+  totalExpenseUSD: number;
+  totalExpensePEN: number;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "installergps".
+ */
+export interface Installergp {
+  id: string;
+  typeidentificationdocument?: (string | null) | Typeidentificationdocument;
+  identificationnumber?: string | null;
+  nameinstaller: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "otherplaceinstallation".
+ */
+export interface Otherplaceinstallation {
+  id: string;
+  placename: string;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainstallation".
+ */
+export interface Mediainstallation {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "periodusegps".
+ */
+export interface Periodusegp {
+  id: string;
+  assignmentgps?: (string | null) | Assignmentgp;
+  periodgps: 'mensual' | 'anual';
+  typeresponsible: 'comprador' | 'proveedor';
+  observations?: string | null;
+  renewalsgps?: (string | Renewalsgp)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "renewalsgps".
+ */
+export interface Renewalsgp {
+  id: string;
+  periodusegps?: (string | null) | Periodusegp;
+  startdate: string;
+  startdate_tz: SupportedTimezones;
+  /**
+   * Fecha de finalización calculada automáticamente
+   */
+  enddate?: string | null;
+  enddate_tz?: SupportedTimezones;
+  typecurrency: string | Typecurrency;
+  renewalvalue: string;
+  collaborator?: (string | null) | Collaborator;
+  mediarenewal?: (string | null) | Mediarenewal;
+  observations?: string | null;
+  statusrenewal: 'vigente' | 'vencido' | 'por vencer' | 'finalizado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediarenewal".
+ */
+export interface Mediarenewal {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gpscancellation".
+ */
+export interface Gpscancellation {
+  id: string;
+  assignmentgps: string | Assignmentgp;
+  cancellationdate?: string | null;
+  cancellationdate_tz?: SupportedTimezones;
+  motivecancellationgps?: (string | null) | Motivecancellationgp;
+  gpscancellationfiles?:
+    | {
+        mediagpscancellation?: (string | null) | Mediagpscancellation;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationgps".
+ */
+export interface Motivecancellationgp {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediagpscancellation".
+ */
+export interface Mediagpscancellation {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseaditionalvehicle".
+ */
+export interface Expenseaditionalvehicle {
+  id: string;
+  vehicle: string | Vehicle;
+  dateexpense: string;
+  expenseconcept: string;
+  typecurrency: string | Typecurrency;
+  exchangerate?: number | null;
+  expensevalue: number;
+  expensefiles?:
+    | {
+        mediaexpensevehicle?: (string | null) | Mediaexpensevehicle;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  totalExpenseUSD: number;
+  totalExpensePEN: number;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpensevehicle".
+ */
+export interface Mediaexpensevehicle {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "priceassignment".
+ */
+export interface Priceassignment {
+  id: string;
+  /**
+   * Seleccione el vehículo único a precificar.
+   */
+  inventoryItem: string | Inventory;
+  /**
+   * Moneda del costo de compra (tomada de la compra o seleccionada manualmente).
+   */
+  currency: string | Typecurrency;
+  /**
+   * Costo de compra en la moneda seleccionada, ingresado manualmente.
+   */
+  purchaseCost: number;
+  /**
+   * Importado desde PurchaseTransportation, en USD. Pero ingresado manualmente en el Frontend
+   */
+  transportCost?: number | null;
+  /**
+   * Suma de compra + traslado + GPS, redondeado a 2 decimales.
+   */
+  totalCost: number;
+  /**
+   * Porcentaje aplicado sobre el costo total.
+   */
+  profitMargin?: number | null;
+  /**
+   * Calculado automáticamente o ingresado manualmente, redondeado a 2 decimales.
+   */
+  suggestedPrice: number;
+  status: 'draft' | 'active' | 'archived';
+  /**
+   * Notas sobre ajustes manuales en el precio.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricelists".
+ */
+export interface Pricelist {
+  id: string;
+  displayName?: string | null;
+  /**
+   * Vehículo al que se aplica el precio.
+   */
+  vehicle: string | Vehicle;
+  /**
+   * Fecha hasta la cual el precio es válido (opcional).
+   */
+  validityDate?: string | null;
+  /**
+   * Ej. "Retail", "Mayorista", "Promoción".
+   */
+  pricelistName: string;
+  /**
+   * Moneda del precio
+   */
+  currency: string | Typecurrency;
+  /**
+   * Precio del vehículo en la moneda seleccionada, redondeado a 2 decimales.
+   */
+  price: number;
+  /**
+   * Tasa de cambio a USD (ej. 0.27 para PEN, 1 para USD). Ingresar manualmente o vía API externa.
+   */
+  exchangeRate: number;
+  /**
+   * Notas sobre esta lista de precios.
+   */
+  notes?: string | null;
+  status: 'active' | 'inactive';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "movements".
+ */
+export interface Movement {
+  id: string;
+  vehicle: string | Vehicle;
+  company?: (string | null) | Company;
+  movementdate: string;
+  typemovement: 'entrada' | 'salida';
+  motivemovement: string;
+  warehouse?: (string | null) | Warehouse;
+  status?: ('activo' | 'cancelado') | null;
+  relocationId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "relocation".
+ */
+export interface Relocation {
+  id: string;
+  vehicle: string | Vehicle;
+  optionsplate?: ('interna' | 'externa' | 'sin placa') | null;
+  internalplates?: (string | null) | Internalplate;
+  externalplates?: (string | null) | Externalplate;
+  driver: string | Driver;
+  exitdate: string;
+  exitdate_tz: SupportedTimezones;
+  establishment?: (string | null) | Establishment;
+  relocationfiles?:
+    | {
+        mediarelocation: string | Mediarelocation;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Tipo de cambio para convertir gastos de PEN a USD.
+   */
+  exchangerate?: number | null;
+  expenselist?:
+    | {
+        conceptexpense: string | Expense;
+        typecurrency: string | Typecurrency;
+        expensevalue: string;
+        observationsexpense?: string | null;
+        mediaexpense?: (string | null) | Mediarelocation;
+        id?: string | null;
+      }[]
+    | null;
+  status: 'en transito' | 'recepcionada' | 'anulado';
+  warehouseorigin?: (string | null) | Warehouse;
+  receptionrelocation?: (string | null) | Receptionrelocation;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediarelocation".
+ */
+export interface Mediarelocation {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "receptionrelocation".
+ */
+export interface Receptionrelocation {
+  id: string;
+  relocation: string | Relocation;
+  arrivaldate?: string | null;
+  arrivaldate_tz?: SupportedTimezones;
+  warehouseincoming?: (string | null) | Warehouse;
+  receivedby?: (string | null) | Collaborator;
+  observations?: string | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "relocationwarehouses".
+ */
+export interface Relocationwarehouse {
+  id: string;
+  vehicle: string | Vehicle;
+  movementdate: string;
+  movementdate_tz: SupportedTimezones;
+  warehousedestination: string | Warehouse;
+  driver: string | Driver;
+  observations?: string | null;
+  warehouseorigin?: (string | null) | Warehouse;
+  status: 'activo' | 'cancelado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationcardsim".
+ */
+export interface Motivecancellationcardsim {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediavehicle".
+ */
+export interface Mediavehicle {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaplates".
+ */
+export interface Mediaplate {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "buyer".
+ */
+export interface Buyer {
+  id: string;
+  mediabuyer?: (string | null) | Mediabuyer;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  fullname?: string | null;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  numbermovil: string;
+  email?: string | null;
+  activity: string | Activity;
+  /**
+   * Completar información en esta sección si el comprador es PERSONA NATURAL, es decir, si el tipo de documento del comprador que se está registrando es un DNI
+   */
+  natural?: {
+    civilstatus?: (string | null) | Civilstatus;
+    spouse?: {
+      dnispouse?: number | null;
+      fullnamespouse?: string | null;
+    };
+  };
+  /**
+   * Completar información en esta sección si el comprador es PERSONA JURÍDICA, es decir, si el tipo de documento del comprador que se está registrando es un RUC
+   */
+  juridical?: {
+    statuscontributor?: ('activo' | 'inactivo') | null;
+    conditioncontributor?: ('habido' | 'no habido') | null;
+  };
+  contacts?:
+    | {
+        fullnamecontact: string;
+        numbermovil: string;
+        relation: string;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  rating: 'Excelente' | 'Bueno' | 'Regular' | 'Malo' | 'Muy malo' | 'Ninguno';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediabuyer".
+ */
+export interface Mediabuyer {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activity".
+ */
+export interface Activity {
+  id: string;
+  activity: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internal-sales".
+ */
+export interface InternalSale {
+  id: string;
+  vehicle: string | Vehicle;
+  company: string | Company;
+  saledate: string;
+  saledate_tz: SupportedTimezones;
+  typecurrency: string | Typecurrency;
+  pricesale: number;
+  exchargerate: number;
+  companyCustomer: string | Company;
+  internalsalefiles?:
+    | {
+        mediainternalsale?: (string | null) | Mediainternalsale;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  statusReceipt: 'pendiente' | 'generado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainternalsale".
+ */
+export interface Mediainternalsale {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "finalsale".
+ */
+export interface Finalsale {
+  id: string;
+  saledate: string;
+  saledate_tz: SupportedTimezones;
+  typesale: 'contado' | 'crédito';
+  typecurrency: string | Typecurrency;
+  exchangerate: number;
+  customer: (string | Buyer)[];
+  vehicle: string | Vehicle;
+  pricesale: number;
+  /**
+   * Esta sección debe ser llenado exclusivamente para ventas al contado.
+   */
+  paymentList: {
+    paymentdate: string;
+    paymentdate_tz: SupportedTimezones;
+    typepayment: string | Typepayment;
+    typecurrencyreceived: string | Typecurrency;
+    valuereceived: number;
+    accountcompany?: (string | null) | Accountcompany;
+    operationnumber?: number | null;
+    mediavoucher?: (string | null) | Mediasale;
+    observationspayment?: string | null;
+    id?: string | null;
+  }[];
+  salefiles?:
+    | {
+        mediasale: string | Mediasale;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  initialPayment?: number | null;
+  interestRate?: number | null;
+  /**
+   * Al cambiar, se regenerará el cronograma completo (solo si no hay pagos).
+   */
+  termMonths?: number | null;
+  creditStartDate?: string | null;
+  creditStartDate_tz: SupportedTimezones;
+  amountToFinance?: number | null;
+  monthlyPayment?: number | null;
+  creditPlan?: (string | null) | Creditplan;
+  status: 'activo' | 'completado' | 'pendiente' | 'anulado';
+  statusreceipt: 'pendiente' | 'emitido' | 'no aplicable';
+  collaborator?: (string | null) | Collaborator;
+  salereservation?: (string | null) | Salereservation;
+  saleorder?: (string | null) | Saleorder;
+  salehomewarranty?: (string | null) | Salehomewarranty;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accountcompany".
+ */
+export interface Accountcompany {
+  id: string;
+  company: string | Company;
+  typebank: string | Typebank;
+  typeaccount: string | Typeaccount;
+  typecurrency: string | Typecurrency;
+  accountnumber: string;
+  cci?: string | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  fullaccountbank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediasale".
+ */
+export interface Mediasale {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creditplan".
+ */
+export interface Creditplan {
+  id: string;
+  creditPlanNumber: string;
+  finalSale?: (string | null) | Finalsale;
+  amountToFinance: number;
+  monthlyPayment: number;
+  startDate: string;
+  termMonths: number;
+  interestRate: number;
+  /**
+   * Plan del que proviene este (si fue refinanciado)
+   */
+  parentPlan?: (string | null) | Creditplan;
+  /**
+   * Planes generados a partir de este
+   */
+  refinancedPlans?: (string | Creditplan)[] | null;
+  refinancingReason?: ('mora' | 'mejor_tasa' | 'extension_plazo' | 'otro') | null;
+  totalPaid: number;
+  remainingBalance?: number | null;
+  /**
+   * Tasa diaria de mora (ej: 0.01 = 1%)
+   */
+  lateFeeRate?: number | null;
+  status?: ('activo' | 'refinanciado' | 'reprogramado' | 'completado' | 'moroso' | 'cancelado') | null;
+  installments?: (string | Creditinstallment)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creditinstallment".
+ */
+export interface Creditinstallment {
+  id: string;
+  installmentNumber: number;
+  dueDate: string;
+  paidDate?: string | null;
+  principal: number;
+  interest: number;
+  totalDue: number;
+  paidAmount?: number | null;
+  daysLate?: number | null;
+  lateFee?: number | null;
+  status: 'pendiente' | 'parcial' | 'pagada' | 'vencida';
+  creditPlan: string | Creditplan;
+  payments?: (string | Creditpayment)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creditpayment".
+ */
+export interface Creditpayment {
+  id: string;
+  paymentNumber: string;
+  paymentDate: string;
+  /**
+   * Selecciona una o más cuotas a pagar (pago parcial o múltiple)
+   */
+  installments: (string | Creditinstallment)[];
+  paymentMethods: {
+    typePayment: string | Typepayment;
+    amount: number;
+    typeCurrency: string | Typecurrency;
+    account?: (string | null) | Accountcompany;
+    operationNumber?: string | null;
+    voucher?: (string | null) | Mediasale;
+    id?: string | null;
+  }[];
+  totalPaid: number;
+  receipt?: (string | null) | Receiptcreditpayment;
+  status?: ('registrado' | 'aplicado' | 'revertido') | null;
+  observations?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "receiptcreditpayment".
+ */
+export interface Receiptcreditpayment {
+  id: string;
+  receiptNumber: string;
+  creditPayment: string | Creditpayment;
+  issueDate: string;
+  totalPaid: number;
+  appliedDetails: {
+    installment: string | Creditinstallment;
+    installmentNumber: number;
+    amountApplied: number;
+    statusBefore: string;
+    statusAfter: string;
+    id?: string | null;
+  }[];
+  paymentMethods: {
+    typePayment: string | Typepayment;
+    amount: number;
+    typeCurrency: string | Typecurrency;
+    account?: (string | null) | Accountcompany;
+    operationNumber?: string | null;
+    voucher?: (string | null) | Mediasale;
+    id?: string | null;
+  }[];
+  status: 'emitido' | 'anulado';
+  observations?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "salereservation".
+ */
+export interface Salereservation {
+  id: string;
+  datereservation: string;
+  collaborator: string | Collaborator;
+  buyers: {
+    buyer: string | Buyer;
+    id?: string | null;
+  }[];
+  vehicle: string | Vehicle;
+  pricesale: string;
+  condition: {
+    typesale?: ('contado' | 'crédito') | null;
+    typecurrency: string | Typecurrency;
+    exchargerate?: string | null;
+    /**
+     * Esta sección debe ser llenado exclusivamente para reservaciones con ventas al crédito
+     */
+    credit: {
+      nodownpayment?: boolean | null;
+      typecurrencydownpayment: string | Typecurrency;
+      downpaymentvalue: string;
+      periodpayment?: (string | null) | Periodpayment;
+      interest?: string | null;
+      quotanumber?: string | null;
+      quotavalue?: string | null;
+      observationcredit?: string | null;
+    };
+    observationcodition?: string | null;
+  };
+  /**
+   * En esta cláusula se establece la penalización aplicable en caso de resolución unilateral del contrato por parte del comprador
+   */
+  penalty: {
+    typecurrencypenalty: string | Typecurrency;
+    valuepenalty?: string | null;
+  };
+  /**
+   * Pagos realizados para reservar la unidad vehicular
+   */
+  listcost?:
+    | {
+        saledate: string;
+        typepayment: string | Typepayment;
+        typecurrencyreceived: string | Typecurrency;
+        exchargeratereceived: string;
+        valuereceived: string;
+        accountcompany: string | Accountcompany;
+        operationnumber: string;
+        mediacost?: (string | null) | Mediasale;
+        observationscost?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  reservationfiles?:
+    | {
+        mediareservation: string | Mediareservation;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  cancellation: {
+    cancellationdate?: string | null;
+    motivecancellationsale?: (string | null) | Motivecancellationsale;
+    penaltycollection: {
+      typecurrencypenaltycollection: string | Typecurrency;
+      exchargeratepenaltycollection: string;
+      valuepenaltycollection: string;
+      typepaymentpenaltycollection: string | Typepayment;
+      mediareturn?: (string | null) | Mediareservation;
+      mediareturnpenalty?: (string | null) | Mediareservation;
+      observationspenaltycollection?: string | null;
+    };
+    observationscancellation?: string | null;
+  };
+  status: 'en proceso' | 'venta realizada' | 'anulado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "periodpayment".
+ */
+export interface Periodpayment {
+  id: string;
+  periodpayment: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareservation".
+ */
+export interface Mediareservation {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationsale".
+ */
+export interface Motivecancellationsale {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saleorder".
+ */
+export interface Saleorder {
+  id: string;
+  dateorder: string;
+  collaborator: string | Collaborator;
+  buyers: {
+    buyer: string | Buyer;
+    id?: string | null;
+  }[];
+  vehicle: {
+    brand: string | Brand;
+    model: string | Model;
+    version: string | Version;
+    color: string | Color;
+    yeardmodel: string;
+    fuel: string | Fuel;
+    typecurrency: string | Typecurrency;
+    pricesale: string;
+  };
+  condition: {
+    typesale?: ('contado' | 'crédito') | null;
+    typecurrency: string | Typecurrency;
+    exchargerate?: string | null;
+    /**
+     * Esta sección debe ser llenado exclusivamente para pedidos con ventas al crédito
+     */
+    credit: {
+      nodownpayment?: boolean | null;
+      typecurrencydownpayment: string | Typecurrency;
+      downpaymentvalue: string;
+      periodpayment?: (string | null) | Periodpayment;
+      interest?: string | null;
+      quotanumber?: string | null;
+      quotavalue?: string | null;
+      observationcredit?: string | null;
+    };
+    observationcodition?: string | null;
+  };
+  /**
+   * En esta cláusula se establece la penalización aplicable en caso de resolución unilateral del contrato por parte del comprador
+   */
+  penalty: {
+    typecurrencypenalty: string | Typecurrency;
+    valuepenalty?: string | null;
+  };
+  /**
+   * Pagos realizados para pedido de la unidad vehicular
+   */
+  listcost?:
+    | {
+        saledate: string;
+        typepayment: string | Typepayment;
+        typecurrencyreceived: string | Typecurrency;
+        exchargeratereceived: string;
+        valuereceived: string;
+        accountcompany: string | Accountcompany;
+        operationnumber: string;
+        mediacost?: (string | null) | Mediasale;
+        observationscost?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  orderfiles?:
+    | {
+        mediaorder: string | Mediaordersale;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  cancellation: {
+    cancellationdate?: string | null;
+    motivecancellationsale?: (string | null) | Motivecancellationsale;
+    penaltycollection: {
+      typecurrencypenaltycollection: string | Typecurrency;
+      exchargeratepenaltycollection: string;
+      valuepenaltycollection: string;
+      typepaymentpenaltycollection: string | Typepayment;
+      mediareturn?: (string | null) | Mediaordersale;
+      mediareturnpenalty?: (string | null) | Mediaordersale;
+      observationspenaltycollection?: string | null;
+    };
+    observationscancellation?: string | null;
+  };
+  status: 'en proceso' | 'venta realizada' | 'anulado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaordersale".
+ */
+export interface Mediaordersale {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "salehomewarranty".
+ */
+export interface Salehomewarranty {
+  id: string;
+  datehomewarranty: string;
+  collaborator: string | Collaborator;
+  notary: string | Notary;
+  kardex: string;
+  folio: string;
+  typecurrency: string | Typecurrency;
+  valuemonetary: string;
+  homewarrantyfiles?:
+    | {
+        mediahomewarranty: string | Mediahomewarranty;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  warrantyrelease: {
+    datehomewarrantyrelease: string;
+    homewarrantyreleasefiles?:
+      | {
+          mediahomewarrantyrelease: string | Mediahomewarranty;
+          id?: string | null;
+        }[]
+      | null;
+    observationswarrantyrelease?: string | null;
+  };
+  status: 'en proceso' | 'vigente' | 'liberado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediahomewarranty".
+ */
+export interface Mediahomewarranty {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationreservation".
+ */
+export interface Motivecancellationreservation {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediasaledownpayment".
+ */
+export interface Mediasaledownpayment {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "receiptsale".
+ */
+export interface Receiptsale {
+  id: string;
+  finalsale?: (string | null) | Finalsale;
+  internalsales?: (string | null) | InternalSale;
+  issuedate?: string | null;
+  issuedate_tz?: SupportedTimezones;
+  typecurrency?: (string | null) | Typecurrency;
+  exchangerate?: number | null;
+  typereceipt?: (string | null) | Typereceipt;
+  receiptnumber?: string | null;
+  receiptvalue?: string | null;
+  mediareceipt?: (string | null) | Mediareceipt;
+  observations?: string | null;
+  cancellation?: {
+    cancellationdate?: string | null;
+    motivecancellationreceiptsale?: (string | null) | Motivecancellationreceiptsale;
+    typereceiptcancellation?: (string | null) | Typereceipt;
+    receiptnumbercancellation?: string | null;
+    mediareceiptcancellation?: (string | null) | Mediareceipt;
+    observationscancellation?: string | null;
+  };
+  status: 'pendiente' | 'generado' | 'no aplicable' | 'anulado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareceipt".
+ */
+export interface Mediareceipt {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationreceiptsale".
+ */
+export interface Motivecancellationreceiptsale {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicledelivery".
+ */
+export interface Vehicledelivery {
+  id: string;
+  finalsale?: (string | null) | Finalsale;
+  typedelivery: 'entrega-vehicular' | 'entrega-de-tive' | 'entrega-de-placas' | 'entrega-de-segunda-llave';
+  deliverydate?: string | null;
+  deliverydate_tz?: SupportedTimezones;
+  deliveryplace?: string | null;
+  vehicledeliveryfiles?:
+    | {
+        mediavehicledelivery?: (string | null) | Mediavehicledelivery;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  statusdelivery: 'pendiente' | 'entregado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediavehicledelivery".
+ */
+export interface Mediavehicledelivery {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transfersale".
+ */
+export interface Transfersale {
+  id: string;
+  finalsale?: (string | null) | Finalsale;
+  Internalsales?: (string | null) | InternalSale;
+  transferdate?: string | null;
+  transferdate_tz?: SupportedTimezones;
+  transferTo?: ('comprador(es)' | 'tercero(s)') | null;
+  notary?: (string | null) | Notary;
+  collaborator?: (string | null) | Collaborator;
+  vehicleTitleTransferToAThirdParty?:
+    | {
+        typeidentificationdocument: string | Typeidentificationdocument;
+        identificationnumber: string;
+        fullname: string;
+        mediathirddni: string | Mediatransfersale;
+        observationsthird?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  vouchertransfersale?: (string | Vouchertransfersale)[] | null;
+  transfersalefiles?:
+    | {
+        mediatransfersale: string | Mediatransfersale;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'pendiente' | 'en proceso' | 'finalizado';
+  /**
+   * Esta sección será completada unicamente si se ha concretado la transferencia
+   */
+  finish?: {
+    enddate?: string | null;
+    enddate_tz?: SupportedTimezones;
+    observationsfinish?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediatransfersale".
+ */
+export interface Mediatransfersale {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vouchertransfersale".
+ */
+export interface Vouchertransfersale {
+  id: string;
+  voucherdate: string;
+  voucherdate_tz: SupportedTimezones;
+  company?: (string | null) | Company;
+  typecurrency: string | Typecurrency;
+  voucherAmount: number;
+  operationNumber: number;
+  typebank: string | Typebank;
+  mediatransfervoucher: string | Mediatransfervoucher;
+  observations?: string | null;
+  fullname?: string | null;
+  status: 'disponible' | 'utilizado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediatransfervoucher".
+ */
+export interface Mediatransfervoucher {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification".
+ */
+export interface Notification {
+  id: string;
+  finalsale: string | Finalsale;
+  datenotification: string;
+  datenotification_tz: SupportedTimezones;
+  typenotification: 'Vencimiento de cuotas' | 'Transferencia vehicular pendiente';
+  notificationfiles?:
+    | {
+        medianotification: string | Medianotification;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "medianotification".
+ */
+export interface Medianotification {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documentaditional".
+ */
+export interface Documentaditional {
+  id: string;
+  finalsale: string | Finalsale;
+  datedocument: string;
+  typedocumentaditional: string | Typedocumentaditional;
+  documentaditionalfiles?:
+    | {
+        mediadocumentaditional: string | Mediadocumentaditional;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typedocumentaditional".
+ */
+export interface Typedocumentaditional {
+  id: string;
+  typedocumentaditional: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediadocumentaditional".
+ */
+export interface Mediadocumentaditional {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicletax".
+ */
+export interface Vehicletax {
+  id: string;
+  finalsale: string | Finalsale;
+  calculationdate: string;
+  calculationdate_tz: SupportedTimezones;
+  calculatedyears: string;
+  calculatedvalue?: number | null;
+  calculationfiles?:
+    | {
+        mediataxcalculation: string | Mediavehicletax;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  payment?: {
+    datepayment?: string | null;
+    datepayment_tz?: SupportedTimezones;
+    observationsPayment?: string | null;
+    taxfiles?:
+      | {
+          mediavehicletax: string | Mediavehicletax;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  status: 'cálculo pendiente' | 'pago pendiente' | 'pagado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediavehicletax".
+ */
+export interface Mediavehicletax {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "infractionvehicle".
+ */
+export interface Infractionvehicle {
+  id: string;
+  finalsale?: (string | null) | Finalsale;
+  dateinfraction: string;
+  dateinfraction_tz: SupportedTimezones;
+  sanctioningentity: string | Sanctioningentity;
+  typeinfraction: string | Typeinfraction;
+  infractionnumber: number;
+  valueinfraction: number;
+  infractionfiles?:
+    | {
+        mediainfraction: string | Mediainfraction;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * En caso de realizarce el embargo por cobranza coactiva, se solicita completar la siguiente información
+   */
+  seizureMoney?: {
+    datecoactive?: string | null;
+    datecoactive_tz?: SupportedTimezones;
+    accountcompany?: (string | null) | Accountcompany;
+    mediaembargo?: (string | null) | Mediainfraction;
+    observationsSeizure?: string | null;
+  };
+  /**
+   * La sección deberá ser completada una vez efectuado el pago de la infracción vehicular
+   */
+  payment?: {
+    datepayment?: string | null;
+    datepayment_tz?: SupportedTimezones;
+    mediapayment?: (string | null) | Mediainfraction;
+    observationsPayment?: string | null;
+  };
+  status: 'Pendiente de pago' | 'Expediente coactivo' | 'Embargo de pago' | 'pagado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sanctioningentity".
+ */
+export interface Sanctioningentity {
+  id: string;
+  sanctioningentity: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeinfraction".
+ */
+export interface Typeinfraction {
+  id: string;
+  typeinfraction: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainfraction".
+ */
+export interface Mediainfraction {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courtcases".
+ */
+export interface Courtcase {
+  id: string;
+  finalsale?: (string | null) | Finalsale;
+  datecase: string;
+  mattercase: string;
+  description: string;
+  courtcasesfiles?:
+    | {
+        mediacourtcases: string | Mediacourtcase;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacourtcases".
+ */
+export interface Mediacourtcase {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "counselcourtcases".
+ */
+export interface Counselcourtcase {
+  id: string;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  fullname: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companyinformation".
+ */
+export interface Companyinformation {
+  id: string;
+  company: string | Company;
+  essaludpayment?:
+    | {
+        id?: string | null;
+      }[]
+    | null;
+  imrpayment?:
+    | {
+        id?: string | null;
+      }[]
+    | null;
+  incometaxpayment?:
+    | {
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "laborinformation".
+ */
+export interface Laborinformation {
+  id: string;
+  collaborator: string | Collaborator;
+  laborinformation: {
+    company?: (string | null) | Company;
+    typecollaborator?: (string | null) | Typecollaborator;
+    establishment?: (string | null) | Establishment;
+    laborarea?: (string | null) | Laborarea;
+    jobposition?: (string | null) | Jobposition;
+    entrydate: string;
+    departuredate?: string | null;
+    drivinglicense?: string | null;
+  };
+  emergencycontact?: {
+    name?: string | null;
+    numbermovil?: string | null;
+    relationship?: string | null;
+    address?: string | null;
+  };
+  /**
+   * Complete esta sección solo si el colaborador está registrado en planilla
+   */
+  familyinformation?:
+    | {
+        fullname: string;
+        familyrelation: string | Familyrelation;
+        datebirth: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Complete esta sección solo si el colaborador está registrado en planilla
+   */
+  salaryinformation?: {
+    salary?: string | null;
+    account?: {
+      typebank?: (string | null) | Typebank;
+      typeaccount?: (string | null) | Typeaccount;
+      typecurrency?: (string | null) | Typecurrency;
+      accountnumber?: string | null;
+      cci?: string | null;
+    };
+  };
+  /**
+   * Complete esta sección solo si el colaborador está registrado en planilla
+   */
+  socialsecurityinformation?: {
+    pensionsystem?: (string | null) | Pensionsystem;
+    /**
+     * complete si seleccionó AFP como sistema de pensión
+     */
+    typeafp?: (string | null) | Typeafp;
+    afppayment?:
+      | {
+          dateafp: string;
+          afpfiles?:
+            | {
+                mediaafp: string | Mediaafp;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    ctspayment?:
+      | {
+          datects: string;
+          ctsfiles?:
+            | {
+                mediacts: string | Mediact;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typecollaborator".
+ */
+export interface Typecollaborator {
+  id: string;
+  typecollaborator: string;
+  description?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "laborarea".
+ */
+export interface Laborarea {
+  id: string;
+  laborarea: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobposition".
+ */
+export interface Jobposition {
+  id: string;
+  jobposition: string;
+  description?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "familyrelation".
+ */
+export interface Familyrelation {
+  id: string;
+  familyrelation: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pensionsystem".
+ */
+export interface Pensionsystem {
+  id: string;
+  pensionsystem: string;
+  abbreviatedpensionsystem: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeafp".
+ */
+export interface Typeafp {
+  id: string;
+  typeafp: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaafp".
+ */
+export interface Mediaafp {
+  id: string;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacts".
+ */
+export interface Mediact {
+  id: string;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -157,6 +4345,19 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paymentperiod".
+ */
+export interface Paymentperiod {
+  id: string;
+  paymentperiod: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -183,12 +4384,712 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'purchase';
+        value: string | Purchase;
+      } | null)
+    | ({
+        relationTo: 'purchasepayment';
+        value: string | Purchasepayment;
+      } | null)
+    | ({
+        relationTo: 'purchasecancellation';
+        value: string | Purchasecancellation;
+      } | null)
+    | ({
+        relationTo: 'purchaserefund';
+        value: string | Purchaserefund;
+      } | null)
+    | ({
+        relationTo: 'purchaseinvoice';
+        value: string | Purchaseinvoice;
+      } | null)
+    | ({
+        relationTo: 'purchasetransportation';
+        value: string | Purchasetransportation;
+      } | null)
+    | ({
+        relationTo: 'purchasereceptions';
+        value: string | Purchasereception;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationpurchase';
+        value: string | Motivecancellationpurchase;
+      } | null)
+    | ({
+        relationTo: 'mediapurchase';
+        value: string | Mediapurchase;
+      } | null)
+    | ({
+        relationTo: 'mediapurchasepayment';
+        value: string | Mediapurchasepayment;
+      } | null)
+    | ({
+        relationTo: 'mediapurchaseinvoice';
+        value: string | Mediapurchaseinvoice;
+      } | null)
+    | ({
+        relationTo: 'mediapurchasetransportation';
+        value: string | Mediapurchasetransportation;
+      } | null)
+    | ({
+        relationTo: 'mediapurchaserefund';
+        value: string | Mediapurchaserefund;
+      } | null)
+    | ({
+        relationTo: 'mediapurchasecancellation';
+        value: string | Mediapurchasecancellation;
+      } | null)
+    | ({
+        relationTo: 'supplier';
+        value: string | Supplier;
+      } | null)
+    | ({
+        relationTo: 'supplieraddress';
+        value: string | Supplieraddress;
+      } | null)
+    | ({
+        relationTo: 'suppliercontact';
+        value: string | Suppliercontact;
+      } | null)
+    | ({
+        relationTo: 'supplierbankaccount';
+        value: string | Supplierbankaccount;
+      } | null)
+    | ({
+        relationTo: 'internalplates';
+        value: string | Internalplate;
+      } | null)
+    | ({
+        relationTo: 'externalplates';
+        value: string | Externalplate;
+      } | null)
+    | ({
+        relationTo: 'ownerexternalplates';
+        value: string | Ownerexternalplate;
+      } | null)
+    | ({
+        relationTo: 'mediainternalplates';
+        value: string | Mediainternalplate;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationinternalplates';
+        value: string | Motivecancellationinternalplate;
+      } | null)
+    | ({
+        relationTo: 'inventory';
+        value: string | Inventory;
+      } | null)
+    | ({
+        relationTo: 'movements';
+        value: string | Movement;
+      } | null)
+    | ({
+        relationTo: 'relocation';
+        value: string | Relocation;
+      } | null)
+    | ({
+        relationTo: 'receptionrelocation';
+        value: string | Receptionrelocation;
+      } | null)
+    | ({
+        relationTo: 'relocationwarehouses';
+        value: string | Relocationwarehouse;
+      } | null)
+    | ({
+        relationTo: 'expense';
+        value: string | Expense;
+      } | null)
+    | ({
+        relationTo: 'mediarelocation';
+        value: string | Mediarelocation;
+      } | null)
+    | ({
+        relationTo: 'assignmentgps';
+        value: string | Assignmentgp;
+      } | null)
+    | ({
+        relationTo: 'installationgps';
+        value: string | Installationgp;
+      } | null)
+    | ({
+        relationTo: 'periodusegps';
+        value: string | Periodusegp;
+      } | null)
+    | ({
+        relationTo: 'renewalsgps';
+        value: string | Renewalsgp;
+      } | null)
+    | ({
+        relationTo: 'gpscancellation';
+        value: string | Gpscancellation;
+      } | null)
+    | ({
+        relationTo: 'devicegps';
+        value: string | Devicegp;
+      } | null)
+    | ({
+        relationTo: 'cardsim';
+        value: string | Cardsim;
+      } | null)
+    | ({
+        relationTo: 'suppliergps';
+        value: string | Suppliergp;
+      } | null)
+    | ({
+        relationTo: 'ownersim';
+        value: string | Ownersim;
+      } | null)
+    | ({
+        relationTo: 'installergps';
+        value: string | Installergp;
+      } | null)
+    | ({
+        relationTo: 'typesino';
+        value: string | Typesino;
+      } | null)
+    | ({
+        relationTo: 'typegps';
+        value: string | Typegp;
+      } | null)
+    | ({
+        relationTo: 'typeoperator';
+        value: string | Typeoperator;
+      } | null)
+    | ({
+        relationTo: 'otherplaceinstallation';
+        value: string | Otherplaceinstallation;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationdevice';
+        value: string | Motivecancellationdevice;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationcardsim';
+        value: string | Motivecancellationcardsim;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationgps';
+        value: string | Motivecancellationgp;
+      } | null)
+    | ({
+        relationTo: 'mediagps';
+        value: string | Mediagp;
+      } | null)
+    | ({
+        relationTo: 'mediainstallation';
+        value: string | Mediainstallation;
+      } | null)
+    | ({
+        relationTo: 'mediagpscancellation';
+        value: string | Mediagpscancellation;
+      } | null)
+    | ({
+        relationTo: 'mediarenewal';
+        value: string | Mediarenewal;
+      } | null)
+    | ({
+        relationTo: 'mediatypesino';
+        value: string | Mediatypesino;
+      } | null)
+    | ({
+        relationTo: 'vehicle';
+        value: string | Vehicle;
+      } | null)
+    | ({
+        relationTo: 'priceassignment';
+        value: string | Priceassignment;
+      } | null)
+    | ({
+        relationTo: 'pricelists';
+        value: string | Pricelist;
+      } | null)
+    | ({
+        relationTo: 'brand';
+        value: string | Brand;
+      } | null)
+    | ({
+        relationTo: 'model';
+        value: string | Model;
+      } | null)
+    | ({
+        relationTo: 'version';
+        value: string | Version;
+      } | null)
+    | ({
+        relationTo: 'color';
+        value: string | Color;
+      } | null)
+    | ({
+        relationTo: 'fuel';
+        value: string | Fuel;
+      } | null)
+    | ({
+        relationTo: 'carbody';
+        value: string | Carbody;
+      } | null)
+    | ({
+        relationTo: 'category';
+        value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'traction';
+        value: string | Traction;
+      } | null)
+    | ({
+        relationTo: 'typerim';
+        value: string | Typerim;
+      } | null)
+    | ({
+        relationTo: 'transmission';
+        value: string | Transmission;
+      } | null)
+    | ({
+        relationTo: 'typeuse';
+        value: string | Typeuse;
+      } | null)
+    | ({
+        relationTo: 'basicequipment';
+        value: string | Basicequipment;
+      } | null)
+    | ({
+        relationTo: 'internalequipment';
+        value: string | Internalequipment;
+      } | null)
+    | ({
+        relationTo: 'externalequipment';
+        value: string | Externalequipment;
+      } | null)
+    | ({
+        relationTo: 'expenseaditionalvehicle';
+        value: string | Expenseaditionalvehicle;
+      } | null)
+    | ({
+        relationTo: 'mediavehicle';
+        value: string | Mediavehicle;
+      } | null)
+    | ({
+        relationTo: 'mediareferenceimage';
+        value: string | Mediareferenceimage;
+      } | null)
+    | ({
+        relationTo: 'mediagallery';
+        value: string | Mediagallery;
+      } | null)
+    | ({
+        relationTo: 'mediaplates';
+        value: string | Mediaplate;
+      } | null)
+    | ({
+        relationTo: 'mediaequipment';
+        value: string | Mediaequipment;
+      } | null)
+    | ({
+        relationTo: 'mediaexpensevehicle';
+        value: string | Mediaexpensevehicle;
+      } | null)
+    | ({
+        relationTo: 'vehicleregistrationprocedure';
+        value: string | Vehicleregistrationprocedure;
+      } | null)
+    | ({
+        relationTo: 'licenseplateissuanceprocedure';
+        value: string | Licenseplateissuanceprocedure;
+      } | null)
+    | ({
+        relationTo: 'vehicletitletransferprocedure';
+        value: string | Vehicletitletransferprocedure;
+      } | null)
+    | ({
+        relationTo: 'proceduresunarp';
+        value: string | Proceduresunarp;
+      } | null)
+    | ({
+        relationTo: 'procedureaap';
+        value: string | Procedureaap;
+      } | null)
+    | ({
+        relationTo: 'typeproceduresunarp';
+        value: string | Typeproceduresunarp;
+      } | null)
+    | ({
+        relationTo: 'typeprocedureaap';
+        value: string | Typeprocedureaap;
+      } | null)
+    | ({
+        relationTo: 'registryofficeprocedure';
+        value: string | Registryofficeprocedure;
+      } | null)
+    | ({
+        relationTo: 'registrationprocessor';
+        value: string | Registrationprocessor;
+      } | null)
+    | ({
+        relationTo: 'expenseproceduresunarp';
+        value: string | Expenseproceduresunarp;
+      } | null)
+    | ({
+        relationTo: 'expenseproceduretitletransfer';
+        value: string | Expenseproceduretitletransfer;
+      } | null)
+    | ({
+        relationTo: 'expenseprocedureaap';
+        value: string | Expenseprocedureaap;
+      } | null)
+    | ({
+        relationTo: 'mediaprocedureregistration';
+        value: string | Mediaprocedureregistration;
+      } | null)
+    | ({
+        relationTo: 'mediaregistration';
+        value: string | Mediaregistration;
+      } | null)
+    | ({
+        relationTo: 'mediative';
+        value: string | Mediative;
+      } | null)
+    | ({
+        relationTo: 'mediaproceduretitletransfer';
+        value: string | Mediaproceduretitletransfer;
+      } | null)
+    | ({
+        relationTo: 'mediaproceduresunarp';
+        value: string | Mediaproceduresunarp;
+      } | null)
+    | ({
+        relationTo: 'mediaexpenseproceduresunarp';
+        value: string | Mediaexpenseproceduresunarp;
+      } | null)
+    | ({
+        relationTo: 'mediaprocedureaap';
+        value: string | Mediaprocedureaap;
+      } | null)
+    | ({
+        relationTo: 'mediaexpenseprocedureaap';
+        value: string | Mediaexpenseprocedureaap;
+      } | null)
+    | ({
+        relationTo: 'buyer';
+        value: string | Buyer;
+      } | null)
+    | ({
+        relationTo: 'activity';
+        value: string | Activity;
+      } | null)
+    | ({
+        relationTo: 'mediabuyer';
+        value: string | Mediabuyer;
+      } | null)
+    | ({
+        relationTo: 'internal-sales';
+        value: string | InternalSale;
+      } | null)
+    | ({
+        relationTo: 'finalsale';
+        value: string | Finalsale;
+      } | null)
+    | ({
+        relationTo: 'salereservation';
+        value: string | Salereservation;
+      } | null)
+    | ({
+        relationTo: 'saleorder';
+        value: string | Saleorder;
+      } | null)
+    | ({
+        relationTo: 'salehomewarranty';
+        value: string | Salehomewarranty;
+      } | null)
+    | ({
+        relationTo: 'periodpayment';
+        value: string | Periodpayment;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationsale';
+        value: string | Motivecancellationsale;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationreservation';
+        value: string | Motivecancellationreservation;
+      } | null)
+    | ({
+        relationTo: 'mediainternalsale';
+        value: string | Mediainternalsale;
+      } | null)
+    | ({
+        relationTo: 'mediasale';
+        value: string | Mediasale;
+      } | null)
+    | ({
+        relationTo: 'mediasaledownpayment';
+        value: string | Mediasaledownpayment;
+      } | null)
+    | ({
+        relationTo: 'mediareservation';
+        value: string | Mediareservation;
+      } | null)
+    | ({
+        relationTo: 'mediaordersale';
+        value: string | Mediaordersale;
+      } | null)
+    | ({
+        relationTo: 'mediahomewarranty';
+        value: string | Mediahomewarranty;
+      } | null)
+    | ({
+        relationTo: 'creditinstallment';
+        value: string | Creditinstallment;
+      } | null)
+    | ({
+        relationTo: 'creditpayment';
+        value: string | Creditpayment;
+      } | null)
+    | ({
+        relationTo: 'creditplan';
+        value: string | Creditplan;
+      } | null)
+    | ({
+        relationTo: 'receiptcreditpayment';
+        value: string | Receiptcreditpayment;
+      } | null)
+    | ({
+        relationTo: 'receiptsale';
+        value: string | Receiptsale;
+      } | null)
+    | ({
+        relationTo: 'motivecancellationreceiptsale';
+        value: string | Motivecancellationreceiptsale;
+      } | null)
+    | ({
+        relationTo: 'mediareceipt';
+        value: string | Mediareceipt;
+      } | null)
+    | ({
+        relationTo: 'vehicledelivery';
+        value: string | Vehicledelivery;
+      } | null)
+    | ({
+        relationTo: 'mediavehicledelivery';
+        value: string | Mediavehicledelivery;
+      } | null)
+    | ({
+        relationTo: 'transfersale';
+        value: string | Transfersale;
+      } | null)
+    | ({
+        relationTo: 'vouchertransfersale';
+        value: string | Vouchertransfersale;
+      } | null)
+    | ({
+        relationTo: 'notary';
+        value: string | Notary;
+      } | null)
+    | ({
+        relationTo: 'mediatransfersale';
+        value: string | Mediatransfersale;
+      } | null)
+    | ({
+        relationTo: 'mediatransfervoucher';
+        value: string | Mediatransfervoucher;
+      } | null)
+    | ({
+        relationTo: 'notification';
+        value: string | Notification;
+      } | null)
+    | ({
+        relationTo: 'documentaditional';
+        value: string | Documentaditional;
+      } | null)
+    | ({
+        relationTo: 'typedocumentaditional';
+        value: string | Typedocumentaditional;
+      } | null)
+    | ({
+        relationTo: 'mediadocumentaditional';
+        value: string | Mediadocumentaditional;
+      } | null)
+    | ({
+        relationTo: 'medianotification';
+        value: string | Medianotification;
+      } | null)
+    | ({
+        relationTo: 'vehicletax';
+        value: string | Vehicletax;
+      } | null)
+    | ({
+        relationTo: 'infractionvehicle';
+        value: string | Infractionvehicle;
+      } | null)
+    | ({
+        relationTo: 'typeinfraction';
+        value: string | Typeinfraction;
+      } | null)
+    | ({
+        relationTo: 'sanctioningentity';
+        value: string | Sanctioningentity;
+      } | null)
+    | ({
+        relationTo: 'mediavehicletax';
+        value: string | Mediavehicletax;
+      } | null)
+    | ({
+        relationTo: 'mediainfraction';
+        value: string | Mediainfraction;
+      } | null)
+    | ({
+        relationTo: 'courtcases';
+        value: string | Courtcase;
+      } | null)
+    | ({
+        relationTo: 'counselcourtcases';
+        value: string | Counselcourtcase;
+      } | null)
+    | ({
+        relationTo: 'mediacourtcases';
+        value: string | Mediacourtcase;
+      } | null)
+    | ({
+        relationTo: 'company';
+        value: string | Company;
+      } | null)
+    | ({
+        relationTo: 'companyinformation';
+        value: string | Companyinformation;
+      } | null)
+    | ({
+        relationTo: 'accountcompany';
+        value: string | Accountcompany;
+      } | null)
+    | ({
+        relationTo: 'establishment';
+        value: string | Establishment;
+      } | null)
+    | ({
+        relationTo: 'warehouse';
+        value: string | Warehouse;
+      } | null)
+    | ({
+        relationTo: 'mediacompany';
+        value: string | Mediacompany;
+      } | null)
+    | ({
+        relationTo: 'collaborator';
+        value: string | Collaborator;
+      } | null)
+    | ({
+        relationTo: 'laborinformation';
+        value: string | Laborinformation;
+      } | null)
+    | ({
+        relationTo: 'driver';
+        value: string | Driver;
+      } | null)
+    | ({
+        relationTo: 'typecollaborator';
+        value: string | Typecollaborator;
+      } | null)
+    | ({
+        relationTo: 'laborarea';
+        value: string | Laborarea;
+      } | null)
+    | ({
+        relationTo: 'jobposition';
+        value: string | Jobposition;
+      } | null)
+    | ({
+        relationTo: 'pensionsystem';
+        value: string | Pensionsystem;
+      } | null)
+    | ({
+        relationTo: 'typeafp';
+        value: string | Typeafp;
+      } | null)
+    | ({
+        relationTo: 'familyrelation';
+        value: string | Familyrelation;
+      } | null)
+    | ({
+        relationTo: 'mediacollaborator';
+        value: string | Mediacollaborator;
+      } | null)
+    | ({
+        relationTo: 'mediaafp';
+        value: string | Mediaafp;
+      } | null)
+    | ({
+        relationTo: 'mediacts';
+        value: string | Mediact;
       } | null)
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
+        relationTo: 'modulesystem';
+        value: string | Modulesystem;
+      } | null)
+    | ({
+        relationTo: 'role';
+        value: string | Role;
+      } | null)
+    | ({
+        relationTo: 'mediauser';
+        value: string | Mediauser;
+      } | null)
+    | ({
+        relationTo: 'typeidentificationdocument';
+        value: string | Typeidentificationdocument;
+      } | null)
+    | ({
+        relationTo: 'civilstatus';
+        value: string | Civilstatus;
+      } | null)
+    | ({
+        relationTo: 'genre';
+        value: string | Genre;
+      } | null)
+    | ({
+        relationTo: 'typeaccount';
+        value: string | Typeaccount;
+      } | null)
+    | ({
+        relationTo: 'typebank';
+        value: string | Typebank;
+      } | null)
+    | ({
+        relationTo: 'typecurrency';
+        value: string | Typecurrency;
+      } | null)
+    | ({
+        relationTo: 'typereceipt';
+        value: string | Typereceipt;
+      } | null)
+    | ({
+        relationTo: 'typepayment';
+        value: string | Typepayment;
+      } | null)
+    | ({
+        relationTo: 'paymentperiod';
+        value: string | Paymentperiod;
+      } | null)
+    | ({
+        relationTo: 'country';
+        value: string | Country;
+      } | null)
+    | ({
+        relationTo: 'departamento';
+        value: string | Departamento;
+      } | null)
+    | ({
+        relationTo: 'provincia';
+        value: string | Provincia;
+      } | null)
+    | ({
+        relationTo: 'distrito';
+        value: string | Distrito;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -234,9 +5135,3410 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchase_select".
+ */
+export interface PurchaseSelect<T extends boolean = true> {
+  purchaseNumber?: T;
+  company?: T;
+  typepurchase?: T;
+  purchasedate?: T;
+  purchasedate_tz?: T;
+  supplier?: T;
+  suppliercontact?: T;
+  typecurrency?: T;
+  pricepurchase?: T;
+  amountpaid?: T;
+  vehicle?:
+    | T
+    | {
+        brand?: T;
+        model?: T;
+        version?: T;
+        color?: T;
+        yearmodel?: T;
+        fuel?: T;
+        condition?: T;
+        licensePlatesNumber?: T;
+        licensePlateUsageType?: T;
+      };
+  purchasefiles?:
+    | T
+    | {
+        mediapurchase?: T;
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  statusreception?: T;
+  statuspayment?: T;
+  statusreceipt?: T;
+  transportation?: T;
+  cancellation?: T;
+  payment?: T;
+  invoice?: T;
+  receptions?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasepayment_select".
+ */
+export interface PurchasepaymentSelect<T extends boolean = true> {
+  purchase?: T;
+  paymentdate?: T;
+  paymentdate_tz?: T;
+  typepayment?: T;
+  typecurrency?: T;
+  monetaryvalue?: T;
+  supplierbankaccount?: T;
+  operationnumber?: T;
+  observations?: T;
+  mediapayment?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasecancellation_select".
+ */
+export interface PurchasecancellationSelect<T extends boolean = true> {
+  purchase?: T;
+  cancellationdate?: T;
+  cancellationdate_tz?: T;
+  motivecancellationpurchase?: T;
+  purchasecancellationfiles?:
+    | T
+    | {
+        mediapurchasecancellation?: T;
+        id?: T;
+      };
+  observations?: T;
+  totalRefunded?: T;
+  purchaserefund?: T;
+  statuscreditnote?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchaserefund_select".
+ */
+export interface PurchaserefundSelect<T extends boolean = true> {
+  purchasecancellation?: T;
+  refunddate?: T;
+  refunddate_tz?: T;
+  refundamount?: T;
+  typepayment?: T;
+  purchaserefundfiles?:
+    | T
+    | {
+        mediapurchaserefund?: T;
+        id?: T;
+      };
+  observations?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchaseinvoice_select".
+ */
+export interface PurchaseinvoiceSelect<T extends boolean = true> {
+  purchase?: T;
+  noreceipt?: T;
+  typereceipt?: T;
+  receiptnumber?: T;
+  receiptdate?: T;
+  receiptdate_tz?: T;
+  vehicle?:
+    | T
+    | {
+        vin?: T;
+        motor?: T;
+      };
+  invoicefiles?:
+    | T
+    | {
+        mediainvoice?: T;
+        id?: T;
+      };
+  observations?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasetransportation_select".
+ */
+export interface PurchasetransportationSelect<T extends boolean = true> {
+  purchase?: T;
+  optionsplate?: T;
+  internalplates?: T;
+  externalplates?: T;
+  driver?: T;
+  departuredate?: T;
+  departuredate_tz?: T;
+  placeorigin?: T;
+  establishment?: T;
+  transportationfiles?:
+    | T
+    | {
+        mediatransportation?: T;
+        id?: T;
+      };
+  exchangerate?: T;
+  expenselist?:
+    | T
+    | {
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        observationsexpense?: T;
+        mediaexpense?: T;
+        id?: T;
+      };
+  totalExpensesPEN?: T;
+  totalExpensesUSD?: T;
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchasereceptions_select".
+ */
+export interface PurchasereceptionsSelect<T extends boolean = true> {
+  purchase?: T;
+  transportation?: T;
+  datereception?: T;
+  datereception_tz?: T;
+  warehouse?: T;
+  receivedby?: T;
+  observations?: T;
+  vehicle?:
+    | T
+    | {
+        brand?: T;
+        model?: T;
+        version?: T;
+        color?: T;
+        yearmanufacture?: T;
+        yearmodel?: T;
+        vin?: T;
+        motor?: T;
+        cylindercapacity?: T;
+        fuel?: T;
+        transmission?: T;
+        traction?: T;
+        carbody?: T;
+        category?: T;
+        seat?: T;
+        rimnumber?: T;
+        typerim?: T;
+        mileage?: T;
+        vehiclekey?: T;
+        licensePlatesNumber?: T;
+        licensePlateUsageType?: T;
+      };
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationpurchase_select".
+ */
+export interface MotivecancellationpurchaseSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchase_select".
+ */
+export interface MediapurchaseSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchasepayment_select".
+ */
+export interface MediapurchasepaymentSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchaseinvoice_select".
+ */
+export interface MediapurchaseinvoiceSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchasetransportation_select".
+ */
+export interface MediapurchasetransportationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchaserefund_select".
+ */
+export interface MediapurchaserefundSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchasecancellation_select".
+ */
+export interface MediapurchasecancellationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplier_select".
+ */
+export interface SupplierSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  namesupplier?: T;
+  namedocument?: T;
+  suppliercontact?: T;
+  addresses?: T;
+  supplieraccount?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplieraddress_select".
+ */
+export interface SupplieraddressSelect<T extends boolean = true> {
+  supplier?: T;
+  sede?: T;
+  address?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliercontact_select".
+ */
+export interface SuppliercontactSelect<T extends boolean = true> {
+  supplier?: T;
+  namesuppliercontact?: T;
+  jobposition?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplierbankaccount_select".
+ */
+export interface SupplierbankaccountSelect<T extends boolean = true> {
+  supplier?: T;
+  fullaccountbank?: T;
+  abbreviationaccountbank?: T;
+  typebank?: T;
+  typeaccount?: T;
+  typecurrency?: T;
+  accountnumber?: T;
+  cci?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internalplates_select".
+ */
+export interface InternalplatesSelect<T extends boolean = true> {
+  platenumber?: T;
+  company?: T;
+  acquisitioninformation?:
+    | T
+    | {
+        dateacquisition?: T;
+        typepaymentwarranty?: T;
+        typecurrencywarranty?: T;
+        warrantyvalue?: T;
+        observations?: T;
+        acquisitionfiles?:
+          | T
+          | {
+              mediaacquisition?: T;
+              id?: T;
+            };
+      };
+  perioduse?:
+    | T
+    | {
+        statususe?: T;
+        startinitial?: T;
+        endinitial?: T;
+        typepaymentperiod?: T;
+        typecurrencyperiodo?: T;
+        periodvalue?: T;
+        observationsperiod?: T;
+        mediaperiodpayment?: T;
+        listcostaditional?:
+          | T
+          | {
+              costdate?: T;
+              costconcept?: T;
+              typecurrencycost?: T;
+              exchangerate?: T;
+              costvalue?: T;
+              mediacost?: T;
+              observationscost?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  cancellation?:
+    | T
+    | {
+        cancellationdate?: T;
+        motivecancellation?: T;
+        returndate?: T;
+        typepaymentreturn?: T;
+        mediareturn?: T;
+        observationsreturn?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalplates_select".
+ */
+export interface ExternalplatesSelect<T extends boolean = true> {
+  platenumber?: T;
+  typeplate?: T;
+  ownerexternalplates?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ownerexternalplates_select".
+ */
+export interface OwnerexternalplatesSelect<T extends boolean = true> {
+  owner?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainternalplates_select".
+ */
+export interface MediainternalplatesSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationinternalplates_select".
+ */
+export interface MotivecancellationinternalplatesSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inventory_select".
+ */
+export interface InventorySelect<T extends boolean = true> {
+  quantity?: T;
+  vehicle?: T;
+  purchaseReception?: T;
+  transactionDate?: T;
+  dealership?: T;
+  status?: T;
+  operation?: T;
+  location?: T;
+  priceAssignment?: T;
+  activePricelist?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "movements_select".
+ */
+export interface MovementsSelect<T extends boolean = true> {
+  vehicle?: T;
+  company?: T;
+  movementdate?: T;
+  typemovement?: T;
+  motivemovement?: T;
+  warehouse?: T;
+  status?: T;
+  relocationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "relocation_select".
+ */
+export interface RelocationSelect<T extends boolean = true> {
+  vehicle?: T;
+  optionsplate?: T;
+  internalplates?: T;
+  externalplates?: T;
+  driver?: T;
+  exitdate?: T;
+  exitdate_tz?: T;
+  establishment?: T;
+  relocationfiles?:
+    | T
+    | {
+        mediarelocation?: T;
+        id?: T;
+      };
+  observations?: T;
+  exchangerate?: T;
+  expenselist?:
+    | T
+    | {
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        observationsexpense?: T;
+        mediaexpense?: T;
+        id?: T;
+      };
+  status?: T;
+  warehouseorigin?: T;
+  receptionrelocation?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "receptionrelocation_select".
+ */
+export interface ReceptionrelocationSelect<T extends boolean = true> {
+  relocation?: T;
+  arrivaldate?: T;
+  arrivaldate_tz?: T;
+  warehouseincoming?: T;
+  receivedby?: T;
+  observations?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "relocationwarehouses_select".
+ */
+export interface RelocationwarehousesSelect<T extends boolean = true> {
+  vehicle?: T;
+  movementdate?: T;
+  movementdate_tz?: T;
+  warehousedestination?: T;
+  driver?: T;
+  observations?: T;
+  warehouseorigin?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expense_select".
+ */
+export interface ExpenseSelect<T extends boolean = true> {
+  expense?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediarelocation_select".
+ */
+export interface MediarelocationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "assignmentgps_select".
+ */
+export interface AssignmentgpsSelect<T extends boolean = true> {
+  vehicle?: T;
+  devicecode?: T;
+  numbersim?: T;
+  gpsfiles?:
+    | T
+    | {
+        mediagps?: T;
+        id?: T;
+      };
+  observations?: T;
+  statusassignment?: T;
+  statusinstallation?: T;
+  installationgps?: T;
+  periodusegps?: T;
+  gpscancellation?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "installationgps_select".
+ */
+export interface InstallationgpsSelect<T extends boolean = true> {
+  assignmentgps?: T;
+  installationdate?: T;
+  installationdate_tz?: T;
+  installergps?: T;
+  warehouse?: T;
+  otherplaceinstallation?: T;
+  typepayment?: T;
+  typecurrencypayment?: T;
+  exchangerate?: T;
+  paymentvalue?: T;
+  mediainstallation?: T;
+  observations?: T;
+  totalExpenseUSD?: T;
+  totalExpensePEN?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "periodusegps_select".
+ */
+export interface PeriodusegpsSelect<T extends boolean = true> {
+  assignmentgps?: T;
+  periodgps?: T;
+  typeresponsible?: T;
+  observations?: T;
+  renewalsgps?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "renewalsgps_select".
+ */
+export interface RenewalsgpsSelect<T extends boolean = true> {
+  periodusegps?: T;
+  startdate?: T;
+  startdate_tz?: T;
+  enddate?: T;
+  enddate_tz?: T;
+  typecurrency?: T;
+  renewalvalue?: T;
+  collaborator?: T;
+  mediarenewal?: T;
+  observations?: T;
+  statusrenewal?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gpscancellation_select".
+ */
+export interface GpscancellationSelect<T extends boolean = true> {
+  assignmentgps?: T;
+  cancellationdate?: T;
+  cancellationdate_tz?: T;
+  motivecancellationgps?: T;
+  gpscancellationfiles?:
+    | T
+    | {
+        mediagpscancellation?: T;
+        id?: T;
+      };
+  observations?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "devicegps_select".
+ */
+export interface DevicegpsSelect<T extends boolean = true> {
+  dateacquisition?: T;
+  dateacquisition_tz?: T;
+  suppliergps?: T;
+  typegps?: T;
+  typecurrency?: T;
+  exchangerate?: T;
+  pricepurchase?: T;
+  typesino?: T;
+  devicecode?: T;
+  imei?: T;
+  totalExpenseUSD?: T;
+  totalExpensePEN?: T;
+  observations?: T;
+  sku?: T;
+  cancellation?:
+    | T
+    | {
+        cancellationdate?: T;
+        motivecancellationgps?: T;
+      };
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cardsim_select".
+ */
+export interface CardsimSelect<T extends boolean = true> {
+  dateacquisition?: T;
+  dateacquisition_tz?: T;
+  ownersim?: T;
+  typeoperator?: T;
+  codesim?: T;
+  numbersim?: T;
+  typecurrency?: T;
+  exchangerate?: T;
+  pricepurchase?: T;
+  totalExpenseUSD?: T;
+  totalExpensePEN?: T;
+  observations?: T;
+  cancellation?:
+    | T
+    | {
+        cancellationdate?: T;
+        motivecancellationgps?: T;
+      };
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliergps_select".
+ */
+export interface SuppliergpsSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  namesupplier?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  numbermovil?: T;
+  email?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ownersim_select".
+ */
+export interface OwnersimSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  fullname?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  numbermovil?: T;
+  email?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "installergps_select".
+ */
+export interface InstallergpsSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  nameinstaller?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typesino_select".
+ */
+export interface TypesinoSelect<T extends boolean = true> {
+  typesino?: T;
+  image?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typegps_select".
+ */
+export interface TypegpsSelect<T extends boolean = true> {
+  typegps?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeoperator_select".
+ */
+export interface TypeoperatorSelect<T extends boolean = true> {
+  typeoperator?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "otherplaceinstallation_select".
+ */
+export interface OtherplaceinstallationSelect<T extends boolean = true> {
+  placename?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationdevice_select".
+ */
+export interface MotivecancellationdeviceSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationcardsim_select".
+ */
+export interface MotivecancellationcardsimSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationgps_select".
+ */
+export interface MotivecancellationgpsSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediagps_select".
+ */
+export interface MediagpsSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainstallation_select".
+ */
+export interface MediainstallationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediagpscancellation_select".
+ */
+export interface MediagpscancellationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediarenewal_select".
+ */
+export interface MediarenewalSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediatypesino_select".
+ */
+export interface MediatypesinoSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicle_select".
+ */
+export interface VehicleSelect<T extends boolean = true> {
+  purchaseReception?: T;
+  brand?: T;
+  model?: T;
+  version?: T;
+  color?: T;
+  yearmanufacture?: T;
+  yearmodel?: T;
+  vin?: T;
+  motor?: T;
+  cylindercapacity?: T;
+  fuel?: T;
+  transmission?: T;
+  traction?: T;
+  carbody?: T;
+  category?: T;
+  seat?: T;
+  rimnumber?: T;
+  typerim?: T;
+  referenceimage?: T;
+  galleryfiles?:
+    | T
+    | {
+        mediagallery?: T;
+        id?: T;
+      };
+  vehicle?: T;
+  conditionvehicle?:
+    | T
+    | {
+        condition?: T;
+        mileage?: T;
+        note?: T;
+      };
+  equipmentbasic?:
+    | T
+    | {
+        vehiclekey?: T;
+        basicequipment?: T;
+      };
+  internalequipment?:
+    | T
+    | {
+        internalequipment?: T;
+        internaladitional?:
+          | T
+          | {
+              internaldate?: T;
+              internaldate_tz?: T;
+              internalequipment?: T;
+              typecurrencyinternal?: T;
+              exchangerateinternal?: T;
+              internalvalue?: T;
+              mediainternalequipment?: T;
+              observationsinternal?: T;
+              id?: T;
+            };
+        totalExpenseInUSD?: T;
+        totalExpenseInPEN?: T;
+      };
+  externalequipment?:
+    | T
+    | {
+        externalequipment?: T;
+        externaladitional?:
+          | T
+          | {
+              externaldate?: T;
+              externaldate_tz?: T;
+              externalequipment?: T;
+              typecurrencyexternal?: T;
+              exchangerateexternal?: T;
+              externalvalue?: T;
+              mediaexternalequipment?: T;
+              observationsexternal?: T;
+              id?: T;
+            };
+        totalExpenseExUSD?: T;
+        totalExpenseExPEN?: T;
+      };
+  vehicleRegistration?:
+    | T
+    | {
+        vehicleRegistrationProcedure?: T;
+        vehicleTitleTransferProcedure?: T;
+      };
+  tive?:
+    | T
+    | {
+        mediative?: T;
+      };
+  licensePlates?:
+    | T
+    | {
+        licensePlatesNumber?: T;
+        licensePlateUsageType?: T;
+        licensePlateIssuanceProcedure?: T;
+      };
+  procedureothers?:
+    | T
+    | {
+        proceduresunarp?: T;
+        procedureaap?: T;
+      };
+  observations?: T;
+  assignmentgps?: T;
+  expenseaditional?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "priceassignment_select".
+ */
+export interface PriceassignmentSelect<T extends boolean = true> {
+  inventoryItem?: T;
+  currency?: T;
+  purchaseCost?: T;
+  transportCost?: T;
+  totalCost?: T;
+  profitMargin?: T;
+  suggestedPrice?: T;
+  status?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricelists_select".
+ */
+export interface PricelistsSelect<T extends boolean = true> {
+  displayName?: T;
+  vehicle?: T;
+  validityDate?: T;
+  pricelistName?: T;
+  currency?: T;
+  price?: T;
+  exchangeRate?: T;
+  notes?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brand_select".
+ */
+export interface BrandSelect<T extends boolean = true> {
+  brand?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "model_select".
+ */
+export interface ModelSelect<T extends boolean = true> {
+  brand?: T;
+  model?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "version_select".
+ */
+export interface VersionSelect<T extends boolean = true> {
+  model?: T;
+  version?: T;
+  modelversion?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "color_select".
+ */
+export interface ColorSelect<T extends boolean = true> {
+  color?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fuel_select".
+ */
+export interface FuelSelect<T extends boolean = true> {
+  fuel?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carbody_select".
+ */
+export interface CarbodySelect<T extends boolean = true> {
+  carbody?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category_select".
+ */
+export interface CategorySelect<T extends boolean = true> {
+  category?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "traction_select".
+ */
+export interface TractionSelect<T extends boolean = true> {
+  traction?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typerim_select".
+ */
+export interface TyperimSelect<T extends boolean = true> {
+  typerim?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transmission_select".
+ */
+export interface TransmissionSelect<T extends boolean = true> {
+  transmission?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeuse_select".
+ */
+export interface TypeuseSelect<T extends boolean = true> {
+  typeuse?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "basicequipment_select".
+ */
+export interface BasicequipmentSelect<T extends boolean = true> {
+  basicequipment?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internalequipment_select".
+ */
+export interface InternalequipmentSelect<T extends boolean = true> {
+  internalequipment?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalequipment_select".
+ */
+export interface ExternalequipmentSelect<T extends boolean = true> {
+  externalequipment?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseaditionalvehicle_select".
+ */
+export interface ExpenseaditionalvehicleSelect<T extends boolean = true> {
+  vehicle?: T;
+  dateexpense?: T;
+  expenseconcept?: T;
+  typecurrency?: T;
+  exchangerate?: T;
+  expensevalue?: T;
+  expensefiles?:
+    | T
+    | {
+        mediaexpensevehicle?: T;
+        id?: T;
+      };
+  observations?: T;
+  totalExpenseUSD?: T;
+  totalExpensePEN?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediavehicle_select".
+ */
+export interface MediavehicleSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareferenceimage_select".
+ */
+export interface MediareferenceimageSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediagallery_select".
+ */
+export interface MediagallerySelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaplates_select".
+ */
+export interface MediaplatesSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaequipment_select".
+ */
+export interface MediaequipmentSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpensevehicle_select".
+ */
+export interface MediaexpensevehicleSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicleregistrationprocedure_select".
+ */
+export interface VehicleregistrationprocedureSelect<T extends boolean = true> {
+  vehicle?: T;
+  optionsprocedure?: T;
+  startdate?: T;
+  startdate_tz?: T;
+  procedurecompany?:
+    | T
+    | {
+        registryofficeprocedure?: T;
+        titlenumber?: T;
+        registrationprocessor?: T;
+      };
+  expenselist?:
+    | T
+    | {
+        expensedate?: T;
+        expensedate_tz?: T;
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        mediaexpenseproceduresunarp?: T;
+        observations?: T;
+        id?: T;
+      };
+  registrationprocedurefiles?:
+    | T
+    | {
+        mediaprocedureregistration?: T;
+        id?: T;
+      };
+  observations?: T;
+  procedurefinish?:
+    | T
+    | {
+        enddate?: T;
+        enddate_tz?: T;
+        licenseplate?: T;
+        licensePlateUsageType?: T;
+        mediaregistration?: T;
+        mediative?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licenseplateissuanceprocedure_select".
+ */
+export interface LicenseplateissuanceprocedureSelect<T extends boolean = true> {
+  vehicleregistration?: T;
+  optionsprocedure?: T;
+  startdate?: T;
+  startdate_tz?: T;
+  procedurecompany?:
+    | T
+    | {
+        registryofficeprocedure?: T;
+        mediaprocedureaap?: T;
+      };
+  expenselist?:
+    | T
+    | {
+        expensedate?: T;
+        expensedate_tz?: T;
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        expenseAAPfiles?:
+          | T
+          | {
+              mediaexpenseprocedureaap?: T;
+              id?: T;
+            };
+        observations?: T;
+        id?: T;
+      };
+  observations?: T;
+  procedurefinish?:
+    | T
+    | {
+        enddate?: T;
+        enddate_tz?: T;
+        registrationprocessor?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicletitletransferprocedure_select".
+ */
+export interface VehicletitletransferprocedureSelect<T extends boolean = true> {
+  vehicle?: T;
+  startdate?: T;
+  startdate_tz?: T;
+  notary?: T;
+  expenselist?:
+    | T
+    | {
+        expensedate?: T;
+        expensedate_tz?: T;
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        mediaproceduretitletransfer?: T;
+        observations?: T;
+        id?: T;
+      };
+  registrationprocedurefiles?:
+    | T
+    | {
+        mediaproceduretitletransfer?: T;
+        id?: T;
+      };
+  observations?: T;
+  procedurefinish?:
+    | T
+    | {
+        enddate?: T;
+        enddate_tz?: T;
+        mediaregistration?: T;
+        mediative?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "proceduresunarp_select".
+ */
+export interface ProceduresunarpSelect<T extends boolean = true> {
+  vehicle?: T;
+  typeproceduresunarp?: T;
+  procedureconcept?: T;
+  pregistryofficeprocedure?: T;
+  titlenumber?: T;
+  startdate?: T;
+  startdate_tz?: T;
+  collaborator?: T;
+  expenselist?:
+    | T
+    | {
+        expensedate?: T;
+        expensedate_tz?: T;
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        mediaexpenseproceduresunarp?: T;
+        observations?: T;
+        id?: T;
+      };
+  proceduredatafiles?:
+    | T
+    | {
+        mediaprocedure?: T;
+        id?: T;
+      };
+  observations?: T;
+  procedurefinish?:
+    | T
+    | {
+        enddate?: T;
+        enddate_tz?: T;
+        mediaregistration?: T;
+        mediative?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "procedureaap_select".
+ */
+export interface ProcedureaapSelect<T extends boolean = true> {
+  vehicle?: T;
+  typeprocedureaap?: T;
+  procedureconcept?: T;
+  pregistryofficeprocedure?: T;
+  paymentcode?: T;
+  startdate?: T;
+  expenselist?:
+    | T
+    | {
+        expensedate?: T;
+        expensedate_tz?: T;
+        conceptexpense?: T;
+        typecurrency?: T;
+        expensevalue?: T;
+        mediaexpenseproceduresunarp?: T;
+        observations?: T;
+        id?: T;
+      };
+  proceduredatafiles?:
+    | T
+    | {
+        mediaprocedure?: T;
+        registrationprocessor?: T;
+        id?: T;
+      };
+  observations?: T;
+  procedurefinish?:
+    | T
+    | {
+        enddate?: T;
+      };
+  status?: T;
+  processstatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeproceduresunarp_select".
+ */
+export interface TypeproceduresunarpSelect<T extends boolean = true> {
+  typeprocedure?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeprocedureaap_select".
+ */
+export interface TypeprocedureaapSelect<T extends boolean = true> {
+  typeprocedure?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "registryofficeprocedure_select".
+ */
+export interface RegistryofficeprocedureSelect<T extends boolean = true> {
+  registryofficeprocedure?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "registrationprocessor_select".
+ */
+export interface RegistrationprocessorSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  fullname?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseproceduresunarp_select".
+ */
+export interface ExpenseproceduresunarpSelect<T extends boolean = true> {
+  expense?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseproceduretitletransfer_select".
+ */
+export interface ExpenseproceduretitletransferSelect<T extends boolean = true> {
+  expense?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseprocedureaap_select".
+ */
+export interface ExpenseprocedureaapSelect<T extends boolean = true> {
+  expense?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaprocedureregistration_select".
+ */
+export interface MediaprocedureregistrationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaregistration_select".
+ */
+export interface MediaregistrationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediative_select".
+ */
+export interface MediativeSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaproceduretitletransfer_select".
+ */
+export interface MediaproceduretitletransferSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaproceduresunarp_select".
+ */
+export interface MediaproceduresunarpSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpenseproceduresunarp_select".
+ */
+export interface MediaexpenseproceduresunarpSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaprocedureaap_select".
+ */
+export interface MediaprocedureaapSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpenseprocedureaap_select".
+ */
+export interface MediaexpenseprocedureaapSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "buyer_select".
+ */
+export interface BuyerSelect<T extends boolean = true> {
+  mediabuyer?: T;
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  fullname?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  numbermovil?: T;
+  email?: T;
+  activity?: T;
+  natural?:
+    | T
+    | {
+        civilstatus?: T;
+        spouse?:
+          | T
+          | {
+              dnispouse?: T;
+              fullnamespouse?: T;
+            };
+      };
+  juridical?:
+    | T
+    | {
+        statuscontributor?: T;
+        conditioncontributor?: T;
+      };
+  contacts?:
+    | T
+    | {
+        fullnamecontact?: T;
+        numbermovil?: T;
+        relation?: T;
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  rating?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activity_select".
+ */
+export interface ActivitySelect<T extends boolean = true> {
+  activity?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediabuyer_select".
+ */
+export interface MediabuyerSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internal-sales_select".
+ */
+export interface InternalSalesSelect<T extends boolean = true> {
+  vehicle?: T;
+  company?: T;
+  saledate?: T;
+  saledate_tz?: T;
+  typecurrency?: T;
+  pricesale?: T;
+  exchargerate?: T;
+  companyCustomer?: T;
+  internalsalefiles?:
+    | T
+    | {
+        mediainternalsale?: T;
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  statusReceipt?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "finalsale_select".
+ */
+export interface FinalsaleSelect<T extends boolean = true> {
+  saledate?: T;
+  saledate_tz?: T;
+  typesale?: T;
+  typecurrency?: T;
+  exchangerate?: T;
+  customer?: T;
+  vehicle?: T;
+  pricesale?: T;
+  paymentList?:
+    | T
+    | {
+        paymentdate?: T;
+        paymentdate_tz?: T;
+        typepayment?: T;
+        typecurrencyreceived?: T;
+        valuereceived?: T;
+        accountcompany?: T;
+        operationnumber?: T;
+        mediavoucher?: T;
+        observationspayment?: T;
+        id?: T;
+      };
+  salefiles?:
+    | T
+    | {
+        mediasale?: T;
+        id?: T;
+      };
+  observations?: T;
+  initialPayment?: T;
+  interestRate?: T;
+  termMonths?: T;
+  creditStartDate?: T;
+  creditStartDate_tz?: T;
+  amountToFinance?: T;
+  monthlyPayment?: T;
+  creditPlan?: T;
+  status?: T;
+  statusreceipt?: T;
+  collaborator?: T;
+  salereservation?: T;
+  saleorder?: T;
+  salehomewarranty?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "salereservation_select".
+ */
+export interface SalereservationSelect<T extends boolean = true> {
+  datereservation?: T;
+  collaborator?: T;
+  buyers?:
+    | T
+    | {
+        buyer?: T;
+        id?: T;
+      };
+  vehicle?: T;
+  pricesale?: T;
+  condition?:
+    | T
+    | {
+        typesale?: T;
+        typecurrency?: T;
+        exchargerate?: T;
+        credit?:
+          | T
+          | {
+              nodownpayment?: T;
+              typecurrencydownpayment?: T;
+              downpaymentvalue?: T;
+              periodpayment?: T;
+              interest?: T;
+              quotanumber?: T;
+              quotavalue?: T;
+              observationcredit?: T;
+            };
+        observationcodition?: T;
+      };
+  penalty?:
+    | T
+    | {
+        typecurrencypenalty?: T;
+        valuepenalty?: T;
+      };
+  listcost?:
+    | T
+    | {
+        saledate?: T;
+        typepayment?: T;
+        typecurrencyreceived?: T;
+        exchargeratereceived?: T;
+        valuereceived?: T;
+        accountcompany?: T;
+        operationnumber?: T;
+        mediacost?: T;
+        observationscost?: T;
+        id?: T;
+      };
+  reservationfiles?:
+    | T
+    | {
+        mediareservation?: T;
+        id?: T;
+      };
+  observations?: T;
+  cancellation?:
+    | T
+    | {
+        cancellationdate?: T;
+        motivecancellationsale?: T;
+        penaltycollection?:
+          | T
+          | {
+              typecurrencypenaltycollection?: T;
+              exchargeratepenaltycollection?: T;
+              valuepenaltycollection?: T;
+              typepaymentpenaltycollection?: T;
+              mediareturn?: T;
+              mediareturnpenalty?: T;
+              observationspenaltycollection?: T;
+            };
+        observationscancellation?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saleorder_select".
+ */
+export interface SaleorderSelect<T extends boolean = true> {
+  dateorder?: T;
+  collaborator?: T;
+  buyers?:
+    | T
+    | {
+        buyer?: T;
+        id?: T;
+      };
+  vehicle?:
+    | T
+    | {
+        brand?: T;
+        model?: T;
+        version?: T;
+        color?: T;
+        yeardmodel?: T;
+        fuel?: T;
+        typecurrency?: T;
+        pricesale?: T;
+      };
+  condition?:
+    | T
+    | {
+        typesale?: T;
+        typecurrency?: T;
+        exchargerate?: T;
+        credit?:
+          | T
+          | {
+              nodownpayment?: T;
+              typecurrencydownpayment?: T;
+              downpaymentvalue?: T;
+              periodpayment?: T;
+              interest?: T;
+              quotanumber?: T;
+              quotavalue?: T;
+              observationcredit?: T;
+            };
+        observationcodition?: T;
+      };
+  penalty?:
+    | T
+    | {
+        typecurrencypenalty?: T;
+        valuepenalty?: T;
+      };
+  listcost?:
+    | T
+    | {
+        saledate?: T;
+        typepayment?: T;
+        typecurrencyreceived?: T;
+        exchargeratereceived?: T;
+        valuereceived?: T;
+        accountcompany?: T;
+        operationnumber?: T;
+        mediacost?: T;
+        observationscost?: T;
+        id?: T;
+      };
+  orderfiles?:
+    | T
+    | {
+        mediaorder?: T;
+        id?: T;
+      };
+  observations?: T;
+  cancellation?:
+    | T
+    | {
+        cancellationdate?: T;
+        motivecancellationsale?: T;
+        penaltycollection?:
+          | T
+          | {
+              typecurrencypenaltycollection?: T;
+              exchargeratepenaltycollection?: T;
+              valuepenaltycollection?: T;
+              typepaymentpenaltycollection?: T;
+              mediareturn?: T;
+              mediareturnpenalty?: T;
+              observationspenaltycollection?: T;
+            };
+        observationscancellation?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "salehomewarranty_select".
+ */
+export interface SalehomewarrantySelect<T extends boolean = true> {
+  datehomewarranty?: T;
+  collaborator?: T;
+  notary?: T;
+  kardex?: T;
+  folio?: T;
+  typecurrency?: T;
+  valuemonetary?: T;
+  homewarrantyfiles?:
+    | T
+    | {
+        mediahomewarranty?: T;
+        id?: T;
+      };
+  observations?: T;
+  warrantyrelease?:
+    | T
+    | {
+        datehomewarrantyrelease?: T;
+        homewarrantyreleasefiles?:
+          | T
+          | {
+              mediahomewarrantyrelease?: T;
+              id?: T;
+            };
+        observationswarrantyrelease?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "periodpayment_select".
+ */
+export interface PeriodpaymentSelect<T extends boolean = true> {
+  periodpayment?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationsale_select".
+ */
+export interface MotivecancellationsaleSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationreservation_select".
+ */
+export interface MotivecancellationreservationSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainternalsale_select".
+ */
+export interface MediainternalsaleSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediasale_select".
+ */
+export interface MediasaleSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediasaledownpayment_select".
+ */
+export interface MediasaledownpaymentSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareservation_select".
+ */
+export interface MediareservationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaordersale_select".
+ */
+export interface MediaordersaleSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediahomewarranty_select".
+ */
+export interface MediahomewarrantySelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creditinstallment_select".
+ */
+export interface CreditinstallmentSelect<T extends boolean = true> {
+  installmentNumber?: T;
+  dueDate?: T;
+  paidDate?: T;
+  principal?: T;
+  interest?: T;
+  totalDue?: T;
+  paidAmount?: T;
+  daysLate?: T;
+  lateFee?: T;
+  status?: T;
+  creditPlan?: T;
+  payments?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creditpayment_select".
+ */
+export interface CreditpaymentSelect<T extends boolean = true> {
+  paymentNumber?: T;
+  paymentDate?: T;
+  installments?: T;
+  paymentMethods?:
+    | T
+    | {
+        typePayment?: T;
+        amount?: T;
+        typeCurrency?: T;
+        account?: T;
+        operationNumber?: T;
+        voucher?: T;
+        id?: T;
+      };
+  totalPaid?: T;
+  receipt?: T;
+  status?: T;
+  observations?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creditplan_select".
+ */
+export interface CreditplanSelect<T extends boolean = true> {
+  creditPlanNumber?: T;
+  finalSale?: T;
+  amountToFinance?: T;
+  monthlyPayment?: T;
+  startDate?: T;
+  termMonths?: T;
+  interestRate?: T;
+  parentPlan?: T;
+  refinancedPlans?: T;
+  refinancingReason?: T;
+  totalPaid?: T;
+  remainingBalance?: T;
+  lateFeeRate?: T;
+  status?: T;
+  installments?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "receiptcreditpayment_select".
+ */
+export interface ReceiptcreditpaymentSelect<T extends boolean = true> {
+  receiptNumber?: T;
+  creditPayment?: T;
+  issueDate?: T;
+  totalPaid?: T;
+  appliedDetails?:
+    | T
+    | {
+        installment?: T;
+        installmentNumber?: T;
+        amountApplied?: T;
+        statusBefore?: T;
+        statusAfter?: T;
+        id?: T;
+      };
+  paymentMethods?:
+    | T
+    | {
+        typePayment?: T;
+        amount?: T;
+        typeCurrency?: T;
+        account?: T;
+        operationNumber?: T;
+        voucher?: T;
+        id?: T;
+      };
+  status?: T;
+  observations?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "receiptsale_select".
+ */
+export interface ReceiptsaleSelect<T extends boolean = true> {
+  finalsale?: T;
+  internalsales?: T;
+  issuedate?: T;
+  issuedate_tz?: T;
+  typecurrency?: T;
+  exchangerate?: T;
+  typereceipt?: T;
+  receiptnumber?: T;
+  receiptvalue?: T;
+  mediareceipt?: T;
+  observations?: T;
+  cancellation?:
+    | T
+    | {
+        cancellationdate?: T;
+        motivecancellationreceiptsale?: T;
+        typereceiptcancellation?: T;
+        receiptnumbercancellation?: T;
+        mediareceiptcancellation?: T;
+        observationscancellation?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationreceiptsale_select".
+ */
+export interface MotivecancellationreceiptsaleSelect<T extends boolean = true> {
+  motivecancellation?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareceipt_select".
+ */
+export interface MediareceiptSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicledelivery_select".
+ */
+export interface VehicledeliverySelect<T extends boolean = true> {
+  finalsale?: T;
+  typedelivery?: T;
+  deliverydate?: T;
+  deliverydate_tz?: T;
+  deliveryplace?: T;
+  vehicledeliveryfiles?:
+    | T
+    | {
+        mediavehicledelivery?: T;
+        id?: T;
+      };
+  observations?: T;
+  statusdelivery?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediavehicledelivery_select".
+ */
+export interface MediavehicledeliverySelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transfersale_select".
+ */
+export interface TransfersaleSelect<T extends boolean = true> {
+  finalsale?: T;
+  Internalsales?: T;
+  transferdate?: T;
+  transferdate_tz?: T;
+  transferTo?: T;
+  notary?: T;
+  collaborator?: T;
+  vehicleTitleTransferToAThirdParty?:
+    | T
+    | {
+        typeidentificationdocument?: T;
+        identificationnumber?: T;
+        fullname?: T;
+        mediathirddni?: T;
+        observationsthird?: T;
+        id?: T;
+      };
+  vouchertransfersale?: T;
+  transfersalefiles?:
+    | T
+    | {
+        mediatransfersale?: T;
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  finish?:
+    | T
+    | {
+        enddate?: T;
+        enddate_tz?: T;
+        observationsfinish?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vouchertransfersale_select".
+ */
+export interface VouchertransfersaleSelect<T extends boolean = true> {
+  voucherdate?: T;
+  voucherdate_tz?: T;
+  company?: T;
+  typecurrency?: T;
+  voucherAmount?: T;
+  operationNumber?: T;
+  typebank?: T;
+  mediatransfervoucher?: T;
+  observations?: T;
+  fullname?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notary_select".
+ */
+export interface NotarySelect<T extends boolean = true> {
+  ruc?: T;
+  notaryname?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediatransfersale_select".
+ */
+export interface MediatransfersaleSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediatransfervoucher_select".
+ */
+export interface MediatransfervoucherSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification_select".
+ */
+export interface NotificationSelect<T extends boolean = true> {
+  finalsale?: T;
+  datenotification?: T;
+  datenotification_tz?: T;
+  typenotification?: T;
+  notificationfiles?:
+    | T
+    | {
+        medianotification?: T;
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documentaditional_select".
+ */
+export interface DocumentaditionalSelect<T extends boolean = true> {
+  finalsale?: T;
+  datedocument?: T;
+  typedocumentaditional?: T;
+  documentaditionalfiles?:
+    | T
+    | {
+        mediadocumentaditional?: T;
+        id?: T;
+      };
+  observations?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typedocumentaditional_select".
+ */
+export interface TypedocumentaditionalSelect<T extends boolean = true> {
+  typedocumentaditional?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediadocumentaditional_select".
+ */
+export interface MediadocumentaditionalSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "medianotification_select".
+ */
+export interface MedianotificationSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vehicletax_select".
+ */
+export interface VehicletaxSelect<T extends boolean = true> {
+  finalsale?: T;
+  calculationdate?: T;
+  calculationdate_tz?: T;
+  calculatedyears?: T;
+  calculatedvalue?: T;
+  calculationfiles?:
+    | T
+    | {
+        mediataxcalculation?: T;
+        id?: T;
+      };
+  observations?: T;
+  payment?:
+    | T
+    | {
+        datepayment?: T;
+        datepayment_tz?: T;
+        observationsPayment?: T;
+        taxfiles?:
+          | T
+          | {
+              mediavehicletax?: T;
+              id?: T;
+            };
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "infractionvehicle_select".
+ */
+export interface InfractionvehicleSelect<T extends boolean = true> {
+  finalsale?: T;
+  dateinfraction?: T;
+  dateinfraction_tz?: T;
+  sanctioningentity?: T;
+  typeinfraction?: T;
+  infractionnumber?: T;
+  valueinfraction?: T;
+  infractionfiles?:
+    | T
+    | {
+        mediainfraction?: T;
+        id?: T;
+      };
+  observations?: T;
+  seizureMoney?:
+    | T
+    | {
+        datecoactive?: T;
+        datecoactive_tz?: T;
+        accountcompany?: T;
+        mediaembargo?: T;
+        observationsSeizure?: T;
+      };
+  payment?:
+    | T
+    | {
+        datepayment?: T;
+        datepayment_tz?: T;
+        mediapayment?: T;
+        observationsPayment?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeinfraction_select".
+ */
+export interface TypeinfractionSelect<T extends boolean = true> {
+  typeinfraction?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sanctioningentity_select".
+ */
+export interface SanctioningentitySelect<T extends boolean = true> {
+  sanctioningentity?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediavehicletax_select".
+ */
+export interface MediavehicletaxSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediainfraction_select".
+ */
+export interface MediainfractionSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courtcases_select".
+ */
+export interface CourtcasesSelect<T extends boolean = true> {
+  finalsale?: T;
+  datecase?: T;
+  mattercase?: T;
+  description?: T;
+  courtcasesfiles?:
+    | T
+    | {
+        mediacourtcases?: T;
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "counselcourtcases_select".
+ */
+export interface CounselcourtcasesSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  fullname?: T;
+  observations?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacourtcases_select".
+ */
+export interface MediacourtcasesSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "company_select".
+ */
+export interface CompanySelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  companyname?: T;
+  tradename?: T;
+  namedocument?: T;
+  idcode?: T;
+  registryentry?: T;
+  logo?: T;
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companyinformation_select".
+ */
+export interface CompanyinformationSelect<T extends boolean = true> {
+  company?: T;
+  essaludpayment?:
+    | T
+    | {
+        id?: T;
+      };
+  imrpayment?:
+    | T
+    | {
+        id?: T;
+      };
+  incometaxpayment?:
+    | T
+    | {
+        id?: T;
+      };
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accountcompany_select".
+ */
+export interface AccountcompanySelect<T extends boolean = true> {
+  company?: T;
+  typebank?: T;
+  typeaccount?: T;
+  typecurrency?: T;
+  accountnumber?: T;
+  cci?: T;
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  fullaccountbank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "establishment_select".
+ */
+export interface EstablishmentSelect<T extends boolean = true> {
+  establishmentname?: T;
+  departamento?: T;
+  provincia?: T;
+  distrito?: T;
+  address?: T;
+  numbermovil?: T;
+  email?: T;
+  company?: T;
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "warehouse_select".
+ */
+export interface WarehouseSelect<T extends boolean = true> {
+  establishment?: T;
+  warehousename?: T;
+  address?: T;
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacompany_select".
+ */
+export interface MediacompanySelect<T extends boolean = true> {
+  createdBy?: T;
+  updatedBy?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collaborator_select".
+ */
+export interface CollaboratorSelect<T extends boolean = true> {
+  photo?: T;
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  fullname?: T;
+  name?: T;
+  paternallastname?: T;
+  motherlastname?: T;
+  civilstatus?: T;
+  genre?: T;
+  datebirth?: T;
+  nationality?: T;
+  contactinformation?:
+    | T
+    | {
+        departamento?: T;
+        provincia?: T;
+        distrito?: T;
+        address?: T;
+        numbermovil?: T;
+        email?: T;
+      };
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "laborinformation_select".
+ */
+export interface LaborinformationSelect<T extends boolean = true> {
+  collaborator?: T;
+  laborinformation?:
+    | T
+    | {
+        company?: T;
+        typecollaborator?: T;
+        establishment?: T;
+        laborarea?: T;
+        jobposition?: T;
+        entrydate?: T;
+        departuredate?: T;
+        drivinglicense?: T;
+      };
+  emergencycontact?:
+    | T
+    | {
+        name?: T;
+        numbermovil?: T;
+        relationship?: T;
+        address?: T;
+      };
+  familyinformation?:
+    | T
+    | {
+        fullname?: T;
+        familyrelation?: T;
+        datebirth?: T;
+        id?: T;
+      };
+  salaryinformation?:
+    | T
+    | {
+        salary?: T;
+        account?:
+          | T
+          | {
+              typebank?: T;
+              typeaccount?: T;
+              typecurrency?: T;
+              accountnumber?: T;
+              cci?: T;
+            };
+      };
+  socialsecurityinformation?:
+    | T
+    | {
+        pensionsystem?: T;
+        typeafp?: T;
+        afppayment?:
+          | T
+          | {
+              dateafp?: T;
+              afpfiles?:
+                | T
+                | {
+                    mediaafp?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        ctspayment?:
+          | T
+          | {
+              datects?: T;
+              ctsfiles?:
+                | T
+                | {
+                    mediacts?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "driver_select".
+ */
+export interface DriverSelect<T extends boolean = true> {
+  typeidentificationdocument?: T;
+  identificationnumber?: T;
+  fullname?: T;
+  namelicense?: T;
+  licensenumber?: T;
+  contactinformation?:
+    | T
+    | {
+        departamento?: T;
+        provincia?: T;
+        distrito?: T;
+        address?: T;
+        numbermovil?: T;
+        email?: T;
+      };
+  observations?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typecollaborator_select".
+ */
+export interface TypecollaboratorSelect<T extends boolean = true> {
+  typecollaborator?: T;
+  description?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "laborarea_select".
+ */
+export interface LaborareaSelect<T extends boolean = true> {
+  laborarea?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobposition_select".
+ */
+export interface JobpositionSelect<T extends boolean = true> {
+  jobposition?: T;
+  description?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pensionsystem_select".
+ */
+export interface PensionsystemSelect<T extends boolean = true> {
+  pensionsystem?: T;
+  abbreviatedpensionsystem?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeafp_select".
+ */
+export interface TypeafpSelect<T extends boolean = true> {
+  typeafp?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "familyrelation_select".
+ */
+export interface FamilyrelationSelect<T extends boolean = true> {
+  familyrelation?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacollaborator_select".
+ */
+export interface MediacollaboratorSelect<T extends boolean = true> {
+  createdBy?: T;
+  updatedBy?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaafp_select".
+ */
+export interface MediaafpSelect<T extends boolean = true> {
+  createdBy?: T;
+  updatedBy?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediacts_select".
+ */
+export interface MediactsSelect<T extends boolean = true> {
+  createdBy?: T;
+  updatedBy?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  mediauser?: T;
+  collaborator?: T;
+  rolcollaborator?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -256,10 +8558,45 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "modulesystem_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+export interface ModulesystemSelect<T extends boolean = true> {
+  modulename?: T;
+  slug?: T;
+  operations?:
+    | T
+    | {
+        slug?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "role_select".
+ */
+export interface RoleSelect<T extends boolean = true> {
+  name?: T;
+  permissions?:
+    | T
+    | {
+        modulesystem?: T;
+        operation?: T;
+        canAccess?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediauser_select".
+ */
+export interface MediauserSelect<T extends boolean = true> {
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -271,6 +8608,173 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeidentificationdocument_select".
+ */
+export interface TypeidentificationdocumentSelect<T extends boolean = true> {
+  codedocument?: T;
+  abbreviatedname?: T;
+  name?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "civilstatus_select".
+ */
+export interface CivilstatusSelect<T extends boolean = true> {
+  civilstatus?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genre_select".
+ */
+export interface GenreSelect<T extends boolean = true> {
+  genre?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeaccount_select".
+ */
+export interface TypeaccountSelect<T extends boolean = true> {
+  typeaccount?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typebank_select".
+ */
+export interface TypebankSelect<T extends boolean = true> {
+  bankname?: T;
+  abbreviatedname?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typecurrency_select".
+ */
+export interface TypecurrencySelect<T extends boolean = true> {
+  typecurrency?: T;
+  symbol?: T;
+  codecurrency?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typereceipt_select".
+ */
+export interface TypereceiptSelect<T extends boolean = true> {
+  codereceipt?: T;
+  typereceipt?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typepayment_select".
+ */
+export interface TypepaymentSelect<T extends boolean = true> {
+  typepayment?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paymentperiod_select".
+ */
+export interface PaymentperiodSelect<T extends boolean = true> {
+  paymentperiod?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "country_select".
+ */
+export interface CountrySelect<T extends boolean = true> {
+  country?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "departamento_select".
+ */
+export interface DepartamentoSelect<T extends boolean = true> {
+  codigo?: T;
+  departamento?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "provincia_select".
+ */
+export interface ProvinciaSelect<T extends boolean = true> {
+  departamento?: T;
+  codigoprovincia?: T;
+  provincia?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "distrito_select".
+ */
+export interface DistritoSelect<T extends boolean = true> {
+  provincia?: T;
+  ubigeo?: T;
+  distrito?: T;
+  status?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

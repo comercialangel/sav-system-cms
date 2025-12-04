@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --font-mono: 'Roboto Mono', monospace;
 }
 
@@ -9,7 +9,6 @@
 html {
   font-size: 18px;
   line-height: 32px;
-
   background: rgb(0, 0, 0);
   -webkit-font-smoothing: antialiased;
 }
@@ -158,6 +157,202 @@ svg {
       text-decoration: none;
       padding: 0 0.5rem;
       background: rgb(60, 60, 60);
+      border-radius: 4px;
+    }
+  }
+} */
+
+:root {
+  --font-mono: 'Roboto Mono', monospace;
+
+  /* ====== NUEVOS COLORES ====== */
+  --bg: oklch(98.4% 0.003 247.858); /* tu fondo claro */
+  --text: oklch(18% 0.02 250); /* texto casi negro */
+  --text-light: oklch(45% 0.03 250); /* footer */
+
+  --blue: oklch(62.3% 0.214 259.815); /* TU AZUL EXACTO */
+  --blue-dark: oklch(57% 0.23 259.815); /* hover */
+  --blue-darker: oklch(52% 0.25 259.815); /* active */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+  line-height: 32px;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui;
+  font-size: 18px;
+  line-height: 32px;
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+
+  @media (max-width: 1024px) {
+    font-size: 15px;
+    line-height: 24px;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1 {
+  margin: 40px 0;
+  font-size: 64px;
+  line-height: 70px;
+  font-weight: bold;
+  color: var(--text);
+
+  @media (max-width: 1024px) {
+    margin: 24px 0;
+    font-size: 42px;
+    line-height: 42px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 38px;
+    line-height: 38px;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 32px;
+    line-height: 32px;
+  }
+}
+
+p {
+  margin: 24px 0;
+  color: var(--text);
+
+  @media (max-width: 1024px) {
+    margin: calc(24px * 0.75) 0;
+  }
+}
+
+a {
+  color: currentColor;
+
+  &:focus {
+    opacity: 0.8;
+    outline: none;
+  }
+
+  &:active {
+    opacity: 0.7;
+    outline: none;
+  }
+}
+
+svg {
+  vertical-align: middle;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  padding: 45px;
+  max-width: 1024px;
+  margin: 0 auto;
+  overflow: hidden;
+
+  @media (max-width: 400px) {
+    padding: 24px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+
+    h1 {
+      text-align: center;
+    }
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    a {
+      text-decoration: none;
+      padding: 0.75rem 1.5rem; /* un poco más grande y cómodo */
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    /* BOTÓN PRINCIPAL – AZUL */
+    .admin {
+      color: white;
+      background: var(--blue);
+      border: 2px solid var(--blue);
+
+      &:hover {
+        background: var(--blue-dark);
+        border-color: var(--blue-dark);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        background: var(--blue-darker);
+      }
+    }
+
+    /* Botón secundario (por si lo usas después) */
+    .docs {
+      color: var(--blue);
+      background: transparent;
+      border: 2px solid var(--blue);
+
+      &:hover {
+        background: oklch(95% 0.08 259.815 / 0.15);
+      }
+    }
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-light);
+    font-size: 0.95rem;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .codeLink {
+      text-decoration: none;
+      padding: 0 0.5rem;
+      background: oklch(94% 0.02 250);
+      color: var(--text);
       border-radius: 4px;
     }
   }
