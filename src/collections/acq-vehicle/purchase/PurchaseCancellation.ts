@@ -202,6 +202,9 @@ export const PurchaseCancellation: CollectionConfig = {
       async ({ doc, req, context, operation }) => {
         if (context.skipHook) return
 
+        if (doc.statuscreditnote === 'registrada') {
+          return
+        }
         // 3. Sincronización con Compra (SOLO CREATE)
         // Esto evita que al editar la cancelación (Paso 3) se reseteen los estados de la compra.
         if (operation === 'create') {
@@ -221,6 +224,12 @@ export const PurchaseCancellation: CollectionConfig = {
           }
 
           if (purchase) {
+            if (
+              purchase.statuspayment === 'retornado' ||
+              purchase.statuspayment === 'retorno parcial'
+            ) {
+              return
+            }
             const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
 
             // Inicializamos la compra como "por retornar".
