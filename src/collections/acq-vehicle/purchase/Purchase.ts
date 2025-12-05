@@ -430,20 +430,6 @@ export const Purchase: CollectionConfig = {
     //     allowEdit: false,
     //   },
     // },
-    // {
-    //   name: 'payment',
-    //   type: 'relationship',
-    //   label: 'Pago de compra asociada',
-    //   relationTo: 'purchasepayment',
-    //   hasMany: true,
-    //   maxDepth: 2,
-    //   admin: {
-    //     readOnly: false,
-    //     position: 'sidebar',
-    //     allowEdit: false,
-    //   },
-    // },
-
     {
       name: 'payment',
       type: 'join',
