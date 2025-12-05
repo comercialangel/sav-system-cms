@@ -418,18 +418,6 @@ export const Purchase: CollectionConfig = {
       on: 'purchase',
       maxDepth: 1,
     },
-    // {
-    //   name: 'cancellation',
-    //   type: 'relationship',
-    //   label: 'Cancelación de compra asociada',
-    //   relationTo: 'purchasecancellation',
-    //   hasMany: false,
-    //   admin: {
-    //     readOnly: false,
-    //     position: 'sidebar',
-    //     allowEdit: false,
-    //   },
-    // },
     {
       name: 'payment',
       type: 'join',
@@ -440,29 +428,20 @@ export const Purchase: CollectionConfig = {
 
     {
       name: 'invoice',
-      type: 'relationship',
+      type: 'join',
       label: 'Comprobante de compra asociado',
-      relationTo: 'purchaseinvoice',
+      collection: 'purchaseinvoice',
+      on: 'purchase',
       hasMany: false,
-      admin: {
-        readOnly: false,
-        position: 'sidebar',
-        allowEdit: false,
-      },
     },
     {
       name: 'receptions',
-      type: 'relationship',
+      type: 'join',
       label: 'Recepción de compra asociada',
-      relationTo: 'purchasereceptions',
+      collection: 'purchasereceptions',
+      on: 'purchase',
       hasMany: false,
       maxDepth: 2,
-      index: true,
-      admin: {
-        readOnly: false,
-        position: 'sidebar',
-        allowEdit: false,
-      },
     },
     {
       type: 'relationship',
@@ -488,31 +467,6 @@ export const Purchase: CollectionConfig = {
     },
   ],
   hooks: {
-    // afterChange: [
-    //   async ({ doc, previousDoc, operation }) => {
-    //     // Lógica para actualizar statuspayment cuando pricepurchase > amountpaid o iguales
-    //     if (
-    //       operation === 'update' &&
-    //       (doc.pricepurchase !== undefined || doc.amountpaid !== undefined)
-    //     ) {
-    //       const currentPricePurchase = doc.pricepurchase ?? previousDoc?.pricepurchase ?? 0
-    //       const currentAmountPaid = doc.amountpaid ?? previousDoc?.amountpaid ?? 0
-
-    //       if (currentPricePurchase === currentAmountPaid && currentAmountPaid !== 0) {
-    //         doc.statuspayment = 'completado'
-    //       } else if (currentPricePurchase > currentAmountPaid && currentAmountPaid !== 0) {
-    //         doc.statuspayment = 'parcial'
-    //       } else if (currentAmountPaid === 0) {
-    //         doc.statuspayment = 'pendiente'
-    //       }
-    //     }
-
-    // if (operation === 'update' && data.status === 'anulado') {
-    //   data.statuspayment = 'por retornar'
-    // }
-    //   },
-    // ],
-
     afterChange: [
       async ({ doc, previousDoc, operation, req }) => {
         // Si la compra está anulada, no actualizar el statuspayment
