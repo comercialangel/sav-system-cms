@@ -412,29 +412,46 @@ export const Purchase: CollectionConfig = {
     },
     {
       name: 'cancellation',
-      type: 'relationship',
+      type: 'join',
       label: 'Cancelación de compra asociada',
-      relationTo: 'purchasecancellation',
-      hasMany: false,
-      admin: {
-        readOnly: false,
-        position: 'sidebar',
-        allowEdit: false,
-      },
+      collection: 'purchasecancellation',
+      on: 'purchase',
+      maxDepth: 1,
     },
+    // {
+    //   name: 'cancellation',
+    //   type: 'relationship',
+    //   label: 'Cancelación de compra asociada',
+    //   relationTo: 'purchasecancellation',
+    //   hasMany: false,
+    //   admin: {
+    //     readOnly: false,
+    //     position: 'sidebar',
+    //     allowEdit: false,
+    //   },
+    // },
+    // {
+    //   name: 'payment',
+    //   type: 'relationship',
+    //   label: 'Pago de compra asociada',
+    //   relationTo: 'purchasepayment',
+    //   hasMany: true,
+    //   maxDepth: 2,
+    //   admin: {
+    //     readOnly: false,
+    //     position: 'sidebar',
+    //     allowEdit: false,
+    //   },
+    // },
+
     {
       name: 'payment',
-      type: 'relationship',
+      type: 'join',
       label: 'Pago de compra asociada',
-      relationTo: 'purchasepayment',
-      hasMany: true,
-      maxDepth: 2,
-      admin: {
-        readOnly: false,
-        position: 'sidebar',
-        allowEdit: false,
-      },
+      collection: 'purchasepayment',
+      on: 'purchase',
     },
+
     {
       name: 'invoice',
       type: 'relationship',
