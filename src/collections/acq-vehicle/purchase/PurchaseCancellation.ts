@@ -159,154 +159,17 @@ export const PurchaseCancellation: CollectionConfig = {
       },
     },
   ],
-  // hooks: {
-  //   beforeChange: [
-  //     async ({ req, data, operation }) => {
-  //       const { user, payload } = req
-
-  //       // 1. Auditoría (Create/Update)
-  //       if (user) {
-  //         if (operation === 'create') {
-  //           data.createdBy = user.id
-  //         }
-  //         data.updatedBy = user.id
-  //       }
-
-  //       // 2. Lógica de Inicialización (SOLO CREATE)
-  //       // Solo calculamos el estado inicial cuando nace el registro.
-  //       if (operation === 'create' && data.purchase) {
-  //         try {
-  //           const purchase = await payload.findByID({
-  //             collection: 'purchase',
-  //             id: data.purchase,
-  //             req,
-  //           })
-
-  //           // Si es create, calculamos el estado inicial automático
-  //           const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
-  //           data.statuscreditnote = creditNoteStatus
-
-  //           // Guardamos en contexto para usarlo en afterChange sin buscar de nuevo
-  //           req.context = { ...req.context, purchaseInfo: purchase }
-  //         } catch (e) {
-  //           console.log('Error obteniendo compra en beforeChange', e)
-  //         }
-  //       }
-
-  //       return data
-  //     },
-  //   ],
-
-  //   afterChange: [
-  //     async ({ doc, req, context, operation }) => {
-  //       if (context.skipHook) return
-
-  //       if (doc.statuscreditnote === 'registrada') {
-  //         return
-  //       }
-  //       // 3. Sincronización con Compra (SOLO CREATE)
-  //       // Esto evita que al editar la cancelación (Paso 3) se reseteen los estados de la compra.
-  //       if (operation === 'create') {
-  //         let purchase = req.context?.purchaseInfo as Purchase
-
-  //         // Fallback por si no vino del contexto
-  //         if (!purchase && doc.purchase) {
-  //           try {
-  //             purchase = await req.payload.findByID({
-  //               collection: 'purchase',
-  //               id: doc.purchase,
-  //               req,
-  //             })
-  //           } catch (e) {
-  //             console.error(e)
-  //           }
-  //         }
-
-  //         if (purchase) {
-  //           if (
-  //             purchase.statuspayment === 'retornado' ||
-  //             purchase.statuspayment === 'retorno parcial'
-  //           ) {
-  //             return
-  //           }
-  //           const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
-
-  //           // Inicializamos la compra como "por retornar".
-  //           // Como esto solo pasa en CREATE, nunca sobrescribirá un "retornado" futuro.
-  //           await req.payload.update({
-  //             collection: 'purchase',
-  //             id: doc.purchase,
-  //             data: {
-  //               status: 'anulado',
-  //               statuspayment: 'por retornar',
-  //               statusreception: 'cancelado',
-  //               statusreceipt: receiptStatus,
-  //               cancellation: doc.id,
-  //             },
-  //             context: { skipHook: true },
-  //             req,
-  //           })
-  //         }
-  //       }
-  //     },
-  //   ],
-  // },
-
   hooks: {
-    beforeChange: [
-      async ({ req, data, operation }) => {
-        const { user } = req
-
-        // 1. Auditoría
-        if (user) {
-          if (operation === 'create') data.createdBy = user.id
-          data.updatedBy = user.id
-        }
-
-        // 2. Cálculo Automático (SOLO EN CREATE)
-        // Si es un UPDATE, esto se salta completamente, respetando tu 'registrada'
-        if (operation === 'create' && data.purchase) {
-          try {
-            const purchase = await req.payload.findByID({
-              collection: 'purchase',
-              id: data.purchase,
-              req,
-            })
-
-            // Calculamos inicial solo al crear
-            data.statuscreditnote = purchase.invoice ? 'pendiente' : 'no aplicable'
-          } catch (e) {
-            console.error('Error en beforeChange:', e)
-          }
-        }
-        return data
-      },
-    ],
-
+    // En PurchaseCancellation.ts
     afterChange: [
       async ({ doc, req, context, operation }) => {
         if (context.skipHook) return
+        if (operation === 'update') return // Solo actuamos al crear
+        if (doc.statuscreditnote === 'registrada') return
 
-        // DEBUG: Esto te confirmará en la consola qué está pasando
-        console.log(
-          `[HOOK DEBUG] Operación: ${operation} | ID: ${doc.id} | Estado CN: ${doc.statuscreditnote}`,
-        )
-
-        // 1. SI ES UPDATE: ABORTAR INMEDIATAMENTE
-        // Al poner esto al inicio, garantizamos que el paso 3 nunca toque la compra
-        if (operation === 'update') {
-          return
-        }
-
-        // 2. SI YA ESTÁ REGISTRADA: ABORTAR
-        if (doc.statuscreditnote === 'registrada') {
-          return
-        }
-
-        // 3. Sincronización Inicial (SOLO CREATE)
+        // Solo lógica de CREATE
         if (operation === 'create' && doc.purchase) {
           try {
-            // Buscamos la compra fresca para ver su estado actual real
             const purchase = await req.payload.findByID({
               collection: 'purchase',
               id: doc.purchase,
@@ -315,29 +178,27 @@ export const PurchaseCancellation: CollectionConfig = {
 
             if (!purchase) return
 
-            // 4. GUARDIA FINAL: Si la compra ya fue retornada (Paso 2), NO LA TOCAMOS.
-            // Esto protege contra condiciones de carrera raras.
+            // Validación de seguridad (Paso 2)
             if (
               purchase.statuspayment === 'retornado' ||
               purchase.statuspayment === 'retorno parcial'
             ) {
-              console.log('[HOOK DEBUG] Compra ya retornada. Omitiendo inicialización.')
               return
             }
 
             const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
 
-            console.log('[HOOK DEBUG] Inicializando compra como Por Retornar (Solo Create)')
-
+            // ACTUALIZAMOS SOLO ESTADOS
+            // YA NO pasamos 'cancellation: doc.id' porque el campo 'join' lo resuelve solo.
             await req.payload.update({
               collection: 'purchase',
               id: doc.purchase,
               data: {
                 status: 'anulado',
-                statuspayment: 'por retornar',
+                statuspayment: 'por retornar', // Inicialización de estado
                 statusreception: 'cancelado',
                 statusreceipt: receiptStatus,
-                cancellation: doc.id,
+                // cancellation: doc.id <--- ESTA LÍNEA SE BORRA, YA NO ES NECESARIA
               },
               context: { skipHook: true },
               req,
