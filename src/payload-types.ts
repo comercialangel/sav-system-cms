@@ -250,7 +250,12 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    purchase: {
+      cancellation: 'purchasecancellation';
+      payment: 'purchasepayment';
+    };
+  };
   collectionsSelect: {
     purchase: PurchaseSelect<false> | PurchaseSelect<true>;
     purchasepayment: PurchasepaymentSelect<false> | PurchasepaymentSelect<true>;
@@ -505,8 +510,16 @@ export interface Purchase {
   statuspayment: 'pendiente' | 'parcial' | 'completado' | 'por retornar' | 'retorno parcial' | 'retornado';
   statusreceipt: 'no aplicable' | 'pendiente' | 'recibido' | 'cancelado' | 'anulado';
   transportation?: (string | null) | Purchasetransportation;
-  cancellation?: (string | null) | Purchasecancellation;
-  payment?: (string | Purchasepayment)[] | null;
+  cancellation?: {
+    docs?: (string | Purchasecancellation)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  payment?: {
+    docs?: (string | Purchasepayment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   invoice?: (string | null) | Purchaseinvoice;
   receptions?: (string | null) | Purchasereception;
   createdBy?: (string | null) | User;
