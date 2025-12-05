@@ -25,6 +25,7 @@ export const PurchaseReceptions: CollectionConfig = {
           type: 'relationship',
           relationTo: 'purchase',
           required: true,
+          index: true,
           admin: {
             description: 'Compra a la que pertenece esta recepción',
           },
@@ -555,7 +556,7 @@ export const PurchaseReceptions: CollectionConfig = {
               id: purchaseId,
               data: {
                 statusreception: 'recepcionado',
-                receptions: doc.id,
+                // receptions: doc.id,
               },
             })
           }
