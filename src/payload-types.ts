@@ -254,6 +254,8 @@ export interface Config {
     purchase: {
       cancellation: 'purchasecancellation';
       payment: 'purchasepayment';
+      invoice: 'purchaseinvoice';
+      receptions: 'purchasereceptions';
     };
   };
   collectionsSelect: {
@@ -520,8 +522,16 @@ export interface Purchase {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  invoice?: (string | null) | Purchaseinvoice;
-  receptions?: (string | null) | Purchasereception;
+  invoice?: {
+    docs?: (string | Purchaseinvoice)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  receptions?: {
+    docs?: (string | Purchasereception)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
   updatedAt: string;
