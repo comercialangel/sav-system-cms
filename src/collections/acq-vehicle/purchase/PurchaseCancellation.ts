@@ -1,4 +1,3 @@
-import { Purchase } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
 
 export const PurchaseCancellation: CollectionConfig = {
@@ -212,84 +211,142 @@ export const PurchaseCancellation: CollectionConfig = {
   //   ],
   // },
 
+  // hooks: {
+  //   beforeChange: [
+  //     async ({ req, data, operation }) => {
+  //       const { user } = req
+
+  //       // 1. Auditoría
+  //       if (user) {
+  //         if (operation === 'create') data.createdBy = user.id
+  //         data.updatedBy = user.id
+  //       }
+
+  //       // 2. Lógica de Inicialización (SOLO CREATE)
+  //       // Aquí es donde determinamos si es 'pendiente' o 'no aplicable'
+  //       if (operation === 'create' && data.purchase) {
+  //         try {
+  //           // Buscamos la compra para ver si tiene factura
+  //           const purchase = await req.payload.findByID({
+  //             collection: 'purchase',
+  //             id: data.purchase,
+  //             req,
+  //           })
+
+  //           // Guardamos en contexto para no buscarla de nuevo en afterChange
+  //           req.context = { ...req.context, purchaseInfo: purchase }
+
+  //           // LÓGICA FALTANTE RESTAURADA:
+  //           // Solo calculamos si el frontend no envió ya un valor (ej: registrada)
+  //           if (typeof data.statuscreditnote === 'undefined') {
+  //             const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
+  //             data.statuscreditnote = creditNoteStatus
+  //           }
+  //         } catch (e) {
+  //           console.error('Error en beforeChange:', e)
+  //         }
+  //       }
+  //       return data
+  //     },
+  //   ],
+
+  //   afterChange: [
+  //     async ({ doc, req, context, operation }) => {
+  //       if (context.skipHook) return
+
+  //       // Guardias de seguridad para no ejecutar lógica innecesaria
+  //       if (operation === 'update') return
+  //       if (doc.statuscreditnote === 'registrada') return
+
+  //       // 3. Sincronización con Compra (SOLO CREATE)
+  //       if (operation === 'create') {
+  //         // Intentamos sacar la info del contexto (del beforeChange)
+  //         let purchase = req.context?.purchaseInfo as Purchase
+
+  //         // Fallback por seguridad
+  //         if (!purchase && doc.purchase) {
+  //           try {
+  //             purchase = await req.payload.findByID({
+  //               collection: 'purchase',
+  //               id: doc.purchase,
+  //               req,
+  //             })
+  //           } catch (e) {
+  //             console.error(e)
+  //           }
+  //         }
+
+  //         if (purchase) {
+  //           // GUARDIA FINAL: Si ya se devolvió dinero, no resetear estado
+  //           if (
+  //             purchase.statuspayment === 'retornado' ||
+  //             purchase.statuspayment === 'retorno parcial'
+  //           ) {
+  //             return
+  //           }
+
+  //           const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
+
+  //           // Actualizamos la compra
+  //           await req.payload.update({
+  //             collection: 'purchase',
+  //             id: doc.purchase,
+  //             data: {
+  //               status: 'anulado',
+  //               statuspayment: 'por retornar',
+  //               statusreception: 'cancelado',
+  //               statusreceipt: receiptStatus,
+  //             },
+  //             context: { skipHook: true },
+  //             req,
+  //           })
+  //         }
+  //       }
+  //     },
+  //   ],
+  // },
+
   hooks: {
-    beforeChange: [
-      async ({ req, data, operation }) => {
-        const { user } = req
+    afterChange: [
+      async ({ doc, operation, req, context }) => {
+        // 1. Evitar bucles infinitos
+        if (context.skipHook) return
 
-        // 1. Auditoría
-        if (user) {
-          if (operation === 'create') data.createdBy = user.id
-          data.updatedBy = user.id
-        }
+        // 2. Lógica SOLO para creación (Inicialización)
+        // Si es un update (ej: cambias a 'registrada'), esto se ignora.
+        if (operation === 'create' && doc.purchase) {
+          const { payload } = req
 
-        // 2. Lógica de Inicialización (SOLO CREATE)
-        // Aquí es donde determinamos si es 'pendiente' o 'no aplicable'
-        if (operation === 'create' && data.purchase) {
           try {
-            // Buscamos la compra para ver si tiene factura
-            const purchase = await req.payload.findByID({
+            // A. Obtener la compra actual (con req para mantener transacción)
+            const currentPurchase = await payload.findByID({
               collection: 'purchase',
-              id: data.purchase,
+              id: doc.purchase,
               req,
             })
 
-            // Guardamos en contexto para no buscarla de nuevo en afterChange
-            req.context = { ...req.context, purchaseInfo: purchase }
+            if (!currentPurchase) return
 
-            // LÓGICA FALTANTE RESTAURADA:
-            // Solo calculamos si el frontend no envió ya un valor (ej: registrada)
-            if (typeof data.statuscreditnote === 'undefined') {
-              const creditNoteStatus = purchase.invoice ? 'pendiente' : 'no aplicable'
-              data.statuscreditnote = creditNoteStatus
-            }
-          } catch (e) {
-            console.error('Error en beforeChange:', e)
-          }
-        }
-        return data
-      },
-    ],
-
-    afterChange: [
-      async ({ doc, req, context, operation }) => {
-        if (context.skipHook) return
-
-        // Guardias de seguridad para no ejecutar lógica innecesaria
-        if (operation === 'update') return
-        if (doc.statuscreditnote === 'registrada') return
-
-        // 3. Sincronización con Compra (SOLO CREATE)
-        if (operation === 'create') {
-          // Intentamos sacar la info del contexto (del beforeChange)
-          let purchase = req.context?.purchaseInfo as Purchase
-
-          // Fallback por seguridad
-          if (!purchase && doc.purchase) {
-            try {
-              purchase = await req.payload.findByID({
-                collection: 'purchase',
-                id: doc.purchase,
-                req,
-              })
-            } catch (e) {
-              console.error(e)
-            }
-          }
-
-          if (purchase) {
-            // GUARDIA FINAL: Si ya se devolvió dinero, no resetear estado
+            // B. TU GUARDIA DE ROBUSTEZ 🛡️
+            // Si por alguna razón la compra ya fue procesada/retornada, no tocamos nada.
             if (
-              purchase.statuspayment === 'retornado' ||
-              purchase.statuspayment === 'retorno parcial'
+              currentPurchase.statuspayment === 'retornado' ||
+              currentPurchase.statuspayment === 'retorno parcial'
             ) {
+              console.log(
+                '[HOOK] Cancelación creada, pero la compra ya estaba retornada. Omitiendo cambios.',
+              )
               return
             }
 
-            const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
+            // C. Calcular estados
+            const receiptStatus = currentPurchase.invoice ? 'anulado' : 'cancelado'
+            const creditNoteStatus = currentPurchase.invoice ? 'pendiente' : 'no aplicable'
 
-            // Actualizamos la compra
-            await req.payload.update({
+            console.log(`[HOOK] Inicializando Cancelación ${doc.id} | Nota: ${creditNoteStatus}`)
+
+            // D. Actualizar Purchase (compra principal)
+            await payload.update({
               collection: 'purchase',
               id: doc.purchase,
               data: {
@@ -301,6 +358,20 @@ export const PurchaseCancellation: CollectionConfig = {
               context: { skipHook: true },
               req,
             })
+
+            // E. Auto-actualizar PurchaseCancellation (para guardar el statuscreditnote calculado)
+            await payload.update({
+              collection: 'purchasecancellation',
+              id: doc.id,
+              data: {
+                statuscreditnote: creditNoteStatus,
+              },
+              context: { skipHook: true },
+              depth: 0,
+              req,
+            })
+          } catch (error) {
+            console.error('Error inicializando cancelación:', error)
           }
         }
       },
