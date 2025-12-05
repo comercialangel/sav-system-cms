@@ -173,7 +173,7 @@ export const PurchaseInvoice: CollectionConfig = {
               collection: 'purchase',
               id: purchase,
               data: {
-                invoice: doc.id, // Asignamos la invoice a la Compra
+                // invoice: doc.id, // Asignamos la invoice a la Compra
                 statusreceipt: noreceipt ? 'no aplicable' : 'recibido',
               },
             })
