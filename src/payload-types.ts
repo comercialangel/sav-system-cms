@@ -261,6 +261,9 @@ export interface Config {
     purchasecancellation: {
       purchaserefund: 'purchaserefund';
     };
+    creditplan: {
+      installments: 'creditinstallment';
+    };
   };
   collectionsSelect: {
     purchase: PurchaseSelect<false> | PurchaseSelect<true>;
@@ -3377,7 +3380,11 @@ export interface Creditplan {
    */
   lateFeeRate?: number | null;
   status?: ('activo' | 'refinanciado' | 'reprogramado' | 'completado' | 'moroso' | 'cancelado') | null;
-  installments?: (string | Creditinstallment)[] | null;
+  installments?: {
+    docs?: (string | Creditinstallment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
