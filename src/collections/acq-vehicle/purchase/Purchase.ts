@@ -466,49 +466,97 @@ export const Purchase: CollectionConfig = {
   ],
 
   hooks: {
-    // en Purchase.ts
     beforeChange: [
       async ({ req, data, operation, originalDoc }) => {
         const { payload, user } = req
 
         // ============================================================
-        // 1. GENERADOR DE CORRELATIVO (Estilo Robusto)
+        // 1. AUDITORÍA (Siempre va primero para asegurar user IDs)
         // ============================================================
-        if (operation === 'create') {
-          // Definimos prefijo con año: Ej "COM-2025-"
-          const now = new Date()
-          const year = now.getFullYear()
-          const prefix = `COM-${year}-`
-
-          // Buscamos el último de ESTE AÑO
-          const lastOrder = await payload.find({
-            collection: 'purchase',
-            where: {
-              purchaseNumber: { like: prefix },
-            },
-            sort: '-purchaseNumber',
-            limit: 1,
-            req,
-          })
-
-          let nextNumber = 1
-
-          if (lastOrder.docs.length > 0) {
-            const lastId = lastOrder.docs[0].purchaseNumber
-            // Regex para capturar los dígitos finales: "COM-2025-00005" -> captura "00005"
-            const match = lastId.match(/-(\d+)$/)
-
-            if (match) {
-              nextNumber = parseInt(match[1], 10) + 1
-            }
-          }
-
-          // Generamos: COM-2025-000001 (6 dígitos de padding es estándar)
-          data.purchaseNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
+        if (user) {
+          if (operation === 'create') data.createdBy = user.id
+          data.updatedBy = user.id
         }
 
         // ============================================================
-        // 2. LÓGICA CENTRALIZADA DE ESTADO (PurchasePayment -> Purchase)
+        // 2. GENERADOR DE CORRELATIVO SEGURO (Anti-Race Condition)
+        // ============================================================
+        if (operation === 'create' && !data.purchaseNumber) {
+          console.log('Generando correlativo en Purchase...')
+          const year = new Date().getFullYear()
+          const prefix = `COM-${year}-`
+
+          let nextNumber = 1
+
+          // A. Buscar el último número existente
+          try {
+            const lastRecord = await payload.find({
+              collection: 'purchase',
+              where: {
+                purchaseNumber: { like: `${prefix}%` },
+              },
+              sort: '-purchaseNumber',
+              limit: 1,
+              req, // Importante pasar req
+            })
+
+            if (lastRecord.docs.length > 0) {
+              const lastCode = lastRecord.docs[0]?.purchaseNumber
+              if (typeof lastCode === 'string') {
+                // Extrae solo los números del final
+                const match = lastCode.match(/(\d+)$/)
+                if (match) {
+                  nextNumber = parseInt(match[0], 10) + 1
+                }
+              }
+            }
+          } catch (err) {
+            console.error('Error buscando última compra:', err)
+          }
+
+          // B. Bucle de Seguridad (Retry)
+          // Generamos el candidato inicial (ej: COM-2025-00000001)
+          let purchaseNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
+
+          let isUnique = false
+          let attempts = 0
+
+          while (!isUnique && attempts < 5) {
+            // Verificamos si ya existe ese número en la DB
+            const existing = await payload.find({
+              collection: 'purchase',
+              where: {
+                purchaseNumber: { equals: purchaseNumber },
+              },
+              limit: 1,
+              req,
+            })
+
+            if (existing.docs.length === 0) {
+              isUnique = true
+            } else {
+              // Si existe, incrementamos y probamos de nuevo
+              console.warn(`Colisión detectada en ${purchaseNumber}. Reintentando...`)
+              nextNumber++
+              purchaseNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
+              attempts++
+            }
+          }
+
+          // C. Fallback de Emergencia
+          // Si después de 5 intentos sigue habiendo colisión, usamos timestamp para no perder la data
+          if (!isUnique) {
+            const timestamp = Date.now().toString().slice(-6)
+            const random = Math.floor(Math.random() * 1000)
+            purchaseNumber = `${prefix}ERR-${timestamp}-${random}`
+            console.error('Fallo al generar correlativo único. Usando fallback:', purchaseNumber)
+          }
+
+          data.purchaseNumber = purchaseNumber
+        }
+
+        // ============================================================
+        // 3. LÓGICA CENTRALIZADA DE ESTADO (Integrada)
         // ============================================================
         if (operation === 'update') {
           const incomingPrice = data.pricepurchase
@@ -519,11 +567,10 @@ export const Purchase: CollectionConfig = {
             const finalPrice = incomingPrice ?? originalDoc.pricepurchase ?? 0
             const finalPaid = incomingPaid ?? originalDoc.amountpaid ?? 0
 
-            // Lógica de estado
             let newStatus = originalDoc.statuspayment
 
-            // Tolerancia para decimales
-            if (finalPaid >= finalPrice) {
+            // Tolerancia decimal 0.01
+            if (finalPaid >= finalPrice - 0.01) {
               newStatus = 'completado'
             } else if (finalPaid > 0) {
               newStatus = 'parcial'
@@ -531,24 +578,14 @@ export const Purchase: CollectionConfig = {
               newStatus = 'pendiente'
             }
 
-            // CORRECCIÓN IMPORTANTE AQUÍ:
-            // Solo aplica el cambio si NO está anulado.
+            // Solo aplicamos si no está anulado
             if (originalDoc.status !== 'anulado') {
               data.statuspayment = newStatus
             }
-            // Si está anulado, simplemente no hacemos nada y dejamos que el flujo siga
           }
         }
 
-        // ============================================================
-        // 3. AUDITORÍA
-        // ============================================================
-        if (user) {
-          if (operation === 'create') data.createdBy = user.id
-          data.updatedBy = user.id
-        }
-
-        return data // SIEMPRE retornar data al final
+        return data
       },
     ],
   },
