@@ -252,6 +252,7 @@ export interface Config {
   };
   collectionsJoins: {
     purchase: {
+      transportation: 'purchasetransportation';
       cancellation: 'purchasecancellation';
       payment: 'purchasepayment';
       invoice: 'purchaseinvoice';
@@ -515,7 +516,11 @@ export interface Purchase {
   statusreception?: ('en transito' | 'recepcionado' | 'pendiente' | 'cancelado') | null;
   statuspayment: 'pendiente' | 'parcial' | 'completado' | 'por retornar' | 'retorno parcial' | 'retornado';
   statusreceipt: 'no aplicable' | 'pendiente' | 'recibido' | 'cancelado' | 'anulado';
-  transportation?: (string | null) | Purchasetransportation;
+  transportation?: {
+    docs?: (string | Purchasetransportation)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   cancellation?: {
     docs?: (string | Purchasecancellation)[];
     hasNextPage?: boolean;
