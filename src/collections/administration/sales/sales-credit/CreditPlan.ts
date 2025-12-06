@@ -150,11 +150,12 @@ export const CreditPlan: CollectionConfig = {
     // === Cuotas ===
     {
       name: 'installments',
-      label: 'Cuotas asociadas',
-      type: 'relationship',
-      relationTo: 'creditinstallment',
+      label: 'Cuotas asociadas a crédito',
+      type: 'join',
+      collection: 'creditinstallment',
+      on: 'creditPlan',
       hasMany: true,
-      admin: { position: 'sidebar', isSortable: true },
+      admin: { position: 'sidebar' },
     },
   ],
 }
