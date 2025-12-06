@@ -162,41 +162,33 @@ export const PurchaseCancellation: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {
-        // 1. Auditoría
+        // ... (Tu lógica de auditoría y cálculo de statuscreditnote se mantiene IGUAL) ...
         if (req.user) {
           if (operation === 'create') data.createdBy = req.user.id
           data.updatedBy = req.user.id
         }
 
-        // 2. LÓGICA DE NEGOCIO INTERNA (Eficiencia Máxima)
-        // Calculamos el estado ANTES de que el documento toque el disco.
         if (operation === 'create' && data.purchase) {
           try {
-            // Leemos la compra UNA sola vez
-            const purchase = await req.payload.findByID({
+            const purchase = (await req.payload.findByID({
               collection: 'purchase',
               id: data.purchase,
-              req, // Importante para compartir transacción
-            })
+              req,
+            })) as unknown as Purchase
 
-            // A. Cálculo de Lógica Interna
-            // Si el frontend no mandó nada específico, calculamos nosotros.
             if (typeof data.statuscreditnote === 'undefined') {
               data.statuscreditnote = purchase.invoice ? 'pendiente' : 'no aplicable'
             }
 
-            // B. Optimización de rendimiento
-            // Guardamos la compra en el contexto para que afterChange no tenga que leerla de nuevo.
             req.context = {
               ...req.context,
               purchaseInfo: purchase,
             }
           } catch (e) {
             console.error('Error crítico en beforeChange:', e)
-            throw e // En producción, si falla la lectura crítica, mejor fallar la operación completa
+            throw e
           }
         }
-
         return data
       },
     ],
@@ -205,16 +197,13 @@ export const PurchaseCancellation: CollectionConfig = {
       async ({ doc, req, context, operation }) => {
         if (context.skipHook) return
 
-        // 3. EFECTOS EXTERNOS (Side Effects)
-        // Solo tocamos la colección externa. NO nos auto-actualizamos.
         if (operation === 'create') {
-          // Recuperamos del contexto (Memoria RAM) en lugar de Base de Datos (Disco/Red)
+          // Recuperamos del contexto
           const purchase = req.context?.purchaseInfo as Purchase
 
-          // Si por algo raro no está en contexto, abortamos (o hacemos fallback)
           if (!purchase) return
 
-          // Guardia de seguridad
+          // Guardia de seguridad (si ya se retornó dinero)
           if (
             purchase.statuspayment === 'retornado' ||
             purchase.statuspayment === 'retorno parcial'
@@ -222,9 +211,18 @@ export const PurchaseCancellation: CollectionConfig = {
             return
           }
 
-          const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
+          // === LÓGICA CORREGIDA ===
+          // Antes: const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
 
-          // ÚNICA operación de escritura adicional
+          // Ahora: Depende del estado ACTUAL del comprobante en la compra
+          let newReceiptStatus: typeof purchase.statusreceipt = 'cancelado' // Valor por defecto (para 'pendiente', 'cancelado', etc.)
+
+          // Solo si YA fue 'recibido', lo pasamos a 'anulado'
+          if (purchase.statusreceipt === 'recibido') {
+            newReceiptStatus = 'anulado'
+          }
+
+          // Actualizamos la compra
           await req.payload.update({
             collection: 'purchase',
             id: doc.purchase,
@@ -232,7 +230,7 @@ export const PurchaseCancellation: CollectionConfig = {
               status: 'anulado',
               statuspayment: 'por retornar',
               statusreception: 'cancelado',
-              statusreceipt: receiptStatus,
+              statusreceipt: newReceiptStatus, // <--- Usamos la nueva variable
             },
             context: { skipHook: true },
             req,
@@ -241,73 +239,85 @@ export const PurchaseCancellation: CollectionConfig = {
       },
     ],
   },
+
   // hooks: {
-  //   afterChange: [
-  //     async ({ doc, operation, req, context }) => {
-  //       // 1. Evitar bucles infinitos
-  //       if (context.skipHook) return
+  //   beforeChange: [
+  //     async ({ req, data, operation }) => {
+  //       // 1. Auditoría
+  //       if (req.user) {
+  //         if (operation === 'create') data.createdBy = req.user.id
+  //         data.updatedBy = req.user.id
+  //       }
 
-  //       // 2. Lógica SOLO para creación (Inicialización)
-  //       // Si es un update (ej: cambias a 'registrada'), esto se ignora.
-  //       if (operation === 'create' && doc.purchase) {
-  //         const { payload } = req
-
+  //       // 2. LÓGICA DE NEGOCIO INTERNA (Eficiencia Máxima)
+  //       // Calculamos el estado ANTES de que el documento toque el disco.
+  //       if (operation === 'create' && data.purchase) {
   //         try {
-  //           // A. Obtener la compra actual (con req para mantener transacción)
-  //           const currentPurchase = await payload.findByID({
+  //           // Leemos la compra UNA sola vez
+  //           const purchase = await req.payload.findByID({
   //             collection: 'purchase',
-  //             id: doc.purchase,
-  //             req,
+  //             id: data.purchase,
+  //             req, // Importante para compartir transacción
   //           })
 
-  //           if (!currentPurchase) return
-
-  //           // B. TU GUARDIA DE ROBUSTEZ 🛡️
-  //           // Si por alguna razón la compra ya fue procesada/retornada, no tocamos nada.
-  //           if (
-  //             currentPurchase.statuspayment === 'retornado' ||
-  //             currentPurchase.statuspayment === 'retorno parcial'
-  //           ) {
-  //             console.log(
-  //               '[HOOK] Cancelación creada, pero la compra ya estaba retornada. Omitiendo cambios.',
-  //             )
-  //             return
+  //           // A. Cálculo de Lógica Interna
+  //           // Si el frontend no mandó nada específico, calculamos nosotros.
+  //           if (typeof data.statuscreditnote === 'undefined') {
+  //             data.statuscreditnote = purchase.invoice ? 'pendiente' : 'no aplicable'
   //           }
 
-  //           // C. Calcular estados
-  //           const receiptStatus = currentPurchase.invoice ? 'anulado' : 'cancelado'
-  //           const creditNoteStatus = currentPurchase.invoice ? 'pendiente' : 'no aplicable'
-
-  //           console.log(`[HOOK] Inicializando Cancelación ${doc.id} | Nota: ${creditNoteStatus}`)
-
-  //           // D. Actualizar Purchase (compra principal)
-  //           await payload.update({
-  //             collection: 'purchase',
-  //             id: doc.purchase,
-  //             data: {
-  //               status: 'anulado',
-  //               statuspayment: 'por retornar',
-  //               statusreception: 'cancelado',
-  //               statusreceipt: receiptStatus,
-  //             },
-  //             context: { skipHook: true },
-  //             req,
-  //           })
-
-  //           // E. Auto-actualizar PurchaseCancellation (para guardar el statuscreditnote calculado)
-  //           await payload.update({
-  //             collection: 'purchasecancellation',
-  //             id: doc.id,
-  //             data: {
-  //               statuscreditnote: creditNoteStatus,
-  //             },
-  //             context: { skipHook: true },
-  //             depth: 0,
-  //             req,
-  //           })
-  //         } catch (error) {
-  //           console.error('Error inicializando cancelación:', error)
+  //           // B. Optimización de rendimiento
+  //           // Guardamos la compra en el contexto para que afterChange no tenga que leerla de nuevo.
+  //           req.context = {
+  //             ...req.context,
+  //             purchaseInfo: purchase,
+  //           }
+  //         } catch (e) {
+  //           console.error('Error crítico en beforeChange:', e)
+  //           throw e // En producción, si falla la lectura crítica, mejor fallar la operación completa
   //         }
+  //       }
+
+  //       return data
+  //     },
+  //   ],
+
+  //   afterChange: [
+  //     async ({ doc, req, context, operation }) => {
+  //       if (context.skipHook) return
+
+  //       // 3. EFECTOS EXTERNOS (Side Effects)
+  //       // Solo tocamos la colección externa. NO nos auto-actualizamos.
+  //       if (operation === 'create') {
+  //         // Recuperamos del contexto (Memoria RAM) en lugar de Base de Datos (Disco/Red)
+  //         const purchase = req.context?.purchaseInfo as Purchase
+
+  //         // Si por algo raro no está en contexto, abortamos (o hacemos fallback)
+  //         if (!purchase) return
+
+  //         // Guardia de seguridad
+  //         if (
+  //           purchase.statuspayment === 'retornado' ||
+  //           purchase.statuspayment === 'retorno parcial'
+  //         ) {
+  //           return
+  //         }
+
+  //         const receiptStatus = purchase.invoice ? 'anulado' : 'cancelado'
+
+  //         // ÚNICA operación de escritura adicional
+  //         await req.payload.update({
+  //           collection: 'purchase',
+  //           id: doc.purchase,
+  //           data: {
+  //             status: 'anulado',
+  //             statuspayment: 'por retornar',
+  //             statusreception: 'cancelado',
+  //             statusreceipt: receiptStatus,
+  //           },
+  //           context: { skipHook: true },
+  //           req,
+  //         })
   //       }
   //     },
   //   ],
