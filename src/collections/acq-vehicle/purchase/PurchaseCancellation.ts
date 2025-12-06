@@ -100,15 +100,13 @@ export const PurchaseCancellation: CollectionConfig = {
     {
       name: 'purchaserefund',
       label: 'Devoluciones de dinero',
-      type: 'relationship',
-      relationTo: 'purchaserefund',
+      type: 'join',
+      collection: 'purchaserefund',
+      on: 'purchasecancellation',
       hasMany: true,
-      index: true,
-      //maxDepth: 3,
+      maxDepth: 2,
       admin: {
         description: 'Devoluciones asociadas a esta cancelación.',
-        //readOnly: false, // Añade esto para hacer el campo de solo lectura en la interfaz de administración
-        // hidden: true,
       },
     },
     {
