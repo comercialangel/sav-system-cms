@@ -143,59 +143,80 @@ export const PurchasePayment: CollectionConfig = {
   ],
 
   // hooks: {
+  //   beforeChange: [
+  //     async ({ req, data, operation }) => {
+  //       const { user } = req
+  //       if (user) {
+  //         if (operation === 'create') {
+  //           data.createdBy = user.id
+  //         }
+  //         data.updatedBy = user.id
+  //       }
+  //       return data
+  //     },
+  //   ],
+
+  //   // Unificamos lógica: Tanto al crear como actualizar, recalculamos el total
   //   afterChange: [
   //     async ({ operation, doc, req }) => {
-  //       const { payload } = req
-  //       const { purchase, monetaryvalue } = doc
-
+  //       // Solo nos interesa si cambia el valor o la compra asociada
   //       if (operation === 'create' || operation === 'update') {
-  //         const purchaseAssociated = await payload.findByID({
-  //           collection: 'purchase',
-  //           id: purchase,
-  //           depth: 0,
-  //         })
+  //         const { payload } = req
+  //         const purchaseId = doc.purchase
 
-  //         let amountpaid
-
-  //         if (operation === 'create') {
-  //           amountpaid = (Number(purchaseAssociated.amountpaid) || 0) + Number(monetaryvalue)
-
-  //           await payload.update({
+  //         try {
+  //           // 1. Obtener la compra para saber el precio total
+  //           const purchaseAssociated = await payload.findByID({
   //             collection: 'purchase',
-  //             id: purchase,
-  //             data: {
-  //               amountpaid,
-  //               statuspayment:
-  //                 amountpaid >= Number(purchaseAssociated.pricepurchase)
-  //                   ? 'completado'
-  //                   : amountpaid > 0
-  //                     ? 'parcial'
-  //                     : 'pendiente',
-  //               payment: [...(purchaseAssociated.payment || []), doc.id],
-  //             },
+  //             id: purchaseId,
+  //             depth: 0,
+  //             req,
   //           })
-  //         } else {
-  //           // MODIFICACIÓN CLAVE: Siempre recalcular para updates
-  //           const payments = await payload.find({
+
+  //           if (!purchaseAssociated) return
+
+  //           // 2. RECALCULAR SIEMPRE: Buscamos TODOS los pagos de esta compra
+  //           // Esto corrige automáticamente cualquier desfase previo.
+  //           const allPayments = await payload.find({
   //             collection: 'purchasepayment',
-  //             where: { purchase: { equals: purchase } },
-  //             limit: 100,
+  //             where: {
+  //               purchase: { equals: purchaseId },
+  //             },
+  //             limit: 10, // Límite seguro
+  //             req,
   //           })
-  //           amountpaid = payments.docs.reduce((total, p) => total + Number(p.monetaryvalue), 0)
 
+  //           // Sumamos
+  //           const totalPaid = allPayments.docs.reduce((sum, payment) => {
+  //             return sum + (Number(payment.monetaryvalue) || 0)
+  //           }, 0)
+
+  //           // 3. Determinar Estado
+  //           const pricePurchase = Number(purchaseAssociated.pricepurchase || 0)
+
+  //           // let newStatus: 'pendiente' | 'parcial' | 'completado' = 'pendiente'
+  //           let newStatus: typeof purchaseAssociated.statuspayment = 'pendiente'
+
+  //           // Usamos una pequeña tolerancia para errores de redondeo decimal (floating point)
+  //           if (totalPaid >= pricePurchase) {
+  //             newStatus = 'completado'
+  //           } else if (totalPaid > 0) {
+  //             newStatus = 'parcial'
+  //           }
+
+  //           // 4. Actualizar la Compra (Solo montos y estado, SIN array de pagos)
   //           await payload.update({
   //             collection: 'purchase',
-  //             id: purchase,
+  //             id: purchaseId,
   //             data: {
-  //               amountpaid,
-  //               statuspayment:
-  //                 amountpaid >= Number(purchaseAssociated.pricepurchase)
-  //                   ? 'completado'
-  //                   : amountpaid > 0
-  //                     ? 'parcial'
-  //                     : 'pendiente',
+  //               amountpaid: totalPaid,
+  //               statuspayment: newStatus,
+  //               // payment: ... <-- YA NO TOCAMOS ESTO, el 'join' lo hace solo
   //             },
+  //             req,
   //           })
+  //         } catch (error) {
+  //           console.error('Error calculando pagos en afterChange:', error)
   //         }
   //       }
   //     },
@@ -204,61 +225,63 @@ export const PurchasePayment: CollectionConfig = {
   //   afterDelete: [
   //     async ({ doc, req }) => {
   //       const { payload } = req
+  //       // Manejo seguro del ID (por si viene poblado o no)
   //       const purchaseId = typeof doc.purchase === 'object' ? doc.purchase.id : doc.purchase
 
   //       try {
+  //         // 1. Obtener datos básicos de la compra
   //         const purchaseAssociated = await payload.findByID({
   //           collection: 'purchase',
   //           id: purchaseId,
   //           depth: 0,
+  //           req,
   //         })
 
-  //         if (!purchaseAssociated) throw new Error('Compra no encontrada')
+  //         if (!purchaseAssociated) return
 
-  //         const payments = await payload.find({
+  //         // 2. Recalcular restantes (El eliminado ya no saldrá en esta búsqueda)
+  //         const remainingPayments = await payload.find({
   //           collection: 'purchasepayment',
-  //           where: { purchase: { equals: purchaseId } },
-  //           limit: 100,
+  //           where: {
+  //             purchase: { equals: purchaseId },
+  //           },
+  //           limit: 500,
+  //           req,
   //         })
 
-  //         const amountpaid = payments.docs.reduce((sum, p) => sum + Number(p.monetaryvalue), 0)
+  //         const totalPaid = remainingPayments.docs.reduce(
+  //           (sum, p) => sum + (Number(p.monetaryvalue) || 0),
+  //           0,
+  //         )
+  //         const pricePurchase = Number(purchaseAssociated.pricepurchase || 0)
 
-  //         // MODIFICACIÓN CLAVE: cambiar a 'pendiente' si amountpaid = 0
-  //         const statuspayment =
-  //           amountpaid === 0
-  //             ? 'pendiente'
-  //             : amountpaid >= Number(purchaseAssociated.pricepurchase)
-  //               ? 'completado'
-  //               : 'parcial'
+  //         // 3. Determinar estado
+  //         let newStatus: 'pendiente' | 'parcial' | 'completado' = 'pendiente'
 
+  //         if (totalPaid >= pricePurchase - 0.01 && totalPaid > 0) {
+  //           newStatus = 'completado'
+  //         } else if (totalPaid > 0) {
+  //           newStatus = 'parcial'
+  //         }
+
+  //         // 4. Actualizar Compra
   //         await payload.update({
   //           collection: 'purchase',
   //           id: purchaseId,
   //           data: {
-  //             amountpaid,
-  //             statuspayment,
-  //             payment: payments.docs.map((p) => p.id),
+  //             amountpaid: totalPaid,
+  //             statuspayment: newStatus,
   //           },
+  //           req,
   //         })
   //       } catch (error) {
-  //         console.error('Error en afterDelete:', error)
+  //         console.error('Error recalculando en afterDelete:', error)
   //       }
-  //     },
-  //   ],
-
-  //   beforeChange: [
-  //     async ({ req: { user }, data, originalDoc }) => {
-  //       if (user) {
-  //         if (!originalDoc.createdBy) {
-  //           data.createdBy = user.id
-  //         }
-  //         data.updatedBy = user.id
-  //       }
-  //       return data
   //     },
   //   ],
   // },
 
+  // en PurchasePayment.ts
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {
@@ -273,67 +296,40 @@ export const PurchasePayment: CollectionConfig = {
       },
     ],
 
-    // Unificamos lógica: Tanto al crear como actualizar, recalculamos el total
     afterChange: [
       async ({ operation, doc, req }) => {
-        // Solo nos interesa si cambia el valor o la compra asociada
         if (operation === 'create' || operation === 'update') {
           const { payload } = req
-          const purchaseId = doc.purchase
+          // Manejo seguro del ID (por si viene poblado o no)
+          const purchaseId = typeof doc.purchase === 'object' ? doc.purchase.id : doc.purchase
 
           try {
-            // 1. Obtener la compra para saber el precio total
-            const purchaseAssociated = await payload.findByID({
-              collection: 'purchase',
-              id: purchaseId,
-              depth: 0,
-              req,
-            })
-
-            if (!purchaseAssociated) return
-
-            // 2. RECALCULAR SIEMPRE: Buscamos TODOS los pagos de esta compra
-            // Esto corrige automáticamente cualquier desfase previo.
+            // 1. Calcular el Total Pagado (Sumar todos los pagos)
             const allPayments = await payload.find({
               collection: 'purchasepayment',
               where: {
                 purchase: { equals: purchaseId },
               },
-              limit: 10, // Límite seguro
+              limit: 10,
               req,
             })
 
-            // Sumamos
             const totalPaid = allPayments.docs.reduce((sum, payment) => {
               return sum + (Number(payment.monetaryvalue) || 0)
             }, 0)
 
-            // 3. Determinar Estado
-            const pricePurchase = Number(purchaseAssociated.pricepurchase || 0)
-
-            // let newStatus: 'pendiente' | 'parcial' | 'completado' = 'pendiente'
-            let newStatus: typeof purchaseAssociated.statuspayment = 'pendiente'
-
-            // Usamos una pequeña tolerancia para errores de redondeo decimal (floating point)
-            if (totalPaid >= pricePurchase) {
-              newStatus = 'completado'
-            } else if (totalPaid > 0) {
-              newStatus = 'parcial'
-            }
-
-            // 4. Actualizar la Compra (Solo montos y estado, SIN array de pagos)
+            // 2. Actualizar la Compra (SOLO EL MONTO)
+            // No enviamos statuspayment. Dejamos que Purchase decida su propio estado.
             await payload.update({
               collection: 'purchase',
               id: purchaseId,
               data: {
                 amountpaid: totalPaid,
-                statuspayment: newStatus,
-                // payment: ... <-- YA NO TOCAMOS ESTO, el 'join' lo hace solo
               },
               req,
             })
           } catch (error) {
-            console.error('Error calculando pagos en afterChange:', error)
+            console.error('Error actualizando monto en afterChange:', error)
           }
         }
       },
@@ -362,7 +358,7 @@ export const PurchasePayment: CollectionConfig = {
             where: {
               purchase: { equals: purchaseId },
             },
-            limit: 500,
+            limit: 10,
             req,
           })
 
@@ -370,24 +366,12 @@ export const PurchasePayment: CollectionConfig = {
             (sum, p) => sum + (Number(p.monetaryvalue) || 0),
             0,
           )
-          const pricePurchase = Number(purchaseAssociated.pricepurchase || 0)
-
-          // 3. Determinar estado
-          let newStatus: 'pendiente' | 'parcial' | 'completado' = 'pendiente'
-
-          if (totalPaid >= pricePurchase - 0.01 && totalPaid > 0) {
-            newStatus = 'completado'
-          } else if (totalPaid > 0) {
-            newStatus = 'parcial'
-          }
-
           // 4. Actualizar Compra
           await payload.update({
             collection: 'purchase',
             id: purchaseId,
             data: {
               amountpaid: totalPaid,
-              statuspayment: newStatus,
             },
             req,
           })
