@@ -258,6 +258,9 @@ export interface Config {
       invoice: 'purchaseinvoice';
       receptions: 'purchasereceptions';
     };
+    purchasecancellation: {
+      purchaserefund: 'purchaserefund';
+    };
   };
   collectionsSelect: {
     purchase: PurchaseSelect<false> | PurchaseSelect<true>;
@@ -1547,7 +1550,11 @@ export interface Purchasecancellation {
   /**
    * Devoluciones asociadas a esta cancelación.
    */
-  purchaserefund?: (string | Purchaserefund)[] | null;
+  purchaserefund?: {
+    docs?: (string | Purchaserefund)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   statuscreditnote: 'pendiente' | 'no aplicable' | 'registrada';
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
