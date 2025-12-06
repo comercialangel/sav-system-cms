@@ -369,7 +369,6 @@ export const PurchaseTransportation: CollectionConfig = {
                 collection: 'purchase',
                 id: purchaseId,
                 data: {
-                  transportation: doc.id,
                   statusreception: 'en transito',
                 },
               })
