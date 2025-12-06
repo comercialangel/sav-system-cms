@@ -467,7 +467,10 @@ export const Purchase: CollectionConfig = {
 
   hooks: {
     beforeChange: [
-      async ({ req, data, operation, originalDoc }) => {
+      async ({ req, data, operation, originalDoc, context }) => {
+        if (context.skipHook) {
+          return data
+        }
         const { payload, user } = req
 
         // ============================================================
@@ -570,7 +573,7 @@ export const Purchase: CollectionConfig = {
             let newStatus = originalDoc.statuspayment
 
             // Tolerancia decimal 0.01
-            if (finalPaid >= finalPrice - 0.01) {
+            if (finalPaid >= finalPrice) {
               newStatus = 'completado'
             } else if (finalPaid > 0) {
               newStatus = 'parcial'
@@ -589,87 +592,7 @@ export const Purchase: CollectionConfig = {
       },
     ],
   },
-  // hooks: {
-  //   afterChange: [
-  //     async ({ doc, previousDoc, operation, req }) => {
-  //       // Si la compra está anulada, no actualizar el statuspayment
-  //       if (doc.status === 'anulado') {
-  //         return
-  //       }
 
-  //       // Lógica para actualizar statuspayment cuando pricepurchase > amountpaid o iguales
-  //       const { payload } = req
-  //       if (
-  //         operation === 'update' &&
-  //         (doc.pricepurchase !== undefined || doc.amountpaid !== undefined)
-  //       ) {
-  //         const currentPricePurchase = doc.pricepurchase ?? previousDoc?.pricepurchase ?? 0
-  //         const currentAmountPaid = doc.amountpaid ?? previousDoc?.amountpaid ?? 0
-  //         let newStatus = doc.statuspayment
-
-  //         if (currentPricePurchase === currentAmountPaid && currentAmountPaid !== 0) {
-  //           newStatus = 'completado'
-  //         } else if (currentPricePurchase > currentAmountPaid && currentAmountPaid !== 0) {
-  //           newStatus = 'parcial'
-  //         } else if (currentAmountPaid === 0) {
-  //           newStatus = 'pendiente'
-  //         }
-
-  //         // Solo actualizar si el estado cambió
-  //         if (newStatus !== doc.statuspayment) {
-  //           try {
-  //             await payload.update({
-  //               collection: 'purchase',
-  //               id: doc.id,
-  //               data: {
-  //                 statuspayment: newStatus,
-  //               },
-  //             })
-  //           } catch (error) {
-  //             console.error('Error updating purchase status:', error)
-  //           }
-  //         }
-  //       }
-  //     },
-  //   ],
-  //   beforeChange: [
-  //     async ({ req: { user }, data, operation, originalDoc, req }) => {
-  //       // Lógica para generar el número de compra (solo en creación)
-  //       if (operation === 'create') {
-  //         // Obtener el último número de compra
-  //         const lastOrder = await req.payload.find({
-  //           collection: 'purchase',
-  //           limit: 1,
-  //           sort: '-purchaseNumber', // Ordenar por purchaseNumber descendente
-  //         })
-
-  //         let lastOrderNumber = 'C1-00000000' // Valor por defecto si no hay compras
-
-  //         if (lastOrder.docs.length > 0) {
-  //           lastOrderNumber = lastOrder.docs[0].purchaseNumber
-  //         }
-
-  //         // Extraer el número y incrementarlo
-  //         const lastNumber = parseInt(lastOrderNumber.split('-')[1], 10)
-  //         const newNumber = lastNumber + 1
-
-  //         // Formatear el nuevo número de compra con 8 dígitos
-  //         const formattedNumber = `C1-${String(newNumber).padStart(8, '0')}`
-
-  //         // Asignar el nuevo número de compra al campo orderNumber
-  //         data.purchaseNumber = formattedNumber
-  //       }
-  //       // Lógica para manejar createdBy y updatedBy
-  //       if (user) {
-  //         if (!originalDoc?.createdBy) {
-  //           data.createdBy = user.id // Asignar createdBy si no existe
-  //         }
-  //         data.updatedBy = user.id // Siempre actualizar updatedBy
-  //       }
-  //       return data
-  //     },
-  //   ],
-  // },
   // Agregar endpoints personalizados
   endpoints: [
     //enpoint para eliminar un archivo de compra
