@@ -466,87 +466,175 @@ export const Purchase: CollectionConfig = {
       },
     },
   ],
+
   hooks: {
-    afterChange: [
-      async ({ doc, previousDoc, operation, req }) => {
-        // Si la compra está anulada, no actualizar el statuspayment
-        if (doc.status === 'anulado') {
-          return
-        }
-
-        // Lógica para actualizar statuspayment cuando pricepurchase > amountpaid o iguales
-        const { payload } = req
-        if (
-          operation === 'update' &&
-          (doc.pricepurchase !== undefined || doc.amountpaid !== undefined)
-        ) {
-          const currentPricePurchase = doc.pricepurchase ?? previousDoc?.pricepurchase ?? 0
-          const currentAmountPaid = doc.amountpaid ?? previousDoc?.amountpaid ?? 0
-          let newStatus = doc.statuspayment
-
-          if (currentPricePurchase === currentAmountPaid && currentAmountPaid !== 0) {
-            newStatus = 'completado'
-          } else if (currentPricePurchase > currentAmountPaid && currentAmountPaid !== 0) {
-            newStatus = 'parcial'
-          } else if (currentAmountPaid === 0) {
-            newStatus = 'pendiente'
-          }
-
-          // Solo actualizar si el estado cambió
-          if (newStatus !== doc.statuspayment) {
-            try {
-              await payload.update({
-                collection: 'purchase',
-                id: doc.id,
-                data: {
-                  statuspayment: newStatus,
-                },
-              })
-            } catch (error) {
-              console.error('Error updating purchase status:', error)
-            }
-          }
-        }
-      },
-    ],
+    // en Purchase.ts
     beforeChange: [
-      async ({ req: { user }, data, operation, originalDoc, req }) => {
-        // Lógica para generar el número de compra (solo en creación)
+      async ({ req, data, operation, originalDoc }) => {
+        const { payload, user } = req
+
+        // ============================================================
+        // 1. GENERADOR DE CORRELATIVO (Estilo Robusto)
+        // ============================================================
         if (operation === 'create') {
-          // Obtener el último número de compra
-          const lastOrder = await req.payload.find({
+          // Definimos prefijo con año: Ej "COM-2025-"
+          const now = new Date()
+          const year = now.getFullYear()
+          const prefix = `COM-${year}-`
+
+          // Buscamos el último de ESTE AÑO
+          const lastOrder = await payload.find({
             collection: 'purchase',
+            where: {
+              purchaseNumber: { like: prefix },
+            },
+            sort: '-purchaseNumber',
             limit: 1,
-            sort: '-purchaseNumber', // Ordenar por purchaseNumber descendente
+            req,
           })
 
-          let lastOrderNumber = 'C1-00000000' // Valor por defecto si no hay compras
+          let nextNumber = 1
 
           if (lastOrder.docs.length > 0) {
-            lastOrderNumber = lastOrder.docs[0].purchaseNumber
+            const lastId = lastOrder.docs[0].purchaseNumber
+            // Regex para capturar los dígitos finales: "COM-2025-00005" -> captura "00005"
+            const match = lastId.match(/-(\d+)$/)
+
+            if (match) {
+              nextNumber = parseInt(match[1], 10) + 1
+            }
           }
 
-          // Extraer el número y incrementarlo
-          const lastNumber = parseInt(lastOrderNumber.split('-')[1], 10)
-          const newNumber = lastNumber + 1
-
-          // Formatear el nuevo número de compra con 8 dígitos
-          const formattedNumber = `C1-${String(newNumber).padStart(8, '0')}`
-
-          // Asignar el nuevo número de compra al campo orderNumber
-          data.purchaseNumber = formattedNumber
+          // Generamos: COM-2025-000001 (6 dígitos de padding es estándar)
+          data.purchaseNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
         }
-        // Lógica para manejar createdBy y updatedBy
+
+        // ============================================================
+        // 2. LÓGICA CENTRALIZADA DE ESTADO (PurchasePayment -> Purchase)
+        // ============================================================
+        if (operation === 'update') {
+          const incomingPrice = data.pricepurchase
+          const incomingPaid = data.amountpaid
+
+          // Si cambió el precio O el monto pagado
+          if (typeof incomingPrice !== 'undefined' || typeof incomingPaid !== 'undefined') {
+            const finalPrice = incomingPrice ?? originalDoc.pricepurchase ?? 0
+            const finalPaid = incomingPaid ?? originalDoc.amountpaid ?? 0
+
+            // Lógica de estado
+            let newStatus = originalDoc.statuspayment
+
+            // Tolerancia para decimales
+            if (finalPaid >= finalPrice) {
+              newStatus = 'completado'
+            } else if (finalPaid > 0) {
+              newStatus = 'parcial'
+            } else {
+              newStatus = 'pendiente'
+            }
+
+            // CORRECCIÓN IMPORTANTE AQUÍ:
+            // Solo aplica el cambio si NO está anulado.
+            if (originalDoc.status !== 'anulado') {
+              data.statuspayment = newStatus
+            }
+            // Si está anulado, simplemente no hacemos nada y dejamos que el flujo siga
+          }
+        }
+
+        // ============================================================
+        // 3. AUDITORÍA
+        // ============================================================
         if (user) {
-          if (!originalDoc?.createdBy) {
-            data.createdBy = user.id // Asignar createdBy si no existe
-          }
-          data.updatedBy = user.id // Siempre actualizar updatedBy
+          if (operation === 'create') data.createdBy = user.id
+          data.updatedBy = user.id
         }
-        return data
+
+        return data // SIEMPRE retornar data al final
       },
     ],
   },
+  // hooks: {
+  //   afterChange: [
+  //     async ({ doc, previousDoc, operation, req }) => {
+  //       // Si la compra está anulada, no actualizar el statuspayment
+  //       if (doc.status === 'anulado') {
+  //         return
+  //       }
+
+  //       // Lógica para actualizar statuspayment cuando pricepurchase > amountpaid o iguales
+  //       const { payload } = req
+  //       if (
+  //         operation === 'update' &&
+  //         (doc.pricepurchase !== undefined || doc.amountpaid !== undefined)
+  //       ) {
+  //         const currentPricePurchase = doc.pricepurchase ?? previousDoc?.pricepurchase ?? 0
+  //         const currentAmountPaid = doc.amountpaid ?? previousDoc?.amountpaid ?? 0
+  //         let newStatus = doc.statuspayment
+
+  //         if (currentPricePurchase === currentAmountPaid && currentAmountPaid !== 0) {
+  //           newStatus = 'completado'
+  //         } else if (currentPricePurchase > currentAmountPaid && currentAmountPaid !== 0) {
+  //           newStatus = 'parcial'
+  //         } else if (currentAmountPaid === 0) {
+  //           newStatus = 'pendiente'
+  //         }
+
+  //         // Solo actualizar si el estado cambió
+  //         if (newStatus !== doc.statuspayment) {
+  //           try {
+  //             await payload.update({
+  //               collection: 'purchase',
+  //               id: doc.id,
+  //               data: {
+  //                 statuspayment: newStatus,
+  //               },
+  //             })
+  //           } catch (error) {
+  //             console.error('Error updating purchase status:', error)
+  //           }
+  //         }
+  //       }
+  //     },
+  //   ],
+  //   beforeChange: [
+  //     async ({ req: { user }, data, operation, originalDoc, req }) => {
+  //       // Lógica para generar el número de compra (solo en creación)
+  //       if (operation === 'create') {
+  //         // Obtener el último número de compra
+  //         const lastOrder = await req.payload.find({
+  //           collection: 'purchase',
+  //           limit: 1,
+  //           sort: '-purchaseNumber', // Ordenar por purchaseNumber descendente
+  //         })
+
+  //         let lastOrderNumber = 'C1-00000000' // Valor por defecto si no hay compras
+
+  //         if (lastOrder.docs.length > 0) {
+  //           lastOrderNumber = lastOrder.docs[0].purchaseNumber
+  //         }
+
+  //         // Extraer el número y incrementarlo
+  //         const lastNumber = parseInt(lastOrderNumber.split('-')[1], 10)
+  //         const newNumber = lastNumber + 1
+
+  //         // Formatear el nuevo número de compra con 8 dígitos
+  //         const formattedNumber = `C1-${String(newNumber).padStart(8, '0')}`
+
+  //         // Asignar el nuevo número de compra al campo orderNumber
+  //         data.purchaseNumber = formattedNumber
+  //       }
+  //       // Lógica para manejar createdBy y updatedBy
+  //       if (user) {
+  //         if (!originalDoc?.createdBy) {
+  //           data.createdBy = user.id // Asignar createdBy si no existe
+  //         }
+  //         data.updatedBy = user.id // Siempre actualizar updatedBy
+  //       }
+  //       return data
+  //     },
+  //   ],
+  // },
   // Agregar endpoints personalizados
   endpoints: [
     //enpoint para eliminar un archivo de compra
