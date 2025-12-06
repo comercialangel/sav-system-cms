@@ -484,6 +484,10 @@ export interface Purchase {
   typepurchase: 'Convencional' | 'Pedido' | 'Interna' | 'Consignación';
   purchasedate: string;
   purchasedate_tz: SupportedTimezones;
+  /**
+   * Seleccione un opción si el tipo de compra es PEDIDO
+   */
+  vehicleorder?: (string | null) | Saleorder;
   supplier: string | Supplier;
   suppliercontact?: (string | null) | Suppliercontact;
   typecurrency: string | Typecurrency;
@@ -821,6 +825,367 @@ export interface Mediacompany {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saleorder".
+ */
+export interface Saleorder {
+  id: string;
+  dateorder: string;
+  collaborator: string | Collaborator;
+  buyers: {
+    buyer: string | Buyer;
+    id?: string | null;
+  }[];
+  vehicle: {
+    brand: string | Brand;
+    model: string | Model;
+    version: string | Version;
+    color: string | Color;
+    yeardmodel: string;
+    fuel: string | Fuel;
+    typecurrency: string | Typecurrency;
+    pricesale: string;
+  };
+  condition: {
+    typesale?: ('contado' | 'crédito') | null;
+    typecurrency: string | Typecurrency;
+    exchargerate?: string | null;
+    /**
+     * Esta sección debe ser llenado exclusivamente para pedidos con ventas al crédito
+     */
+    credit: {
+      nodownpayment?: boolean | null;
+      typecurrencydownpayment: string | Typecurrency;
+      downpaymentvalue: string;
+      periodpayment?: (string | null) | Periodpayment;
+      interest?: string | null;
+      quotanumber?: string | null;
+      quotavalue?: string | null;
+      observationcredit?: string | null;
+    };
+    observationcodition?: string | null;
+  };
+  /**
+   * En esta cláusula se establece la penalización aplicable en caso de resolución unilateral del contrato por parte del comprador
+   */
+  penalty: {
+    typecurrencypenalty: string | Typecurrency;
+    valuepenalty?: string | null;
+  };
+  /**
+   * Pagos realizados para pedido de la unidad vehicular
+   */
+  listcost?:
+    | {
+        saledate: string;
+        typepayment: string | Typepayment;
+        typecurrencyreceived: string | Typecurrency;
+        exchargeratereceived: string;
+        valuereceived: string;
+        accountcompany: string | Accountcompany;
+        operationnumber: string;
+        mediacost?: (string | null) | Mediasale;
+        observationscost?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  orderfiles?:
+    | {
+        mediaorder: string | Mediaordersale;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  cancellation: {
+    cancellationdate?: string | null;
+    motivecancellationsale?: (string | null) | Motivecancellationsale;
+    penaltycollection: {
+      typecurrencypenaltycollection: string | Typecurrency;
+      exchargeratepenaltycollection: string;
+      valuepenaltycollection: string;
+      typepaymentpenaltycollection: string | Typepayment;
+      mediareturn?: (string | null) | Mediaordersale;
+      mediareturnpenalty?: (string | null) | Mediaordersale;
+      observationspenaltycollection?: string | null;
+    };
+    observationscancellation?: string | null;
+  };
+  status: 'en proceso' | 'venta realizada' | 'anulado';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "buyer".
+ */
+export interface Buyer {
+  id: string;
+  mediabuyer?: (string | null) | Mediabuyer;
+  typeidentificationdocument: string | Typeidentificationdocument;
+  identificationnumber: string;
+  fullname?: string | null;
+  departamento: string | Departamento;
+  provincia: string | Provincia;
+  distrito: string | Distrito;
+  address: string;
+  numbermovil: string;
+  email?: string | null;
+  activity: string | Activity;
+  /**
+   * Completar información en esta sección si el comprador es PERSONA NATURAL, es decir, si el tipo de documento del comprador que se está registrando es un DNI
+   */
+  natural?: {
+    civilstatus?: (string | null) | Civilstatus;
+    spouse?: {
+      dnispouse?: number | null;
+      fullnamespouse?: string | null;
+    };
+  };
+  /**
+   * Completar información en esta sección si el comprador es PERSONA JURÍDICA, es decir, si el tipo de documento del comprador que se está registrando es un RUC
+   */
+  juridical?: {
+    statuscontributor?: ('activo' | 'inactivo') | null;
+    conditioncontributor?: ('habido' | 'no habido') | null;
+  };
+  contacts?:
+    | {
+        fullnamecontact: string;
+        numbermovil: string;
+        relation: string;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  rating: 'Excelente' | 'Bueno' | 'Regular' | 'Malo' | 'Muy malo' | 'Ninguno';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediabuyer".
+ */
+export interface Mediabuyer {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activity".
+ */
+export interface Activity {
+  id: string;
+  activity: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brand".
+ */
+export interface Brand {
+  id: string;
+  brand: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "model".
+ */
+export interface Model {
+  id: string;
+  brand: string | Brand;
+  model: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "version".
+ */
+export interface Version {
+  id: string;
+  model: string | Model;
+  version: string;
+  modelversion?: string | null;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "color".
+ */
+export interface Color {
+  id: string;
+  color: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fuel".
+ */
+export interface Fuel {
+  id: string;
+  fuel: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typecurrency".
+ */
+export interface Typecurrency {
+  id: string;
+  typecurrency: string;
+  symbol: string;
+  codecurrency: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "periodpayment".
+ */
+export interface Periodpayment {
+  id: string;
+  periodpayment: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typepayment".
+ */
+export interface Typepayment {
+  id: string;
+  typepayment: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accountcompany".
+ */
+export interface Accountcompany {
+  id: string;
+  company: string | Company;
+  typebank: string | Typebank;
+  typeaccount: string | Typeaccount;
+  typecurrency: string | Typecurrency;
+  accountnumber: string;
+  cci?: string | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  fullaccountbank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typebank".
+ */
+export interface Typebank {
+  id: string;
+  bankname: string;
+  abbreviatedname: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeaccount".
+ */
+export interface Typeaccount {
+  id: string;
+  typeaccount: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediasale".
+ */
+export interface Mediasale {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaordersale".
+ */
+export interface Mediaordersale {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "motivecancellationsale".
+ */
+export interface Motivecancellationsale {
+  id: string;
+  motivecancellation: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "supplier".
  */
 export interface Supplier {
@@ -880,106 +1245,6 @@ export interface Supplierbankaccount {
   accountnumber: string;
   cci?: string | null;
   observations?: string | null;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "typebank".
- */
-export interface Typebank {
-  id: string;
-  bankname: string;
-  abbreviatedname: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "typeaccount".
- */
-export interface Typeaccount {
-  id: string;
-  typeaccount: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "typecurrency".
- */
-export interface Typecurrency {
-  id: string;
-  typecurrency: string;
-  symbol: string;
-  codecurrency: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brand".
- */
-export interface Brand {
-  id: string;
-  brand: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "model".
- */
-export interface Model {
-  id: string;
-  brand: string | Brand;
-  model: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "version".
- */
-export interface Version {
-  id: string;
-  model: string | Model;
-  version: string;
-  modelversion?: string | null;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "color".
- */
-export interface Color {
-  id: string;
-  color: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "fuel".
- */
-export interface Fuel {
-  id: string;
-  fuel: string;
   status: 'activo' | 'inactivo';
   updatedAt: string;
   createdAt: string;
@@ -1118,19 +1383,6 @@ export interface Internalplate {
     observationsreturn?: string | null;
   };
   status: 'liberada' | 'asignada';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "typepayment".
- */
-export interface Typepayment {
-  id: string;
-  typepayment: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2983,84 +3235,6 @@ export interface Mediaplate {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "buyer".
- */
-export interface Buyer {
-  id: string;
-  mediabuyer?: (string | null) | Mediabuyer;
-  typeidentificationdocument: string | Typeidentificationdocument;
-  identificationnumber: string;
-  fullname?: string | null;
-  departamento: string | Departamento;
-  provincia: string | Provincia;
-  distrito: string | Distrito;
-  address: string;
-  numbermovil: string;
-  email?: string | null;
-  activity: string | Activity;
-  /**
-   * Completar información en esta sección si el comprador es PERSONA NATURAL, es decir, si el tipo de documento del comprador que se está registrando es un DNI
-   */
-  natural?: {
-    civilstatus?: (string | null) | Civilstatus;
-    spouse?: {
-      dnispouse?: number | null;
-      fullnamespouse?: string | null;
-    };
-  };
-  /**
-   * Completar información en esta sección si el comprador es PERSONA JURÍDICA, es decir, si el tipo de documento del comprador que se está registrando es un RUC
-   */
-  juridical?: {
-    statuscontributor?: ('activo' | 'inactivo') | null;
-    conditioncontributor?: ('habido' | 'no habido') | null;
-  };
-  contacts?:
-    | {
-        fullnamecontact: string;
-        numbermovil: string;
-        relation: string;
-        id?: string | null;
-      }[]
-    | null;
-  observations?: string | null;
-  status: 'activo' | 'inactivo';
-  rating: 'Excelente' | 'Bueno' | 'Regular' | 'Malo' | 'Muy malo' | 'Ninguno';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediabuyer".
- */
-export interface Mediabuyer {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "activity".
- */
-export interface Activity {
-  id: string;
-  activity: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "internal-sales".
  */
 export interface InternalSale {
@@ -3161,45 +3335,6 @@ export interface Finalsale {
   salehomewarranty?: (string | null) | Salehomewarranty;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "accountcompany".
- */
-export interface Accountcompany {
-  id: string;
-  company: string | Company;
-  typebank: string | Typebank;
-  typeaccount: string | Typeaccount;
-  typecurrency: string | Typecurrency;
-  accountnumber: string;
-  cci?: string | null;
-  observations?: string | null;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  fullaccountbank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediasale".
- */
-export interface Mediasale {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3399,140 +3534,9 @@ export interface Salereservation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "periodpayment".
- */
-export interface Periodpayment {
-  id: string;
-  periodpayment: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "mediareservation".
  */
 export interface Mediareservation {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "motivecancellationsale".
- */
-export interface Motivecancellationsale {
-  id: string;
-  motivecancellation: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "saleorder".
- */
-export interface Saleorder {
-  id: string;
-  dateorder: string;
-  collaborator: string | Collaborator;
-  buyers: {
-    buyer: string | Buyer;
-    id?: string | null;
-  }[];
-  vehicle: {
-    brand: string | Brand;
-    model: string | Model;
-    version: string | Version;
-    color: string | Color;
-    yeardmodel: string;
-    fuel: string | Fuel;
-    typecurrency: string | Typecurrency;
-    pricesale: string;
-  };
-  condition: {
-    typesale?: ('contado' | 'crédito') | null;
-    typecurrency: string | Typecurrency;
-    exchargerate?: string | null;
-    /**
-     * Esta sección debe ser llenado exclusivamente para pedidos con ventas al crédito
-     */
-    credit: {
-      nodownpayment?: boolean | null;
-      typecurrencydownpayment: string | Typecurrency;
-      downpaymentvalue: string;
-      periodpayment?: (string | null) | Periodpayment;
-      interest?: string | null;
-      quotanumber?: string | null;
-      quotavalue?: string | null;
-      observationcredit?: string | null;
-    };
-    observationcodition?: string | null;
-  };
-  /**
-   * En esta cláusula se establece la penalización aplicable en caso de resolución unilateral del contrato por parte del comprador
-   */
-  penalty: {
-    typecurrencypenalty: string | Typecurrency;
-    valuepenalty?: string | null;
-  };
-  /**
-   * Pagos realizados para pedido de la unidad vehicular
-   */
-  listcost?:
-    | {
-        saledate: string;
-        typepayment: string | Typepayment;
-        typecurrencyreceived: string | Typecurrency;
-        exchargeratereceived: string;
-        valuereceived: string;
-        accountcompany: string | Accountcompany;
-        operationnumber: string;
-        mediacost?: (string | null) | Mediasale;
-        observationscost?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  orderfiles?:
-    | {
-        mediaorder: string | Mediaordersale;
-        id?: string | null;
-      }[]
-    | null;
-  observations?: string | null;
-  cancellation: {
-    cancellationdate?: string | null;
-    motivecancellationsale?: (string | null) | Motivecancellationsale;
-    penaltycollection: {
-      typecurrencypenaltycollection: string | Typecurrency;
-      exchargeratepenaltycollection: string;
-      valuepenaltycollection: string;
-      typepaymentpenaltycollection: string | Typepayment;
-      mediareturn?: (string | null) | Mediaordersale;
-      mediareturnpenalty?: (string | null) | Mediaordersale;
-      observationspenaltycollection?: string | null;
-    };
-    observationscancellation?: string | null;
-  };
-  status: 'en proceso' | 'venta realizada' | 'anulado';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaordersale".
- */
-export interface Mediaordersale {
   id: string;
   prefix?: string | null;
   updatedAt: string;
@@ -5166,6 +5170,7 @@ export interface PurchaseSelect<T extends boolean = true> {
   typepurchase?: T;
   purchasedate?: T;
   purchasedate_tz?: T;
+  vehicleorder?: T;
   supplier?: T;
   suppliercontact?: T;
   typecurrency?: T;

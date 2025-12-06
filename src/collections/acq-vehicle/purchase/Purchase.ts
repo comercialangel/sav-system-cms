@@ -68,7 +68,7 @@ export const Purchase: CollectionConfig = {
             },
           },
         },
-        /* {
+        {
           name: 'vehicleorder',
           label: 'Pedido vehicular',
           type: 'relationship',
@@ -79,7 +79,7 @@ export const Purchase: CollectionConfig = {
             allowCreate: false,
             condition: (data) => data.typepurchase === 'Pedido',
           },
-        }, */
+        },
         {
           name: 'supplier',
           label: 'Proveedor',
@@ -416,7 +416,7 @@ export const Purchase: CollectionConfig = {
       label: 'Cancelación de compra asociada',
       collection: 'purchasecancellation',
       on: 'purchase',
-      maxDepth: 1,
+      maxDepth: 2,
     },
     {
       name: 'payment',
@@ -424,6 +424,7 @@ export const Purchase: CollectionConfig = {
       label: 'Pago de compra asociada',
       collection: 'purchasepayment',
       on: 'purchase',
+      maxDepth: 2,
     },
 
     {
@@ -433,6 +434,7 @@ export const Purchase: CollectionConfig = {
       collection: 'purchaseinvoice',
       on: 'purchase',
       hasMany: false,
+      maxDepth: 2,
     },
     {
       name: 'receptions',
