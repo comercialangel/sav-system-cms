@@ -399,16 +399,12 @@ export const Purchase: CollectionConfig = {
     },
     {
       name: 'transportation',
-      type: 'relationship',
+      type: 'join',
       label: 'Traslado de compra asociada',
-      relationTo: 'purchasetransportation',
+      collection: 'purchasetransportation',
+      on: 'purchase',
+      maxDepth: 2,
       hasMany: false,
-      index: true,
-      admin: {
-        readOnly: false,
-        position: 'sidebar',
-        allowEdit: false,
-      },
     },
     {
       name: 'cancellation',
