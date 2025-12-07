@@ -194,7 +194,7 @@ export const PurchaseCancellation: CollectionConfig = {
             console.log(`[OPTIMIZADO] Leyendo join invoice... Tiene Docs? ${hasInvoice}`)
 
             // D. Calcular estado
-            if (typeof data.statuscreditnote === 'undefined') {
+            if (data.statuscreditnote !== 'registrada') {
               data.statuscreditnote = hasInvoice ? 'pendiente' : 'no aplicable'
             }
 
@@ -212,6 +212,65 @@ export const PurchaseCancellation: CollectionConfig = {
         return data
       },
     ],
+
+    // beforeChange: [
+    //   async ({ req, data, operation }) => {
+    //     // ... (Auditoría igual) ...
+
+    //     if (operation === 'create' && data.purchase) {
+    //       try {
+    //         // A. Normalizar ID
+    //         const purchaseId = typeof data.purchase === 'object' ? data.purchase.id : data.purchase
+
+    //         // B. Buscar la compra
+    //         const purchase = (await req.payload.findByID({
+    //           collection: 'purchase',
+    //           id: purchaseId,
+    //           req,
+    //         })) as unknown as Purchase
+
+    //         // C. Detección de Invoice (A PRUEBA DE BALAS)
+    //         // Usamos 'any' temporalmente para manejar la flexibilidad de tu respuesta
+    //         const invoiceCheck = (await req.payload.find({
+    //           collection: 'purchaseinvoice',
+    //           where: { purchase: { equals: purchaseId } },
+    //           limit: 1,
+    //           depth: 0,
+    //           req,
+    //         })) as any
+
+    //         // LÓGICA HÍBRIDA:
+    //         // 1. Caso Estándar: Viene un array en 'docs'
+    //         // 2. Tu Caso: Viene el objeto directo con un 'id'
+    //         let hasInvoice = false
+
+    //         if (invoiceCheck.docs && Array.isArray(invoiceCheck.docs)) {
+    //           hasInvoice = invoiceCheck.docs.length > 0
+    //         } else if (invoiceCheck.id) {
+    //           hasInvoice = true
+    //         }
+
+    //         console.log(`[DEBUG] Invoice encontrado? ${hasInvoice}`)
+
+    //         // D. Calcular estado
+    //         if (typeof data.statuscreditnote === 'undefined') {
+    //           data.statuscreditnote = hasInvoice ? 'pendiente' : 'no aplicable'
+    //         }
+
+    //         // E. Contexto
+    //         req.context = {
+    //           ...req.context,
+    //           purchaseInfo: purchase,
+    //           hasInvoice: hasInvoice,
+    //         }
+    //       } catch (e) {
+    //         console.error('Error crítico en beforeChange:', e)
+    //         throw e
+    //       }
+    //     }
+    //     return data
+    //   },
+    // ],
     afterChange: [
       async ({ doc, req, context, operation }) => {
         if (context.skipHook) return
