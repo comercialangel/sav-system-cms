@@ -162,55 +162,56 @@ export const PurchaseCancellation: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {
-        // 1. Auditoría
         if (req.user) {
           if (operation === 'create') data.createdBy = req.user.id
           data.updatedBy = req.user.id
         }
 
-        // 2. Lógica de Inicialización
         if (operation === 'create' && data.purchase) {
           try {
-            // Buscamos la compra
-            const purchase = await req.payload.findByID({
+            // A. Normalizar ID
+            const purchaseId = typeof data.purchase === 'object' ? data.purchase.id : data.purchase
+
+            // B. BUSCAR LA COMPRA CON PROFUNDIDAD (La Optimización)
+            const purchase = (await req.payload.findByID({
               collection: 'purchase',
-              id: data.purchase,
+              id: purchaseId,
+              depth: 1, // <--- CRÍTICO: Esto puebla el campo 'invoice' (el join)
               req,
-            })
+            })) as unknown as Purchase
 
-            // === CORRECCIÓN CLAVE PARA TU JSON ===
-            // Como 'invoice' es un JOIN, no confiamos en purchase.invoice.
-            // Hacemos una búsqueda explícita para ver si existe factura real.
-            const invoiceCheck = await req.payload.find({
-              collection: 'purchaseinvoice', // Asegúrate que este sea el slug de tu colección de facturas
-              where: { purchase: { equals: data.purchase } },
-              limit: 1,
-              req,
-            })
+            // C. Detección de Invoice DIRECTA (Sin segunda consulta)
+            // Payload v3 devuelve los joins como { docs: [...] } cuando están poblados
+            let hasInvoice = false
 
-            const hasInvoice = invoiceCheck.totalDocs > 0
+            if (purchase.invoice && typeof purchase.invoice === 'object') {
+              // Verificamos si 'docs' existe y tiene elementos
+              if ('docs' in purchase.invoice && Array.isArray(purchase.invoice.docs)) {
+                hasInvoice = purchase.invoice.docs.length > 0
+              }
+            }
 
-            // Si el frontend no envió el estado, lo calculamos
+            console.log(`[OPTIMIZADO] Leyendo join invoice... Tiene Docs? ${hasInvoice}`)
+
+            // D. Calcular estado
             if (typeof data.statuscreditnote === 'undefined') {
-              // Si hay factura real -> Pendiente (necesita nota de crédito)
-              // Si no hay factura (tu caso actual) -> No aplicable
               data.statuscreditnote = hasInvoice ? 'pendiente' : 'no aplicable'
             }
 
-            // Guardamos en contexto
+            // E. Guardar en contexto
             req.context = {
               ...req.context,
               purchaseInfo: purchase,
+              hasInvoice: hasInvoice,
             }
           } catch (e) {
-            console.error('Error en beforeChange:', e)
+            console.error('Error crítico en beforeChange:', e)
             throw e
           }
         }
         return data
       },
     ],
-
     afterChange: [
       async ({ doc, req, context, operation }) => {
         if (context.skipHook) return
