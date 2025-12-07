@@ -277,9 +277,11 @@ export const PurchaseCancellation: CollectionConfig = {
 
         if (operation === 'create') {
           const purchase = req.context?.purchaseInfo as Purchase
+
+          const hasInvoice = !!req.context?.hasInvoice
           if (!purchase) return
 
-          // Seguridad: Si ya se pagó y retornó, no tocar.
+          //1. Seguridad: Si ya se pagó y retornó, no tocar.
           // En tu JSON amountpaid es 0, así que esto no bloqueará.
           if (
             purchase.statuspayment === 'retornado' ||
@@ -289,18 +291,18 @@ export const PurchaseCancellation: CollectionConfig = {
           }
 
           // === LÓGICA DE ESTADO DEL COMPROBANTE ===
-          // Tu caso actual: statusreceipt es "pendiente".
+          // 2. Determinar el estado del comprobante
+          // Por defecto 'cancelado' (asumimos que no hay documento)
+          let newReceiptStatus: Purchase['statusreceipt'] = 'cancelado'
 
-          let newReceiptStatus: Purchase['statusreceipt'] = 'cancelado' // Valor por defecto
-
-          // Solo si YA fue 'recibido', lo pasamos a 'anulado'
-          if (purchase.statusreceipt === 'recibido') {
+          // Si la base de datos dice que SÍ hay factura, entonces se ANULA.
+          if (hasInvoice) {
             newReceiptStatus = 'anulado'
           }
-
           // Actualizamos la compra
-          console.log(`[CANCELACIÓN] Actualizando Compra ${doc.purchase}...`)
-
+          console.log(
+            `[CANCELACIÓN] HasInvoice: ${hasInvoice} -> Receipt Status: ${newReceiptStatus}`,
+          )
           await req.payload.update({
             collection: 'purchase',
             id: doc.purchase,
