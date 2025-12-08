@@ -118,13 +118,65 @@ export const CreditInstallment: CollectionConfig = {
     {
       name: 'payments',
       label: 'Pagos asociados',
-      type: 'relationship',
-      relationTo: 'creditpayment',
-      hasMany: true,
-      admin: { position: 'sidebar', isSortable: true },
-      filterOptions: ({ id }) => ({ installment: { equals: id } }),
+      type: 'join',
+      collection: 'creditpayment',
+      on: 'installments',
+      hasMany: false,
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        // Solo nos importa si se hizo un pago manual
+        if (operation !== 'update') return doc
+
+        // Si el Cron está corriendo, evitamos recursividad con este contexto
+        if (req.context.skipMoraCalculation) return doc
+
+        // LÓGICA ÚNICA: ACTUALIZAR ESTADO DEL PLAN (Padre)
+        // Esto verifica si al pagar esta cuota, el plan se completa.
+        try {
+          const planId = typeof doc.creditPlan === 'object' ? doc.creditPlan.id : doc.creditPlan
+          const { payload } = req
+
+          // Usamos counts para ser eficientes
+          const [lateCount, totalCount, paidCount] = await Promise.all([
+            payload.count({
+              collection: 'creditinstallment',
+              where: { creditPlan: { equals: planId }, lateFee: { greater_than: 0 } },
+            }),
+            payload.count({
+              collection: 'creditinstallment',
+              where: { creditPlan: { equals: planId } },
+            }),
+            payload.count({
+              collection: 'creditinstallment',
+              where: { creditPlan: { equals: planId }, status: { equals: 'pagada' } },
+            }),
+          ])
+
+          const hasLate = lateCount.totalDocs > 0
+          const isFullyPaid =
+            paidCount.totalDocs === totalCount.totalDocs && totalCount.totalDocs > 0
+
+          let newPlanStatus = 'activo' as 'activo' | 'completado' | 'moroso'
+          if (isFullyPaid) newPlanStatus = 'completado'
+          else if (hasLate) newPlanStatus = 'moroso'
+
+          // Solo hacemos update si es necesario (leemos status actual o lanzamos update ciegamente)
+          // Lanzarlo ciegamente es barato:
+          await payload.update({
+            collection: 'creditplan',
+            id: planId,
+            data: { status: newPlanStatus },
+          })
+        } catch (e) {
+          console.error('Error actualizando estado del plan:', e)
+        }
+        return doc
+      },
+    ],
+  },
 
   // hooks: {
   //   afterChange: [
@@ -297,58 +349,4 @@ export const CreditInstallment: CollectionConfig = {
   // },
 
   // collections/CreditInstallment.ts
-
-  hooks: {
-    afterChange: [
-      async ({ doc, operation, req }) => {
-        // Solo nos importa si se hizo un pago manual
-        if (operation !== 'update') return doc
-
-        // Si el Cron está corriendo, evitamos recursividad con este contexto
-        if (req.context.skipMoraCalculation) return doc
-
-        // LÓGICA ÚNICA: ACTUALIZAR ESTADO DEL PLAN (Padre)
-        // Esto verifica si al pagar esta cuota, el plan se completa.
-        try {
-          const planId = typeof doc.creditPlan === 'object' ? doc.creditPlan.id : doc.creditPlan
-          const { payload } = req
-
-          // Usamos counts para ser eficientes
-          const [lateCount, totalCount, paidCount] = await Promise.all([
-            payload.count({
-              collection: 'creditinstallment',
-              where: { creditPlan: { equals: planId }, lateFee: { greater_than: 0 } },
-            }),
-            payload.count({
-              collection: 'creditinstallment',
-              where: { creditPlan: { equals: planId } },
-            }),
-            payload.count({
-              collection: 'creditinstallment',
-              where: { creditPlan: { equals: planId }, status: { equals: 'pagada' } },
-            }),
-          ])
-
-          const hasLate = lateCount.totalDocs > 0
-          const isFullyPaid =
-            paidCount.totalDocs === totalCount.totalDocs && totalCount.totalDocs > 0
-
-          let newPlanStatus = 'activo' as 'activo' | 'completado' | 'moroso'
-          if (isFullyPaid) newPlanStatus = 'completado'
-          else if (hasLate) newPlanStatus = 'moroso'
-
-          // Solo hacemos update si es necesario (leemos status actual o lanzamos update ciegamente)
-          // Lanzarlo ciegamente es barato:
-          await payload.update({
-            collection: 'creditplan',
-            id: planId,
-            data: { status: newPlanStatus },
-          })
-        } catch (e) {
-          console.error('Error actualizando estado del plan:', e)
-        }
-        return doc
-      },
-    ],
-  },
 }
