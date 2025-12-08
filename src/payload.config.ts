@@ -186,6 +186,7 @@ import { CreditPlan } from './collections/administration/sales/sales-credit/Cred
 import { ReceiptCreditPayment } from './collections/administration/sales/sales-credit/ReceiptCreditPayment'
 import { PriceAssignment } from './collections/administration/sales/PriceAssignment'
 import { PriceLists } from './collections/administration/sales/PriceList'
+import { Counters } from './collections/counters/Counters'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -433,6 +434,7 @@ export default buildConfig({
     Deparment,
     Province,
     District,
+    Counters,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
