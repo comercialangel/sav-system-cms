@@ -245,6 +245,7 @@ export interface Config {
     departamento: Departamento;
     provincia: Provincia;
     distrito: Distrito;
+    counters: Counter;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -443,6 +444,7 @@ export interface Config {
     departamento: DepartamentoSelect<false> | DepartamentoSelect<true>;
     provincia: ProvinciaSelect<false> | ProvinciaSelect<true>;
     distrito: DistritoSelect<false> | DistritoSelect<true>;
+    counters: CountersSelect<false> | CountersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -4407,6 +4409,17 @@ export interface Paymentperiod {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "counters".
+ */
+export interface Counter {
+  id: string;
+  name: string;
+  value: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -5136,6 +5149,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'distrito';
         value: string | Distrito;
+      } | null)
+    | ({
+        relationTo: 'counters';
+        value: string | Counter;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -8820,6 +8837,16 @@ export interface DistritoSelect<T extends boolean = true> {
   status?: T;
   createdBy?: T;
   updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "counters_select".
+ */
+export interface CountersSelect<T extends boolean = true> {
+  name?: T;
+  value?: T;
   updatedAt?: T;
   createdAt?: T;
 }
