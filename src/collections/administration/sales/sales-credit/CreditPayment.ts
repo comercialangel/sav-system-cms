@@ -1,4 +1,5 @@
 // collections/CreditPayment.ts
+import { generateSequence } from '@/utils/generateSequence'
 import type { CollectionConfig } from 'payload'
 
 export const CreditPayment: CollectionConfig = {
@@ -101,53 +102,16 @@ export const CreditPayment: CollectionConfig = {
 
   hooks: {
     beforeChange: [
-      // === GENERAR paymentNumber (con anti-race) ===
-      async ({ data, operation, req: { payload } }) => {
+      // === GENERAR paymentNumber ===
+      async ({ data, operation, req }) => {
+        const { payload } = req
+
         if (operation === 'create' && !data.paymentNumber) {
-          const now = new Date()
-          const year = now.getFullYear()
-          const prefix = `PAY-${year}-`
-
-          let next = 1
-          try {
-            const last = await payload.find({
-              collection: 'creditpayment',
-              where: { paymentNumber: { like: prefix } },
-              sort: '-paymentNumber',
-              limit: 1,
-            })
-            if (last.docs.length > 0) {
-              const match = last.docs[0].paymentNumber.match(/PAY-\d+-(\d+)/)
-              if (match) next = parseInt(match[1]) + 1
-            }
-          } catch (err) {
-            console.error('Error buscando último pago:', err)
-          }
-
-          let paymentNumber = `${prefix}${String(next).padStart(4, '0')}`
-
-          // Anti-race: Verifica unique y retry
-          let isUnique = false
-          let attempts = 0
-          while (!isUnique && attempts < 5) {
-            const existing = await payload.find({
-              collection: 'creditpayment',
-              where: { paymentNumber: { equals: paymentNumber } },
-              limit: 1,
-            })
-            if (existing.docs.length === 0) {
-              isUnique = true
-            } else {
-              next++
-              paymentNumber = `${prefix}${String(next).padStart(4, '0')}`
-              attempts++
-            }
-          }
-          if (!isUnique) {
-            paymentNumber = `${prefix}${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`
-          }
-
-          data.paymentNumber = paymentNumber
+          data.paymentNumber = await generateSequence(payload, {
+            name: 'creditpayment', // Diferenciador en counters
+            prefix: 'PAG-', // Resultado: PAG-2025-000001
+            padding: 6,
+          })
         }
         return data
       },
@@ -164,7 +128,7 @@ export const CreditPayment: CollectionConfig = {
       },
 
       // === VALIDAR DEUDA ===
-      async ({ data, req: { payload } }) => {
+      async ({ data, req }) => {
         const ids = Array.isArray(data.installments)
           ? data.installments.map((i: { id: string } | string) =>
               typeof i === 'object' ? i.id : i,
@@ -172,7 +136,7 @@ export const CreditPayment: CollectionConfig = {
           : []
         if (ids.length === 0) return data
 
-        const { docs: installments } = await payload.find({
+        const { docs: installments } = await req.payload.find({
           collection: 'creditinstallment',
           where: { id: { in: ids } },
         })

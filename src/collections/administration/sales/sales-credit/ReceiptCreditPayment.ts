@@ -1,4 +1,5 @@
 // collections/ReceiptCreditPayment.ts
+import { generateSequence } from '@/utils/generateSequence'
 import type { CollectionConfig } from 'payload'
 
 export const ReceiptCreditPayment: CollectionConfig = {
@@ -153,57 +154,20 @@ export const ReceiptCreditPayment: CollectionConfig = {
 
   hooks: {
     beforeChange: [
-      // === GENERAR receiptNumber ROBUSTO ===
-      async ({ data, operation, req: { payload } }) => {
-        if (operation === 'create' && (!data.receiptNumber || data.receiptNumber === '')) {
-          const now = new Date()
-          const year = now.getFullYear()
-          const prefix = `REC-${year}-`
+      async ({ data, operation, req }) => {
+        const { payload } = req
 
-          let nextNumber = 1
+        // if (user) {
+        //   if (operation === 'create') data.createdBy = user.id
+        //   data.updatedBy = user.id
+        // }
 
-          // 1. Buscar último
-          try {
-            const last = await payload.find({
-              collection: 'receiptcreditpayment',
-              where: { receiptNumber: { like: `${prefix}%` } }, // like prefix% es más seguro
-              sort: '-receiptNumber',
-              limit: 1,
-            })
-            if (last.docs.length > 0) {
-              const match = last.docs[0].receiptNumber.match(/-(\d+)$/) // Regex genérico
-              if (match) nextNumber = parseInt(match[1]) + 1
-            }
-          } catch (err) {
-            console.error('Error buscando último recibo:', err)
-          }
-
-          // 2. Bucle Anti-Colisión (Lo que faltaba)
-          let receiptNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
-          let isUnique = false
-          let attempts = 0
-
-          while (!isUnique && attempts < 5) {
-            const existing = await payload.find({
-              collection: 'receiptcreditpayment',
-              where: { receiptNumber: { equals: receiptNumber } },
-              limit: 1,
-            })
-            if (existing.docs.length === 0) {
-              isUnique = true
-            } else {
-              nextNumber++
-              receiptNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
-              attempts++
-            }
-          }
-
-          // Fallback
-          if (!isUnique) {
-            receiptNumber = `${prefix}${Date.now().toString().slice(-6)}`
-          }
-
-          data.receiptNumber = receiptNumber
+        if (operation === 'create' && !data.receiptNumber) {
+          data.receiptNumber = await generateSequence(payload, {
+            name: 'receiptcreditpayment', // Diferenciador en counters
+            prefix: 'REC-', // Resultado: REC-2025-000001
+            padding: 6,
+          })
         }
         return data
       },
