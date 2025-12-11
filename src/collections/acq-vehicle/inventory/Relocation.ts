@@ -258,14 +258,10 @@ export const Relocation: CollectionConfig = {
     {
       name: 'receptionrelocation',
       label: 'Recepción de traslado',
-      type: 'relationship',
-      relationTo: 'receptionrelocation',
+      type: 'join',
+      collection: 'receptionrelocation',
+      on: 'relocation',
       hasMany: false,
-      admin: {
-        position: 'sidebar',
-        readOnly: false,
-        allowEdit: false,
-      },
     },
   ],
   hooks: {
