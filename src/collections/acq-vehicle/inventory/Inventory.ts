@@ -228,7 +228,7 @@ export const Inventory: CollectionConfig = {
           const inventoryItems = await payload.find({
             collection: 'inventory',
             where: { status: { equals: 'En Stock' } },
-            depth: 2,
+            depth: 3,
             pagination: false,
             sort: '-createdAt',
           })
@@ -290,8 +290,9 @@ export const Inventory: CollectionConfig = {
             const vehicleId = typeof v === 'string' ? v : v.id
 
             // === DEALERSHIP ===
-            const dealershipId = typeof d === 'string' ? d : (d?.idcode ?? '')
+            const dealership = typeof d === 'string' ? d : (d?.idcode ?? '')
             const dealershipName = typeof d === 'string' ? '' : (d?.companyname ?? '')
+            const dealershipID = d ? (typeof d === 'string' ? d : d.id || null) : null
             const dealershipRuc = typeof d === 'string' ? '' : (d?.identificationnumber ?? '')
             // === NUEVO: LOCATION (almacén) ===
             const locationName = item.location
@@ -306,6 +307,21 @@ export const Inventory: CollectionConfig = {
                 : item.location.id || null
               : null
 
+            // === ESTABLECIMIENTO (dentro de location.establishment) ===
+            const establishmentName =
+              item.location &&
+              typeof item.location !== 'string' &&
+              item.location.establishment &&
+              typeof item.location.establishment !== 'string'
+                ? item.location.establishment.establishmentname || 'Sin establecimiento'
+                : 'Sin establecimiento'
+            const establishmentID =
+              item.location && typeof item.location !== 'string' && item.location.establishment
+                ? typeof item.location.establishment === 'string'
+                  ? item.location.establishment
+                  : item.location.establishment.id || null
+                : null
+
             return {
               vehicle: vehicleStr,
               vehicleId,
@@ -314,10 +330,13 @@ export const Inventory: CollectionConfig = {
               conditionvehicle: condition,
               referenceimage,
               licensePlatesNumber,
-              dealership: dealershipId,
+              dealership,
               dealershipName,
+              dealershipID,
               dealershipRuc,
               inventoryId: item.id,
+              establishmentName,
+              establishmentID,
               locationName,
               locationID,
             }
