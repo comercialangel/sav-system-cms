@@ -354,7 +354,7 @@ export const PurchaseTransportation: CollectionConfig = {
       async ({ doc, previousDoc, req, operation }) => {
         const { payload } = req
 
-        // Evitar procesamiento si el estado no cambió a 'completado'
+        // Evitar procesamiento si el estado cambió a 'completado'
         if (operation === 'update' && doc?.status === 'completado') {
           return
         }

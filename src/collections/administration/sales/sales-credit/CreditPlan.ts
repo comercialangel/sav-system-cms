@@ -1,4 +1,5 @@
 // collections/CreditPlan.ts
+import { generateSequence } from '@/utils/generateSequence'
 import type { CollectionConfig } from 'payload'
 
 export const CreditPlan: CollectionConfig = {
@@ -22,7 +23,7 @@ export const CreditPlan: CollectionConfig = {
       type: 'text',
       unique: true,
       index: true,
-      required: true,
+      // required: true,
       admin: { readOnly: true },
     },
 
@@ -158,4 +159,20 @@ export const CreditPlan: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
   ],
+
+  hooks: {
+    beforeChange: [
+      async ({ data, operation, req: { payload } }) => {
+        // Lógica limpia y atómica
+        if (operation === 'create' && !data.creditPlanNumber) {
+          data.creditPlanNumber = await generateSequence(payload, {
+            name: 'creditplan', // Se guardará como 'creditplan-2025' en counters
+            prefix: 'CRED-', // Resultado: CRED-2025-000001
+            padding: 6, // 6 dígitos según tu diseño anterior
+          })
+        }
+        return data
+      },
+    ],
+  },
 }

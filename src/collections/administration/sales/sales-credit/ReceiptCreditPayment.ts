@@ -1,4 +1,5 @@
 // collections/ReceiptCreditPayment.ts
+import { generateSequence } from '@/utils/generateSequence'
 import type { CollectionConfig } from 'payload'
 
 export const ReceiptCreditPayment: CollectionConfig = {
@@ -153,27 +154,20 @@ export const ReceiptCreditPayment: CollectionConfig = {
 
   hooks: {
     beforeChange: [
-      // === GENERAR receiptNumber SEGURO (sin duplicados) ===
-      async ({ data, operation, req: { payload } }) => {
+      async ({ data, operation, req }) => {
+        const { payload } = req
+
+        // if (user) {
+        //   if (operation === 'create') data.createdBy = user.id
+        //   data.updatedBy = user.id
+        // }
+
         if (operation === 'create' && !data.receiptNumber) {
-          const now = new Date()
-          const year = now.getFullYear()
-          const prefix = `REC-${year}-`
-
-          const last = await payload.find({
-            collection: 'receiptcreditpayment',
-            where: { receiptNumber: { like: prefix } },
-            sort: '-receiptNumber',
-            limit: 1,
+          data.receiptNumber = await generateSequence(payload, {
+            name: 'receiptcreditpayment', // Diferenciador en counters
+            prefix: 'REC-', // Resultado: REC-2025-000001
+            padding: 6,
           })
-
-          let next = 1
-          if (last.docs.length > 0) {
-            const match = last.docs[0].receiptNumber.match(/REC-\d+-(\d+)/)
-            if (match) next = parseInt(match[1]) + 1
-          }
-
-          data.receiptNumber = `${prefix}${String(next).padStart(6, '0')}`
         }
         return data
       },
