@@ -477,60 +477,60 @@ export const FinalSale: CollectionConfig = {
         // LÓGICA DE CRÉDITO
         if (!currentPlanId) {
           // === GENERAR CORRELATIVO ===
-          console.log('Generando correlativo en FinalSale...')
-          const year = new Date().getFullYear()
-          const prefix = `CRED-${year}-`
+          // console.log('Generando correlativo en FinalSale...')
+          // const year = new Date().getFullYear()
+          // const prefix = `CRED-${year}-`
 
-          let nextNumber = 1
-          try {
-            const lastPlan = await payload.find({
-              collection: 'creditplan',
-              where: { creditPlanNumber: { like: `${prefix}%` } },
-              sort: '-creditPlanNumber',
-              limit: 1,
-            })
+          // let nextNumber = 1
+          // try {
+          //   const lastPlan = await payload.find({
+          //     collection: 'creditplan',
+          //     where: { creditPlanNumber: { like: `${prefix}%` } },
+          //     sort: '-creditPlanNumber',
+          //     limit: 1,
+          //   })
 
-            if (lastPlan.docs.length > 0) {
-              const lastCode = lastPlan.docs[0]?.creditPlanNumber
-              if (typeof lastCode === 'string') {
-                const match = lastCode.match(/(\d+)$/)
-                if (match) {
-                  nextNumber = parseInt(match[0], 10) + 1
-                }
-              }
-            }
-          } catch (err) {
-            console.error('Error buscando último plan:', err)
-          }
+          //   if (lastPlan.docs.length > 0) {
+          //     const lastCode = lastPlan.docs[0]?.creditPlanNumber
+          //     if (typeof lastCode === 'string') {
+          //       const match = lastCode.match(/(\d+)$/)
+          //       if (match) {
+          //         nextNumber = parseInt(match[0], 10) + 1
+          //       }
+          //     }
+          //   }
+          // } catch (err) {
+          //   console.error('Error buscando último plan:', err)
+          // }
 
-          let creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
+          // let creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
 
-          // Anti-race: Verifica unique y retry
-          let isUnique = false
-          let attempts = 0
-          while (!isUnique && attempts < 5) {
-            const existing = await payload.find({
-              collection: 'creditplan',
-              where: { creditPlanNumber: { equals: creditPlanNumber } },
-              limit: 1,
-            })
-            if (existing.docs.length === 0) {
-              isUnique = true
-            } else {
-              nextNumber++
-              creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
-              attempts++
-            }
-          }
-          if (!isUnique) {
-            creditPlanNumber = `${prefix}${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`
-          }
+          // // Anti-race: Verifica unique y retry
+          // let isUnique = false
+          // let attempts = 0
+          // while (!isUnique && attempts < 5) {
+          //   const existing = await payload.find({
+          //     collection: 'creditplan',
+          //     where: { creditPlanNumber: { equals: creditPlanNumber } },
+          //     limit: 1,
+          //   })
+          //   if (existing.docs.length === 0) {
+          //     isUnique = true
+          //   } else {
+          //     nextNumber++
+          //     creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
+          //     attempts++
+          //   }
+          // }
+          // if (!isUnique) {
+          //   creditPlanNumber = `${prefix}${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`
+          // }
 
           // === CREAR NUEVO PLAN (envía creditPlanNumber) ===
           const newPlan = await payload.create({
             collection: 'creditplan',
             data: {
-              creditPlanNumber,
+              creditPlanNumber: '', // Temporal, se genera en el hook de
               amountToFinance: data.amountToFinance,
               monthlyPayment: data.monthlyPayment,
               startDate: data.creditStartDate,
@@ -540,10 +540,11 @@ export const FinalSale: CollectionConfig = {
               totalPaid: 0,
               remainingBalance: principal,
             },
+            req,
           })
 
           data.creditPlan = newPlan.id
-          console.log('Seteando creditPlan en data:', newPlan.id)
+          console.log('Plan creado con ID:', newPlan.id)
         } else if (operation === 'update') {
           // ACTUALIZAR PLAN (sin tocar número)
           console.log('Actualizando creditplan existente...')
