@@ -262,6 +262,9 @@ export interface Config {
     purchasecancellation: {
       purchaserefund: 'purchaserefund';
     };
+    relocation: {
+      receptionrelocation: 'receptionrelocation';
+    };
     creditplan: {
       installments: 'creditinstallment';
     };
@@ -3144,7 +3147,11 @@ export interface Relocation {
     | null;
   status: 'en transito' | 'recepcionada' | 'anulado';
   warehouseorigin?: (string | null) | Warehouse;
-  receptionrelocation?: (string | null) | Receptionrelocation;
+  receptionrelocation?: {
+    docs?: (string | Receptionrelocation)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
