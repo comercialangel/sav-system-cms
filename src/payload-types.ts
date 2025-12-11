@@ -265,6 +265,12 @@ export interface Config {
     relocation: {
       receptionrelocation: 'receptionrelocation';
     };
+    creditinstallment: {
+      payments: 'creditpayment';
+    };
+    creditpayment: {
+      receipt: 'receiptcreditpayment';
+    };
     creditplan: {
       installments: 'creditinstallment';
     };
@@ -3366,7 +3372,7 @@ export interface Finalsale {
  */
 export interface Creditplan {
   id: string;
-  creditPlanNumber: string;
+  creditPlanNumber?: string | null;
   finalSale?: (string | null) | Finalsale;
   amountToFinance: number;
   monthlyPayment: number;
@@ -3414,7 +3420,11 @@ export interface Creditinstallment {
   lateFee?: number | null;
   status: 'pendiente' | 'parcial' | 'pagada' | 'vencida';
   creditPlan: string | Creditplan;
-  payments?: (string | Creditpayment)[] | null;
+  payments?: {
+    docs?: (string | Creditpayment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3440,7 +3450,11 @@ export interface Creditpayment {
     id?: string | null;
   }[];
   totalPaid: number;
-  receipt?: (string | null) | Receiptcreditpayment;
+  receipt?: {
+    docs?: (string | Receiptcreditpayment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   status?: ('registrado' | 'aplicado' | 'revertido') | null;
   observations?: string | null;
   updatedAt: string;
