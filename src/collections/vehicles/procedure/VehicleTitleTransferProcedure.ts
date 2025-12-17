@@ -214,51 +214,6 @@ export const VehicleTitleTransferProcedure: CollectionConfig = {
       defaultValue: 'En proceso',
     },
   ],
-
-  hooks: {
-    afterChange: [
-      async ({ doc, operation, req }) => {
-        if (operation === 'create') {
-          const { payload } = req
-          try {
-            // Actualizar el vehículo relacionado con este procedimiento
-            await payload.update({
-              collection: 'vehicle',
-              id: typeof doc.vehicle === 'object' ? doc.vehicle.id : doc.vehicle, // ID del vehículo relacionado
-              data: {
-                vehicleRegistration: {
-                  vehicleTitleTransferProcedure: doc.id, // Asignar el ID
-                },
-              },
-            })
-          } catch (error) {
-            console.error('Error enviando id de transferencia a vehiculo:', error)
-          }
-        }
-      },
-    ],
-
-    // Limpiar la referencia si se elimina el procedimiento
-    afterDelete: [
-      async ({ doc, req }) => {
-        if (doc.vehicle) {
-          try {
-            await req.payload.update({
-              collection: 'vehicle',
-              id: typeof doc.vehicle === 'object' ? doc.vehicle.id : doc.vehicle,
-              data: {
-                vehicleRegistration: {
-                  vehicleTitleTransferProcedure: null,
-                },
-              },
-            })
-          } catch (error) {
-            console.error(`Error limpiando referencia de transferencia en vehiculo:`, error)
-          }
-        }
-      },
-    ],
-  },
   endpoints: [
     // Endpoint para eliminar un archivo
     {

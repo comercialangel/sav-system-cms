@@ -262,6 +262,7 @@ export const Relocation: CollectionConfig = {
       collection: 'receptionrelocation',
       on: 'relocation',
       hasMany: false,
+      maxDepth: 2,
     },
   ],
   hooks: {
