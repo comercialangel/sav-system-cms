@@ -537,9 +537,17 @@ export interface Purchase {
       }[]
     | null;
   observations?: string | null;
-  status: 'aprobado' | 'anulado';
-  statusreception?: ('en transito' | 'recepcionado' | 'pendiente' | 'cancelado') | null;
-  statuspayment: 'pendiente' | 'parcial' | 'completado' | 'por retornar' | 'retorno parcial' | 'retornado';
+  reasonDeletion?: string | null;
+  status: 'aprobado' | 'anulado' | 'eliminado';
+  statusreception?: ('en transito' | 'recepcionado' | 'pendiente' | 'cancelado' | 'no aplicable') | null;
+  statuspayment:
+    | 'pendiente'
+    | 'parcial'
+    | 'completado'
+    | 'por retornar'
+    | 'retorno parcial'
+    | 'retornado'
+    | 'no aplicable';
   statusreceipt: 'no aplicable' | 'pendiente' | 'recibido' | 'cancelado' | 'anulado';
   transportation?: {
     docs?: (string | Purchasetransportation)[];
@@ -3099,7 +3107,7 @@ export interface Relocation {
     | {
         conceptexpense: string | Expense;
         typecurrency: string | Typecurrency;
-        expensevalue: string;
+        expensevalue: number;
         observationsexpense?: string | null;
         mediaexpense?: (string | null) | Mediarelocation;
         id?: string | null;
@@ -5284,6 +5292,7 @@ export interface PurchaseSelect<T extends boolean = true> {
         id?: T;
       };
   observations?: T;
+  reasonDeletion?: T;
   status?: T;
   statusreception?: T;
   statuspayment?: T;

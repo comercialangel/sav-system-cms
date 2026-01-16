@@ -283,6 +283,12 @@ export const Purchase: CollectionConfig = {
       required: false,
     },
     {
+      name: 'reasonDeletion',
+      label: 'Motivo de eliminación',
+      type: 'textarea',
+      required: false,
+    },
+    {
       name: 'status',
       label: 'Estado',
       type: 'select',
@@ -298,6 +304,10 @@ export const Purchase: CollectionConfig = {
         {
           label: 'Anulado',
           value: 'anulado',
+        },
+        {
+          label: 'Eliminado',
+          value: 'eliminado',
         },
       ],
       defaultValue: 'aprobado',
@@ -326,6 +336,10 @@ export const Purchase: CollectionConfig = {
         {
           label: 'Cancelado',
           value: 'cancelado',
+        },
+        {
+          label: 'No aplicable',
+          value: 'no aplicable',
         },
       ],
       defaultValue: 'pendiente',
@@ -362,6 +376,10 @@ export const Purchase: CollectionConfig = {
         {
           label: 'Retornado',
           value: 'retornado',
+        },
+        {
+          label: 'No aplicable',
+          value: 'no aplicable',
         },
       ],
       defaultValue: 'pendiente',
@@ -575,6 +593,11 @@ export const Purchase: CollectionConfig = {
           if (typeof incomingPrice !== 'undefined' || typeof incomingPaid !== 'undefined') {
             const finalPrice = incomingPrice ?? originalDoc.pricepurchase ?? 0
             const finalPaid = incomingPaid ?? originalDoc.amountpaid ?? 0
+
+            if (data.status === 'eliminado') {
+              data.statuspayment = 'no aplicable'
+              return
+            }
 
             let newStatus = originalDoc.statuspayment
 
