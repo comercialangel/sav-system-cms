@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import { APIError, type CollectionConfig } from 'payload'
 
 export const SupplierGPS: CollectionConfig = {
   slug: 'suppliergps',
@@ -143,4 +143,31 @@ export const SupplierGPS: CollectionConfig = {
       defaultValue: 'activo',
     },
   ],
+
+  hooks: {
+    beforeDelete: [
+      async ({ id, req }) => {
+        // Aquí puedes agregar la lógica que necesites ejecutar después de eliminar un proveedor de GPS.
+        // 1. Buscamos si hay dispositivos que apunten a este proveedor
+        const relatedDevices = await req.payload.find({
+          collection: 'devicegps', // Nombre de tu colección de dispositivos
+          where: {
+            suppliergps: {
+              equals: id,
+            },
+          },
+          limit: 1, // Solo necesitamos saber si existe al menos uno
+          depth: 0, // Eficiencia: no traigas relaciones
+        })
+
+        // 2. Si encontramos alguno, lanzamos error y cancelamos el borrado
+        if (relatedDevices.totalDocs > 0) {
+          throw new APIError(
+            'No se puede eliminar este proveedor porque tiene dispositivos GPS asociados. Desvincule los dispositivos primero.',
+            400, // Bad Request
+          )
+        }
+      },
+    ],
+  },
 }
