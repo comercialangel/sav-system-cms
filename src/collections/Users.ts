@@ -9,6 +9,8 @@ export const Users: CollectionConfig = {
 
   auth: {
     tokenExpiration: 7200,
+    maxLoginAttempts: 5,
+    lockTime: 600 * 1000,
   },
 
   labels: {
