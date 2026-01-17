@@ -265,6 +265,14 @@ export interface Config {
     relocation: {
       receptionrelocation: 'receptionrelocation';
     };
+    vehicle: {
+      'vehicleRegistration.vehicleRegistrationProcedure': 'vehicleregistrationprocedure';
+      'vehicleRegistration.vehicleTitleTransferProcedure': 'vehicletitletransferprocedure';
+      'procedureothers.proceduresunarp': 'proceduresunarp';
+      'procedureothers.procedureaap': 'procedureaap';
+      assignmentgps: 'assignmentgps';
+      expenseaditional: 'expenseaditionalvehicle';
+    };
     creditinstallment: {
       payments: 'creditpayment';
     };
@@ -529,9 +537,17 @@ export interface Purchase {
       }[]
     | null;
   observations?: string | null;
-  status: 'aprobado' | 'anulado';
-  statusreception?: ('en transito' | 'recepcionado' | 'pendiente' | 'cancelado') | null;
-  statuspayment: 'pendiente' | 'parcial' | 'completado' | 'por retornar' | 'retorno parcial' | 'retornado';
+  reasonDeletion?: string | null;
+  status: 'aprobado' | 'anulado' | 'eliminado';
+  statusreception?: ('en transito' | 'recepcionado' | 'pendiente' | 'cancelado' | 'no aplicable') | null;
+  statuspayment:
+    | 'pendiente'
+    | 'parcial'
+    | 'completado'
+    | 'por retornar'
+    | 'retorno parcial'
+    | 'retornado'
+    | 'no aplicable';
   statusreceipt: 'no aplicable' | 'pendiente' | 'recibido' | 'cancelado' | 'anulado';
   transportation?: {
     docs?: (string | Purchasetransportation)[];
@@ -1980,8 +1996,16 @@ export interface Vehicle {
     totalExpenseExPEN: number;
   };
   vehicleRegistration?: {
-    vehicleRegistrationProcedure?: (string | null) | Vehicleregistrationprocedure;
-    vehicleTitleTransferProcedure?: (string | null) | Vehicletitletransferprocedure;
+    vehicleRegistrationProcedure?: {
+      docs?: (string | Vehicleregistrationprocedure)[];
+      hasNextPage?: boolean;
+      totalDocs?: number;
+    };
+    vehicleTitleTransferProcedure?: {
+      docs?: (string | Vehicletitletransferprocedure)[];
+      hasNextPage?: boolean;
+      totalDocs?: number;
+    };
   };
   /**
    * Esta sección debe ser llenada unicamente cuando el vehículo tiene la condición de USADO
@@ -1992,15 +2016,30 @@ export interface Vehicle {
   licensePlates?: {
     licensePlatesNumber?: string | null;
     licensePlateUsageType?: (string | null) | Typeuse;
-    licensePlateIssuanceProcedure?: (string | null) | Licenseplateissuanceprocedure;
   };
   procedureothers?: {
-    proceduresunarp?: (string | Proceduresunarp)[] | null;
-    procedureaap?: (string | Procedureaap)[] | null;
+    proceduresunarp?: {
+      docs?: (string | Proceduresunarp)[];
+      hasNextPage?: boolean;
+      totalDocs?: number;
+    };
+    procedureaap?: {
+      docs?: (string | Procedureaap)[];
+      hasNextPage?: boolean;
+      totalDocs?: number;
+    };
   };
   observations?: string | null;
-  assignmentgps?: (string | Assignmentgp)[] | null;
-  expenseaditional?: (string | Expenseaditionalvehicle)[] | null;
+  assignmentgps?: {
+    docs?: (string | Assignmentgp)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  expenseaditional?: {
+    docs?: (string | Expenseaditionalvehicle)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2353,102 +2392,6 @@ export interface Mediaproceduretitletransfer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "licenseplateissuanceprocedure".
- */
-export interface Licenseplateissuanceprocedure {
-  id: string;
-  vehicleregistration: string | Vehicleregistrationprocedure;
-  optionsprocedure?: ('procedureprovider' | 'procedurecompany') | null;
-  startdate?: string | null;
-  startdate_tz?: SupportedTimezones;
-  /**
-   * Esta sección será completada unicamente si el trámite será realizado por la empresa compradora de la unidad vehicular
-   */
-  procedurecompany?: {
-    registryofficeprocedure?: (string | null) | Registryofficeprocedure;
-    mediaprocedureaap?: (string | null) | Mediaprocedureaap;
-  };
-  expenselist?:
-    | {
-        expensedate: string;
-        expensedate_tz: SupportedTimezones;
-        conceptexpense: string | Expenseprocedureaap;
-        typecurrency: string | Typecurrency;
-        expensevalue: string;
-        expenseAAPfiles?:
-          | {
-              mediaexpenseprocedureaap: string | Mediaexpenseprocedureaap;
-              id?: string | null;
-            }[]
-          | null;
-        observations?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  observations?: string | null;
-  /**
-   * Esta sección será completada unicamente si el trámite haya finalizado
-   */
-  procedurefinish?: {
-    enddate?: string | null;
-    enddate_tz?: SupportedTimezones;
-    registrationprocessor?: (string | null) | Registrationprocessor;
-  };
-  status: 'Pendiente' | 'Pago pendiente' | 'Trámite en proceso' | 'Recibido';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaprocedureaap".
- */
-export interface Mediaprocedureaap {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "expenseprocedureaap".
- */
-export interface Expenseprocedureaap {
-  id: string;
-  expense: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaexpenseprocedureaap".
- */
-export interface Mediaexpenseprocedureaap {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "proceduresunarp".
  */
 export interface Proceduresunarp {
@@ -2579,6 +2522,25 @@ export interface Typeprocedureaap {
   status: 'activo' | 'inactivo';
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaprocedureaap".
+ */
+export interface Mediaprocedureaap {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3145,7 +3107,7 @@ export interface Relocation {
     | {
         conceptexpense: string | Expense;
         typecurrency: string | Typecurrency;
-        expensevalue: string;
+        expensevalue: number;
         observationsexpense?: string | null;
         mediaexpense?: (string | null) | Mediarelocation;
         id?: string | null;
@@ -3249,6 +3211,83 @@ export interface Mediavehicle {
  * via the `definition` "mediaplates".
  */
 export interface Mediaplate {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licenseplateissuanceprocedure".
+ */
+export interface Licenseplateissuanceprocedure {
+  id: string;
+  vehicleregistration: string | Vehicleregistrationprocedure;
+  optionsprocedure?: ('procedureprovider' | 'procedurecompany') | null;
+  startdate?: string | null;
+  startdate_tz?: SupportedTimezones;
+  /**
+   * Esta sección será completada unicamente si el trámite será realizado por la empresa compradora de la unidad vehicular
+   */
+  procedurecompany?: {
+    registryofficeprocedure?: (string | null) | Registryofficeprocedure;
+    mediaprocedureaap?: (string | null) | Mediaprocedureaap;
+  };
+  expenselist?:
+    | {
+        expensedate: string;
+        expensedate_tz: SupportedTimezones;
+        conceptexpense: string | Expenseprocedureaap;
+        typecurrency: string | Typecurrency;
+        expensevalue: string;
+        expenseAAPfiles?:
+          | {
+              mediaexpenseprocedureaap: string | Mediaexpenseprocedureaap;
+              id?: string | null;
+            }[]
+          | null;
+        observations?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  observations?: string | null;
+  /**
+   * Esta sección será completada unicamente si el trámite haya finalizado
+   */
+  procedurefinish?: {
+    enddate?: string | null;
+    enddate_tz?: SupportedTimezones;
+    registrationprocessor?: (string | null) | Registrationprocessor;
+  };
+  status: 'Pendiente' | 'Pago pendiente' | 'Trámite en proceso' | 'Recibido';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseprocedureaap".
+ */
+export interface Expenseprocedureaap {
+  id: string;
+  expense: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpenseprocedureaap".
+ */
+export interface Mediaexpenseprocedureaap {
   id: string;
   prefix?: string | null;
   updatedAt: string;
@@ -5253,6 +5292,7 @@ export interface PurchaseSelect<T extends boolean = true> {
         id?: T;
       };
   observations?: T;
+  reasonDeletion?: T;
   status?: T;
   statusreception?: T;
   statuspayment?: T;
@@ -6346,7 +6386,6 @@ export interface VehicleSelect<T extends boolean = true> {
     | {
         licensePlatesNumber?: T;
         licensePlateUsageType?: T;
-        licensePlateIssuanceProcedure?: T;
       };
   procedureothers?:
     | T

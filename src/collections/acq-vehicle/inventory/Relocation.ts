@@ -196,7 +196,7 @@ export const Relocation: CollectionConfig = {
             {
               name: 'expensevalue',
               label: 'Valor de gasto',
-              type: 'text',
+              type: 'number',
               required: true,
               admin: {
                 width: '50%',
@@ -262,6 +262,7 @@ export const Relocation: CollectionConfig = {
       collection: 'receptionrelocation',
       on: 'relocation',
       hasMany: false,
+      maxDepth: 2,
     },
   ],
   hooks: {

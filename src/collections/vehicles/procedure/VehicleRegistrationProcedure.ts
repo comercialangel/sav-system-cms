@@ -295,24 +295,6 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
   hooks: {
     afterChange: [
       async ({ doc, operation, req }) => {
-        if (operation === 'create') {
-          const { payload } = req
-          try {
-            // Actualizar el vehículo relacionado con este procedimiento
-            await payload.update({
-              collection: 'vehicle',
-              id: typeof doc.vehicle === 'object' ? doc.vehicle.id : doc.vehicle,
-              data: {
-                vehicleRegistration: {
-                  vehicleRegistrationProcedure: doc.id, // Asignar el ID del nuevo procedimiento
-                },
-              },
-            })
-          } catch (error) {
-            console.error('Error enviando id de tramite  de inscripcion a vehiculo:', error)
-          }
-        }
-
         if (operation === 'update' && doc.status === 'Inscrito') {
           try {
             // Verificar que tenemos todos los datos necesarios
@@ -325,7 +307,7 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
             const licensePlateUsageType = doc.procedurefinish.licensePlateUsageType.id
 
             // Crear un nuevo registro en licenseplateissuanceprocedure
-            const newLicensePlateProcedure = await req.payload.create({
+            await req.payload.create({
               collection: 'licenseplateissuanceprocedure',
               data: {
                 vehicleregistration: doc.id,
@@ -345,7 +327,7 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
               id: vehicleId,
               data: {
                 licensePlates: {
-                  licensePlateIssuanceProcedure: newLicensePlateProcedure.id,
+                  // licensePlateIssuanceProcedure: newLicensePlateProcedure.id,
                   licensePlatesNumber: licensePlateNumber,
                   licensePlateUsageType: licensePlateUsageType,
                 },
@@ -353,30 +335,6 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
             })
           } catch (error) {
             console.error('Error al enviar placa al vehiculo', error)
-          }
-        }
-      },
-    ],
-
-    // Limpiar la referencia si se elimina el procedimiento
-    afterDelete: [
-      async ({ doc, req }) => {
-        if (doc.vehicle) {
-          try {
-            await req.payload.update({
-              collection: 'vehicle',
-              id: doc.vehicle,
-              data: {
-                vehicleRegistration: {
-                  vehicleRegistrationProcedure: null,
-                },
-              },
-            })
-          } catch (error) {
-            console.error(
-              `Error limpiando referencia de tramite de inscripcion en vehiculo:`,
-              error,
-            )
           }
         }
       },

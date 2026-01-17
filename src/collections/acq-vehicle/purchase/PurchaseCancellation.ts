@@ -104,7 +104,7 @@ export const PurchaseCancellation: CollectionConfig = {
       collection: 'purchaserefund',
       on: 'purchasecancellation',
       hasMany: true,
-      maxDepth: 2,
+      maxDepth: 3,
       admin: {
         description: 'Devoluciones asociadas a esta cancelación.',
       },
