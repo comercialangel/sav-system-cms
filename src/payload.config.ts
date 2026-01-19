@@ -449,6 +449,9 @@ export default buildConfig({
     // storage-adapter-placeholder
     gcsStorage({
       collections: {
+        media: {
+          prefix: 'media',
+        },
         mediapurchase: {
           prefix: 'mediapurchase',
         },
