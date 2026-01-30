@@ -73,32 +73,24 @@ export const Supplier: CollectionConfig = {
     {
       name: 'suppliercontact',
       label: 'Contactos',
-      type: 'relationship',
-      relationTo: 'suppliercontact',
-      hasMany: true,
-      admin: {
-        readOnly: false,
-      },
+      type: 'join',
+      collection: 'suppliercontact',
+      on: 'supplier',
     },
     {
-      name: 'addresses',
+      name: 'supplieraddress',
       label: 'Direcciones',
-      type: 'relationship',
-      relationTo: 'supplieraddress',
-      hasMany: true,
-      admin: {
-        readOnly: false,
-      },
+      type: 'join',
+      collection: 'supplieraddress',
+      on: 'supplier',
+      maxDepth: 1,
     },
     {
       name: 'supplieraccount',
       label: 'Cuentas bancarias',
-      type: 'relationship',
-      relationTo: 'supplierbankaccount',
-      hasMany: true,
-      admin: {
-        readOnly: false,
-      },
+      type: 'join',
+      collection: 'supplierbankaccount',
+      on: 'supplier',
     },
     {
       name: 'observations',
@@ -126,5 +118,40 @@ export const Supplier: CollectionConfig = {
       ],
       defaultValue: 'activo',
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req: { user }, data, originalDoc }) => {
+        if (user) {
+          if (!originalDoc.createdBy) {
+            data.createdBy = user.id
+          }
+          data.updatedBy = user.id
+        }
+        return data
+      },
+    ],
+  },
 }

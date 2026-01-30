@@ -54,7 +54,7 @@ export const PensionSystem: CollectionConfig = {
       label: 'Creado por',
       relationTo: 'users',
       admin: {
-        readOnly: true,
+        readOnly: false,
         position: 'sidebar',
         allowEdit: false,
       },
@@ -65,7 +65,7 @@ export const PensionSystem: CollectionConfig = {
       label: 'Actualizado por',
       relationTo: 'users',
       admin: {
-        readOnly: true,
+        readOnly: false,
         position: 'sidebar',
         allowEdit: false,
       },

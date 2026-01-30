@@ -49,6 +49,7 @@ export const Country: CollectionConfig = {
       admin: {
         readOnly: true,
         position: 'sidebar',
+        allowEdit: false,
       },
     },
     {

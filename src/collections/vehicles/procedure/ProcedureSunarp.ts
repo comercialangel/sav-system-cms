@@ -44,15 +44,6 @@ export const ProcedureSunarp: CollectionConfig = {
           },
         },
         {
-          name: 'procedureconcept',
-          label: 'Concepto de trámite',
-          type: 'text',
-          required: true,
-          admin: {
-            width: '50%',
-          },
-        },
-        {
           name: 'pregistryofficeprocedure',
           label: 'Oficina registral',
           type: 'relationship',
@@ -60,7 +51,7 @@ export const ProcedureSunarp: CollectionConfig = {
           required: true,
           hasMany: false,
           admin: {
-            width: '33%',
+            width: '50%',
             allowCreate: false,
           },
         },
@@ -70,7 +61,7 @@ export const ProcedureSunarp: CollectionConfig = {
           type: 'text',
           required: false,
           admin: {
-            width: '33%',
+            width: '50%',
           },
         },
         {
@@ -80,22 +71,21 @@ export const ProcedureSunarp: CollectionConfig = {
           required: false,
           timezone: true,
           admin: {
-            width: '34%',
+            width: '50%',
           },
         },
       ],
     },
     {
-      name: 'collaborator',
-      label: 'Colaborador que presenta el trámite',
+      name: 'registrationprocessor',
+      label: 'Tramitador',
       type: 'relationship',
-      relationTo: 'collaborator',
+      relationTo: 'registrationprocessor',
       required: false,
       hasMany: false,
       admin: {
-        allowCreate: false,
-        description:
-          'Si el colaborador no presenta el trámite, seleccione quién lo realiza; COMPRADOR o TERCERO',
+        width: '100%',
+        allowCreate: true,
       },
     },
     {
@@ -180,7 +170,7 @@ export const ProcedureSunarp: CollectionConfig = {
       ],
     },
     {
-      name: 'proceduredatafiles',
+      name: 'procedureSunarpFiles',
       label: 'Archivos de trámite',
       type: 'array',
       required: false,
@@ -190,7 +180,7 @@ export const ProcedureSunarp: CollectionConfig = {
       },
       fields: [
         {
-          name: 'mediaprocedure',
+          name: 'mediaproceduresunarp',
           label: 'Archivo',
           type: 'upload',
           relationTo: 'mediaproceduresunarp',
@@ -252,7 +242,7 @@ export const ProcedureSunarp: CollectionConfig = {
         position: 'sidebar',
       },
       options: ['En proceso', 'Inscrito', 'Tachado', 'Cancelado'],
-      defaultValue: 'en proceso',
+      defaultValue: 'En proceso',
     },
   ],
 }

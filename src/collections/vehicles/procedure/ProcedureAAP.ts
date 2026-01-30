@@ -44,15 +44,6 @@ export const ProcedureAAP: CollectionConfig = {
           },
         },
         {
-          name: 'procedureconcept',
-          label: 'Concepto de trámite',
-          type: 'text',
-          required: true,
-          admin: {
-            width: '50%',
-          },
-        },
-        {
           name: 'pregistryofficeprocedure',
           label: 'Oficina de entrega',
           type: 'relationship',
@@ -60,7 +51,7 @@ export const ProcedureAAP: CollectionConfig = {
           required: true,
           hasMany: false,
           admin: {
-            width: '33%',
+            width: '50%',
             allowCreate: false,
           },
         },
@@ -70,7 +61,7 @@ export const ProcedureAAP: CollectionConfig = {
           type: 'text',
           required: false,
           admin: {
-            width: '33%',
+            width: '50%',
           },
         },
         {
@@ -78,8 +69,9 @@ export const ProcedureAAP: CollectionConfig = {
           label: 'Fecha de inicio',
           type: 'date',
           required: false,
+          timezone: true,
           admin: {
-            width: '34%',
+            width: '50%',
           },
         },
       ],
@@ -114,7 +106,7 @@ export const ProcedureAAP: CollectionConfig = {
               name: 'conceptexpense',
               label: 'Concepto',
               type: 'relationship',
-              relationTo: 'expenseproceduresunarp',
+              relationTo: 'expenseprocedureaap',
               required: true,
               hasMany: false,
               admin: {
@@ -122,11 +114,6 @@ export const ProcedureAAP: CollectionConfig = {
                 allowCreate: false,
               },
             },
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
             {
               name: 'typecurrency',
               label: 'Tipo de moneda',
@@ -151,11 +138,23 @@ export const ProcedureAAP: CollectionConfig = {
           ],
         },
         {
-          name: 'mediaexpenseproceduresunarp',
-          label: 'Archivo',
-          type: 'upload',
-          relationTo: 'mediaexpenseproceduresunarp',
+          name: 'expenseAAPfiles',
+          label: 'Archivos',
+          type: 'array',
           required: false,
+          labels: {
+            singular: 'Archivo',
+            plural: 'Archivos',
+          },
+          fields: [
+            {
+              name: 'mediaexpenseprocedureaap',
+              label: 'Archivo',
+              type: 'upload',
+              relationTo: 'mediaexpenseprocedureaap',
+              required: true,
+            },
+          ],
         },
         {
           name: 'observations',
@@ -166,7 +165,7 @@ export const ProcedureAAP: CollectionConfig = {
       ],
     },
     {
-      name: 'proceduredatafiles',
+      name: 'procedureAAPFiles',
       label: 'Archivos de trámite',
       type: 'array',
       required: false,
@@ -176,7 +175,7 @@ export const ProcedureAAP: CollectionConfig = {
       },
       fields: [
         {
-          name: 'mediaprocedure',
+          name: 'mediaprocedureaap',
           label: 'Archivo',
           type: 'upload',
           relationTo: 'mediaprocedureaap',
@@ -225,26 +224,6 @@ export const ProcedureAAP: CollectionConfig = {
           ],
         },
       ],
-    },
-    {
-      name: 'status',
-      label: 'Estado',
-      type: 'select',
-      required: true,
-      admin: {
-        position: 'sidebar',
-      },
-      options: [
-        {
-          label: 'Activo',
-          value: 'activo',
-        },
-        {
-          label: 'Inactivo',
-          value: 'inactivo',
-        },
-      ],
-      defaultValue: 'activo',
     },
     {
       name: 'processstatus',

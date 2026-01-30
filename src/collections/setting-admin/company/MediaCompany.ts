@@ -6,8 +6,8 @@ export const MediaCompany: CollectionConfig = {
     group: 'Configuraciones de administración',
   },
   labels: {
-    singular: 'Logo de compañía',
-    plural: 'Logos de Compañias',
+    singular: 'Media (Logo de compañía)',
+    plural: 'Media (Logos de Compañias)',
   },
   upload: {
     // staticDir: 'https://storage.cloud.google.com/mediasav/mediacompany',

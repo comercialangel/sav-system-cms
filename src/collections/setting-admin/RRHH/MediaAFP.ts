@@ -9,8 +9,8 @@ export const MediaAFP: CollectionConfig = {
     group: 'Recursos Humanos',
   },
   labels: {
-    singular: 'Archivo AFP',
-    plural: 'Archivos AFP',
+    singular: 'Media (Archivo AFP)',
+    plural: 'Media (Archivos AFP)',
   },
   upload: {
     mimeTypes: ['*'],

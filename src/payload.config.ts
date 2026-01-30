@@ -10,7 +10,7 @@ import { gcsStorage } from '@payloadcms/storage-gcs'
 import { es } from '@payloadcms/translations/languages/es'
 
 import { Users } from './collections/Users'
-import { Media } from './collections/Media'
+//import { Media } from './collections/Media'
 import { Purchase } from './collections/acq-vehicle/purchase/Purchase'
 import { PurchasePayment } from './collections/acq-vehicle/purchase/PurchasePayment'
 import { PurchaseCancellation } from './collections/acq-vehicle/purchase/PurchaseCancellation'
@@ -413,7 +413,7 @@ export default buildConfig({
     MediaAFP,
     MediaCTS,
 
-    Media,
+    //Media,
     Users,
     ModuleSystem,
     Rol,
@@ -449,9 +449,9 @@ export default buildConfig({
     // storage-adapter-placeholder
     gcsStorage({
       collections: {
-        media: {
+        /* media: {
           prefix: 'media',
-        },
+        }, */
         mediapurchase: {
           prefix: 'mediapurchase',
         },

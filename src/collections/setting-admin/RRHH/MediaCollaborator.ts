@@ -9,8 +9,8 @@ export const MediaCollaborator: CollectionConfig = {
     group: 'Recursos Humanos',
   },
   labels: {
-    singular: 'Foto de colaborador',
-    plural: 'Fotos de colaboradores',
+    singular: 'Media (Foto de colaborador)',
+    plural: 'Media (Fotos de colaboradores)',
   },
   upload: {
     mimeTypes: ['image/*'],

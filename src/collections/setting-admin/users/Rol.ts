@@ -60,5 +60,40 @@ export const Rol: CollectionConfig = {
         description: 'Define qué operaciones puede realizar este rol en cada módulo.',
       },
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req: { user }, data, originalDoc }) => {
+        if (user) {
+          if (!originalDoc.createdBy) {
+            data.createdBy = user.id
+          }
+          data.updatedBy = user.id
+        }
+        return data
+      },
+    ],
+  },
 }

@@ -17,6 +17,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     description: 'Usuarios con acceso al sistema',
+    group: 'Usuarios del sistema SAV',
   },
 
   auth: {

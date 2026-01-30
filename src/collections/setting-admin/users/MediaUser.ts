@@ -12,8 +12,8 @@ export const MediaUser: CollectionConfig = {
     group: 'Usuarios del sistema SAV',
   },
   labels: {
-    singular: 'Foto de usuario',
-    plural: 'Fotos de usuarios',
+    singular: 'Media (Foto de usuario)',
+    plural: 'Media (Fotos de usuarios)',
   },
   upload: {
     mimeTypes: ['image/*'],

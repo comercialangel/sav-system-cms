@@ -227,7 +227,6 @@ export interface Config {
     mediacollaborator: Mediacollaborator;
     mediaafp: Mediaafp;
     mediacts: Mediact;
-    media: Media;
     users: User;
     modulesystem: Modulesystem;
     role: Role;
@@ -261,6 +260,11 @@ export interface Config {
     };
     purchasecancellation: {
       purchaserefund: 'purchaserefund';
+    };
+    supplier: {
+      suppliercontact: 'suppliercontact';
+      supplieraddress: 'supplieraddress';
+      supplieraccount: 'supplierbankaccount';
     };
     relocation: {
       receptionrelocation: 'receptionrelocation';
@@ -443,7 +447,6 @@ export interface Config {
     mediacollaborator: MediacollaboratorSelect<false> | MediacollaboratorSelect<true>;
     mediaafp: MediaafpSelect<false> | MediaafpSelect<true>;
     mediacts: MediactsSelect<false> | MediactsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     modulesystem: ModulesystemSelect<false> | ModulesystemSelect<true>;
     role: RoleSelect<false> | RoleSelect<true>;
@@ -818,6 +821,8 @@ export interface Role {
     canAccess: boolean;
     id?: string | null;
   }[];
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -996,6 +1001,8 @@ export interface Buyer {
   observations?: string | null;
   status: 'activo' | 'inactivo';
   rating: 'Excelente' | 'Bueno' | 'Regular' | 'Malo' | 'Muy malo' | 'Ninguno';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1232,11 +1239,25 @@ export interface Supplier {
   identificationnumber: string;
   namesupplier: string;
   namedocument?: string | null;
-  suppliercontact?: (string | Suppliercontact)[] | null;
-  addresses?: (string | Supplieraddress)[] | null;
-  supplieraccount?: (string | Supplierbankaccount)[] | null;
+  suppliercontact?: {
+    docs?: (string | Suppliercontact)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  supplieraddress?: {
+    docs?: (string | Supplieraddress)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  supplieraccount?: {
+    docs?: (string | Supplierbankaccount)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2357,6 +2378,8 @@ export interface Notary {
   address: string;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2398,15 +2421,11 @@ export interface Proceduresunarp {
   id: string;
   vehicle: string | Vehicle;
   typeproceduresunarp: string | Typeproceduresunarp;
-  procedureconcept: string;
   pregistryofficeprocedure: string | Registryofficeprocedure;
   titlenumber?: string | null;
   startdate?: string | null;
   startdate_tz?: SupportedTimezones;
-  /**
-   * Si el colaborador no presenta el trámite, seleccione quién lo realiza; COMPRADOR o TERCERO
-   */
-  collaborator?: (string | null) | Collaborator;
+  registrationprocessor?: (string | null) | Registrationprocessor;
   expenselist?:
     | {
         expensedate: string;
@@ -2419,9 +2438,9 @@ export interface Proceduresunarp {
         id?: string | null;
       }[]
     | null;
-  proceduredatafiles?:
+  procedureSunarpFiles?:
     | {
-        mediaprocedure: string | Mediaproceduresunarp;
+        mediaproceduresunarp: string | Mediaproceduresunarp;
         id?: string | null;
       }[]
     | null;
@@ -2477,25 +2496,30 @@ export interface Procedureaap {
   id: string;
   vehicle: string | Vehicle;
   typeprocedureaap: string | Typeprocedureaap;
-  procedureconcept: string;
   pregistryofficeprocedure: string | Registryofficeprocedure;
   paymentcode?: string | null;
   startdate?: string | null;
+  startdate_tz?: SupportedTimezones;
   expenselist?:
     | {
         expensedate: string;
         expensedate_tz: SupportedTimezones;
-        conceptexpense: string | Expenseproceduresunarp;
+        conceptexpense: string | Expenseprocedureaap;
         typecurrency: string | Typecurrency;
         expensevalue: string;
-        mediaexpenseproceduresunarp?: (string | null) | Mediaexpenseproceduresunarp;
+        expenseAAPfiles?:
+          | {
+              mediaexpenseprocedureaap: string | Mediaexpenseprocedureaap;
+              id?: string | null;
+            }[]
+          | null;
         observations?: string | null;
         id?: string | null;
       }[]
     | null;
-  proceduredatafiles?:
+  procedureAAPFiles?:
     | {
-        mediaprocedure: string | Mediaprocedureaap;
+        mediaprocedureaap: string | Mediaprocedureaap;
         registrationprocessor?: (string | null) | Registrationprocessor;
         id?: string | null;
       }[]
@@ -2507,7 +2531,6 @@ export interface Procedureaap {
   procedurefinish?: {
     enddate?: string | null;
   };
-  status: 'activo' | 'inactivo';
   processstatus: 'en proceso' | 'inscripto' | 'tachado';
   updatedAt: string;
   createdAt: string;
@@ -2522,6 +2545,36 @@ export interface Typeprocedureaap {
   status: 'activo' | 'inactivo';
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expenseprocedureaap".
+ */
+export interface Expenseprocedureaap {
+  id: string;
+  expense: string;
+  status: 'activo' | 'inactivo';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediaexpenseprocedureaap".
+ */
+export interface Mediaexpenseprocedureaap {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3274,36 +3327,6 @@ export interface Licenseplateissuanceprocedure {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "expenseprocedureaap".
- */
-export interface Expenseprocedureaap {
-  id: string;
-  expense: string;
-  status: 'activo' | 'inactivo';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaexpenseprocedureaap".
- */
-export interface Mediaexpenseprocedureaap {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "internal-sales".
  */
 export interface InternalSale {
@@ -3972,6 +3995,8 @@ export interface Documentaditional {
       }[]
     | null;
   observations?: string | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -3983,6 +4008,8 @@ export interface Typedocumentaditional {
   id: string;
   typedocumentaditional: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -4422,26 +4449,6 @@ export interface Mediact {
   id: string;
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt: string;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -5140,10 +5147,6 @@ export interface PayloadLockedDocument {
         value: string | Mediact;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
-      } | null)
-    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
@@ -5615,10 +5618,12 @@ export interface SupplierSelect<T extends boolean = true> {
   namesupplier?: T;
   namedocument?: T;
   suppliercontact?: T;
-  addresses?: T;
+  supplieraddress?: T;
   supplieraccount?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6852,12 +6857,11 @@ export interface VehicletitletransferprocedureSelect<T extends boolean = true> {
 export interface ProceduresunarpSelect<T extends boolean = true> {
   vehicle?: T;
   typeproceduresunarp?: T;
-  procedureconcept?: T;
   pregistryofficeprocedure?: T;
   titlenumber?: T;
   startdate?: T;
   startdate_tz?: T;
-  collaborator?: T;
+  registrationprocessor?: T;
   expenselist?:
     | T
     | {
@@ -6870,10 +6874,10 @@ export interface ProceduresunarpSelect<T extends boolean = true> {
         observations?: T;
         id?: T;
       };
-  proceduredatafiles?:
+  procedureSunarpFiles?:
     | T
     | {
-        mediaprocedure?: T;
+        mediaproceduresunarp?: T;
         id?: T;
       };
   observations?: T;
@@ -6896,10 +6900,10 @@ export interface ProceduresunarpSelect<T extends boolean = true> {
 export interface ProcedureaapSelect<T extends boolean = true> {
   vehicle?: T;
   typeprocedureaap?: T;
-  procedureconcept?: T;
   pregistryofficeprocedure?: T;
   paymentcode?: T;
   startdate?: T;
+  startdate_tz?: T;
   expenselist?:
     | T
     | {
@@ -6908,14 +6912,19 @@ export interface ProcedureaapSelect<T extends boolean = true> {
         conceptexpense?: T;
         typecurrency?: T;
         expensevalue?: T;
-        mediaexpenseproceduresunarp?: T;
+        expenseAAPfiles?:
+          | T
+          | {
+              mediaexpenseprocedureaap?: T;
+              id?: T;
+            };
         observations?: T;
         id?: T;
       };
-  proceduredatafiles?:
+  procedureAAPFiles?:
     | T
     | {
-        mediaprocedure?: T;
+        mediaprocedureaap?: T;
         registrationprocessor?: T;
         id?: T;
       };
@@ -6925,7 +6934,6 @@ export interface ProcedureaapSelect<T extends boolean = true> {
     | {
         enddate?: T;
       };
-  status?: T;
   processstatus?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -7195,6 +7203,8 @@ export interface BuyerSelect<T extends boolean = true> {
   observations?: T;
   status?: T;
   rating?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -7929,6 +7939,8 @@ export interface NotarySelect<T extends boolean = true> {
   address?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -8003,6 +8015,8 @@ export interface DocumentaditionalSelect<T extends boolean = true> {
         id?: T;
       };
   observations?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -8013,6 +8027,8 @@ export interface DocumentaditionalSelect<T extends boolean = true> {
 export interface TypedocumentaditionalSelect<T extends boolean = true> {
   typedocumentaditional?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -8637,25 +8653,6 @@ export interface MediactsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  prefix?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -8714,6 +8711,8 @@ export interface RoleSelect<T extends boolean = true> {
         canAccess?: T;
         id?: T;
       };
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }

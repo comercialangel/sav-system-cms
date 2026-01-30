@@ -9,8 +9,8 @@ export const MediaCTS: CollectionConfig = {
     group: 'Recursos Humanos',
   },
   labels: {
-    singular: 'Archivo CTS',
-    plural: 'Archivos CTS',
+    singular: 'Media (Archivo CTS)',
+    plural: 'Media (Archivos CTS)',
   },
   upload: {
     mimeTypes: ['*'],
