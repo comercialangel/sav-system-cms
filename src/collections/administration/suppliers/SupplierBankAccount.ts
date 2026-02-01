@@ -62,7 +62,7 @@ export const SupplierBankAccount: CollectionConfig = {
                 id: typedata.supplier,
               })
               if (supplier) {
-                supplierName = supplier.namesupplier || '' // Supongamos que 'name' es el campo en 'company'
+                supplierName = supplier.suppliername || '' // Supongamos que 'name' es el campo en 'company'
               }
 
               // Obtener el tipo de banco

@@ -1235,9 +1235,10 @@ export interface Motivecancellationsale {
  */
 export interface Supplier {
   id: string;
-  typeidentificationdocument: string | Typeidentificationdocument;
+  typeidentificationdocument?: (string | null) | Typeidentificationdocument;
   identificationnumber: string;
-  namesupplier: string;
+  suppliername?: string | null;
+  observations?: string | null;
   namedocument?: string | null;
   suppliercontact?: {
     docs?: (string | Suppliercontact)[];
@@ -1254,7 +1255,6 @@ export interface Supplier {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  observations?: string | null;
   status: 'activo' | 'inactivo';
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
@@ -5615,12 +5615,12 @@ export interface MediapurchasecancellationSelect<T extends boolean = true> {
 export interface SupplierSelect<T extends boolean = true> {
   typeidentificationdocument?: T;
   identificationnumber?: T;
-  namesupplier?: T;
+  suppliername?: T;
+  observations?: T;
   namedocument?: T;
   suppliercontact?: T;
   supplieraddress?: T;
   supplieraccount?: T;
-  observations?: T;
   status?: T;
   createdBy?: T;
   updatedBy?: T;

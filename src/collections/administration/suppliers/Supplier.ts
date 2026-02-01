@@ -1,12 +1,16 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig } from 'payload'
+
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 
 export const Supplier: CollectionConfig = {
   slug: 'supplier',
   access: {
-    read: () => true,
+    read: isAuthenticated,
     create: () => true,
     update: () => true,
-    delete: () => true,
+    delete: isAuthenticated,
   },
   admin: {
     useAsTitle: 'namedocument',
@@ -25,7 +29,6 @@ export const Supplier: CollectionConfig = {
           label: 'Tipo de documento de identificación',
           type: 'relationship',
           relationTo: 'typeidentificationdocument',
-          required: true,
           hasMany: false,
           admin: {
             width: '50%',
@@ -42,33 +45,41 @@ export const Supplier: CollectionConfig = {
             width: '50%',
           },
         },
-      ],
-    },
-    {
-      name: 'namesupplier',
-      label: 'Nombre completo o Razón social',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'namedocument',
-      label: 'Nombre-documento',
-      type: 'text',
-      hooks: {
-        beforeChange: [
-          ({ data }) => {
-            interface FullNameData {
-              namesupplier: string
-              identificationnumber: string
-            }
-            const typedData = data as FullNameData
-            return `${typedData.namesupplier} - ${typedData.identificationnumber}`
+        {
+          name: 'suppliername',
+          label: 'Nombre completo o Razón social',
+          type: 'text',
+          admin: {
+            width: '100%',
           },
-        ],
-      },
-      admin: {
-        hidden: true,
-      },
+        },
+        {
+          name: 'observations',
+          label: 'Observaciones',
+          type: 'textarea',
+          required: false,
+        },
+        {
+          name: 'namedocument',
+          label: 'Nombre-documento',
+          type: 'text',
+          admin: {
+            hidden: true,
+          },
+          hooks: {
+            beforeChange: [
+              ({ data }) => {
+                interface FullNameData {
+                  suppliername: string
+                  identificationnumber: string
+                }
+                const typedData = data as FullNameData
+                return `${typedData.suppliername} - ${typedData.identificationnumber}`
+              },
+            ],
+          },
+        },
+      ],
     },
     {
       name: 'suppliercontact',
@@ -92,12 +103,7 @@ export const Supplier: CollectionConfig = {
       collection: 'supplierbankaccount',
       on: 'supplier',
     },
-    {
-      name: 'observations',
-      label: 'Observaciones',
-      type: 'textarea',
-      required: false,
-    },
+
     {
       name: 'status',
       label: 'Estado',
@@ -141,14 +147,15 @@ export const Supplier: CollectionConfig = {
       },
     },
   ],
+
   hooks: {
     beforeChange: [
-      async ({ req: { user }, data, originalDoc }) => {
-        if (user) {
-          if (!originalDoc.createdBy) {
-            data.createdBy = user.id
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
           }
-          data.updatedBy = user.id
+          data.updatedBy = req.user.id
         }
         return data
       },

@@ -1,9 +1,16 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig } from 'payload'
+
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 
 export const TypeIdentificationDocument: CollectionConfig = {
   slug: 'typeidentificationdocument',
   access: {
     read: () => true,
+    create: isAuthenticated,
+    update: isAuthenticated,
+    delete: isAuthenticated,
   },
   admin: {
     useAsTitle: 'abbreviatedname',
@@ -89,17 +96,4 @@ export const TypeIdentificationDocument: CollectionConfig = {
       },
     },
   ],
-  hooks: {
-    beforeChange: [
-      async ({ req: { user }, data, originalDoc }) => {
-        if (user) {
-          if (!originalDoc.createdBy) {
-            data.createdBy = user.id
-          }
-          data.updatedBy = user.id
-        }
-        return data
-      },
-    ],
-  },
 }
