@@ -1033,6 +1033,8 @@ export interface Activity {
   id: string;
   activity: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -7215,6 +7217,8 @@ export interface BuyerSelect<T extends boolean = true> {
 export interface ActivitySelect<T extends boolean = true> {
   activity?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
