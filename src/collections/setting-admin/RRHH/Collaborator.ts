@@ -287,12 +287,12 @@ export const Collaborator: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
-      async ({ req: { user }, data, originalDoc }) => {
-        if (user) {
-          if (!originalDoc.createdBy) {
-            data.createdBy = user.id
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
           }
-          data.updatedBy = user.id
+          data.updatedBy = req.user.id
         }
         return data
       },

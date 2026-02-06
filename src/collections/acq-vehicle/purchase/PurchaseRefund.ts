@@ -124,10 +124,12 @@ export const PurchaseRefund: CollectionConfig = {
 
   hooks: {
     beforeChange: [
-      async ({ req: { user }, data, operation }) => {
-        if (user) {
-          if (operation === 'create') data.createdBy = user.id
-          data.updatedBy = user.id
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
         }
         return data
       },

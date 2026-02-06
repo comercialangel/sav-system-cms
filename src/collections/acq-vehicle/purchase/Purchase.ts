@@ -1,6 +1,10 @@
 import { generateSequence } from '@/utils/generateSequence'
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig } from 'payload'
 import { headersWithCors } from 'payload'
+
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 
 export const Purchase: CollectionConfig = {
   slug: 'purchase',
@@ -8,7 +12,7 @@ export const Purchase: CollectionConfig = {
     read: () => true,
     create: () => true,
     update: () => true,
-    delete: () => true,
+    delete: isAuthenticated,
   },
   admin: {
     useAsTitle: 'purchaseNumber',

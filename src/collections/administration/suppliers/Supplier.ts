@@ -7,7 +7,7 @@ const isAuthenticated: Access = ({ req: { user } }) => {
 export const Supplier: CollectionConfig = {
   slug: 'supplier',
   access: {
-    read: isAuthenticated,
+    read: () => true,
     create: () => true,
     update: () => true,
     delete: isAuthenticated,
@@ -102,6 +102,7 @@ export const Supplier: CollectionConfig = {
       type: 'join',
       collection: 'supplierbankaccount',
       on: 'supplier',
+      maxDepth: 2,
     },
 
     {
@@ -147,7 +148,6 @@ export const Supplier: CollectionConfig = {
       },
     },
   ],
-
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {

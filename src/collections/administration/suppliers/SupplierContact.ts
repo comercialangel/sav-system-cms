@@ -8,8 +8,8 @@ export const SupplierContact: CollectionConfig = {
   slug: 'suppliercontact',
   access: {
     read: () => true,
-    create: isAuthenticated,
-    update: isAuthenticated,
+    create: () => true,
+    update: () => true,
     delete: isAuthenticated,
   },
   admin: {
@@ -81,5 +81,40 @@ export const SupplierContact: CollectionConfig = {
       ],
       defaultValue: 'activo',
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
+  },
 }

@@ -99,6 +99,18 @@ export const ReceptionRelocation: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
+
     afterChange: [
       async ({ doc, req, operation }) => {
         const { payload } = req

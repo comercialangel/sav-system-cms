@@ -285,12 +285,11 @@ export const PurchasePayment: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {
-        const { user } = req
-        if (user) {
+        if (req.user) {
           if (operation === 'create') {
-            data.createdBy = user.id
+            data.createdBy = req.user.id
           }
-          data.updatedBy = user.id
+          data.updatedBy = req.user.id
         }
         return data
       },

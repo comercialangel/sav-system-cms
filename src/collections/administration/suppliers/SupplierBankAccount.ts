@@ -1,4 +1,8 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig } from 'payload'
+
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 
 export const SupplierBankAccount: CollectionConfig = {
   slug: 'supplierbankaccount',
@@ -6,7 +10,7 @@ export const SupplierBankAccount: CollectionConfig = {
     read: () => true,
     create: () => true,
     update: () => true,
-    delete: () => true,
+    delete: isAuthenticated,
   },
   admin: {
     useAsTitle: 'fullaccountbank',
@@ -238,5 +242,40 @@ export const SupplierBankAccount: CollectionConfig = {
       ],
       defaultValue: 'activo',
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
+  },
 }

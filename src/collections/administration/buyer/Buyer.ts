@@ -1,13 +1,16 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig } from 'payload'
 import { headersWithCors } from 'payload'
 
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 export const Buyer: CollectionConfig = {
   slug: 'buyer',
   access: {
-    read: () => true,
+    read: isAuthenticated,
     create: () => true,
     update: () => true,
-    delete: () => true,
+    delete: isAuthenticated,
   },
   admin: {
     useAsTitle: 'fullname',
@@ -262,6 +265,9 @@ export const Buyer: CollectionConfig = {
         singular: 'Contacto',
         plural: 'Contactos',
       },
+      access: {
+        create: () => true,
+      },
       fields: [
         {
           name: 'fullnamecontact',
@@ -356,12 +362,12 @@ export const Buyer: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
-      async ({ req: { user }, data, originalDoc }) => {
-        if (user) {
-          if (!originalDoc.createdBy) {
-            data.createdBy = user.id
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
           }
-          data.updatedBy = user.id
+          data.updatedBy = req.user.id
         }
         return data
       },

@@ -47,7 +47,7 @@ export const Activity: CollectionConfig = {
       label: 'Creado por',
       relationTo: 'users',
       admin: {
-        readOnly: true,
+        readOnly: false,
         position: 'sidebar',
         allowEdit: false,
       },
@@ -58,10 +58,23 @@ export const Activity: CollectionConfig = {
       label: 'Actualizado por',
       relationTo: 'users',
       admin: {
-        readOnly: true,
+        readOnly: false,
         position: 'sidebar',
         allowEdit: false,
       },
     },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
+  },
 }

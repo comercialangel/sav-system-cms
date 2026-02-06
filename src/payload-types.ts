@@ -1274,6 +1274,8 @@ export interface Suppliercontact {
   jobposition: string;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1288,6 +1290,8 @@ export interface Supplieraddress {
   address: string;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1307,6 +1311,8 @@ export interface Supplierbankaccount {
   cci?: string | null;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1576,6 +1582,8 @@ export interface Expense {
   id: string;
   expense: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -3175,6 +3183,8 @@ export interface Relocation {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -3228,6 +3238,8 @@ export interface Relocationwarehouse {
   observations?: string | null;
   warehouseorigin?: (string | null) | Warehouse;
   status: 'activo' | 'cancelado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -5639,6 +5651,8 @@ export interface SupplieraddressSelect<T extends boolean = true> {
   address?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5652,6 +5666,8 @@ export interface SuppliercontactSelect<T extends boolean = true> {
   jobposition?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5670,6 +5686,8 @@ export interface SupplierbankaccountSelect<T extends boolean = true> {
   cci?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5853,6 +5871,8 @@ export interface RelocationSelect<T extends boolean = true> {
   status?: T;
   warehouseorigin?: T;
   receptionrelocation?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5885,6 +5905,8 @@ export interface RelocationwarehousesSelect<T extends boolean = true> {
   observations?: T;
   warehouseorigin?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5895,6 +5917,8 @@ export interface RelocationwarehousesSelect<T extends boolean = true> {
 export interface ExpenseSelect<T extends boolean = true> {
   expense?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
