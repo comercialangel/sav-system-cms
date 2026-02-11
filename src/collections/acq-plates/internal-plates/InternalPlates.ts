@@ -29,7 +29,7 @@ export const InternalPlates: CollectionConfig = {
         },
         {
           name: 'company',
-          label: 'Compañía',
+          label: 'Empresa asociada',
           type: 'relationship',
           relationTo: 'company',
           required: true,
@@ -401,5 +401,40 @@ export const InternalPlates: CollectionConfig = {
       ],
       defaultValue: 'liberada',
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: false,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: false,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
+  },
 }

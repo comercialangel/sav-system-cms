@@ -280,7 +280,6 @@ export const PurchaseTransportation: CollectionConfig = {
       //   ],
       // },
     },
-
     {
       name: 'observations',
       label: 'Observaciones',

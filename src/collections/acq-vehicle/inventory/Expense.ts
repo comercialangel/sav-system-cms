@@ -47,7 +47,7 @@ export const Expense: CollectionConfig = {
       label: 'Creado por',
       relationTo: 'users',
       admin: {
-        readOnly: false,
+        readOnly: true,
         position: 'sidebar',
         allowEdit: false,
       },
@@ -58,7 +58,7 @@ export const Expense: CollectionConfig = {
       label: 'Actualizado por',
       relationTo: 'users',
       admin: {
-        readOnly: false,
+        readOnly: true,
         position: 'sidebar',
         allowEdit: false,
       },

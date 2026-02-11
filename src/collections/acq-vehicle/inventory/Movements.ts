@@ -108,22 +108,22 @@ export const Movements: CollectionConfig = {
 
     {
       name: 'status',
-      label: 'Estado del movimiento',
+      label: 'Estado',
       type: 'select',
       options: [
         {
-          label: 'Activo',
-          value: 'activo',
+          label: 'Efectuado',
+          value: 'efectuado',
         },
         {
           label: 'Cancelado',
           value: 'cancelado',
         },
       ],
-      defaultValue: 'activo',
+      defaultValue: 'efectuado',
       admin: {
         position: 'sidebar',
-        readOnly: true,
+        readOnly: false,
       },
     },
 

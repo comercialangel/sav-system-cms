@@ -230,7 +230,7 @@ export const Relocation: CollectionConfig = {
       options: [
         {
           label: 'En tránsito',
-          value: 'en transito',
+          value: 'en tránsito',
         },
         {
           label: 'Recepcionada',
@@ -241,7 +241,16 @@ export const Relocation: CollectionConfig = {
           value: 'anulado',
         },
       ],
-      defaultValue: 'en transito',
+      defaultValue: 'en tránsito',
+    },
+    {
+      name: 'motivecancellation',
+      label: 'Motivo de cancelación',
+      type: 'textarea',
+      required: false,
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'warehouseorigin',
@@ -270,7 +279,7 @@ export const Relocation: CollectionConfig = {
       label: 'Creado por',
       relationTo: 'users',
       admin: {
-        readOnly: true,
+        readOnly: false,
         position: 'sidebar',
         allowEdit: false,
       },
@@ -281,7 +290,7 @@ export const Relocation: CollectionConfig = {
       label: 'Actualizado por',
       relationTo: 'users',
       admin: {
-        readOnly: true,
+        readOnly: false,
         position: 'sidebar',
         allowEdit: false,
       },
@@ -294,6 +303,13 @@ export const Relocation: CollectionConfig = {
     beforeChange: [
       async ({ req, data, operation }) => {
         const { payload } = req
+
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
 
         if (operation === 'create') {
           try {
@@ -429,7 +445,7 @@ export const Relocation: CollectionConfig = {
                     typemovement: 'salida',
                     motivemovement: 'Traslado vehicular a otro establecimiento',
                     warehouse: contextData.originId, // Sale del origen real
-                    status: 'activo',
+                    status: 'efectuado',
                     relocationId: doc.id,
                   },
                   req,
@@ -452,7 +468,7 @@ export const Relocation: CollectionConfig = {
           // Operación de actualización
           if (operation === 'update' && previousDoc) {
             // Caso 1: Cambio de estado a "anulado"
-            if (previousDoc.status === 'en transito' && doc.status === 'anulado') {
+            if (previousDoc.status === 'en tránsito' && doc.status === 'anulado') {
               // Liberar la placa según el optionsplate anterior
               if (previousDoc.optionsplate === 'interna' && previousDoc.internalplates) {
                 const plateIdInternal =
@@ -511,7 +527,7 @@ export const Relocation: CollectionConfig = {
               console.log('Traslado anulado: Movimiento actualizado a "cancelado"')
             }
             // Caso 2: Actualización en estado "en transito"
-            else if (previousDoc.status === 'en transito' && doc.status === 'en transito') {
+            else if (previousDoc.status === 'en tránsito' && doc.status === 'en tránsito') {
               // Cambio entre tipos de placas (interna ↔ externa)
               if (doc.optionsplate !== previousDoc.optionsplate) {
                 // Liberar placa anterior

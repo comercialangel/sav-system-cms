@@ -169,7 +169,7 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
             {
               name: 'expensevalue',
               label: 'Valor',
-              type: 'text',
+              type: 'number',
               required: true,
               admin: {
                 width: '50%',
@@ -291,10 +291,39 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
       options: ['En proceso', 'Inscrito', 'Tachado', 'Cancelado'],
       defaultValue: 'En proceso',
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
   hooks: {
     afterChange: [
       async ({ doc, operation, req }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            doc.createdBy = req.user.id
+          }
+          doc.updatedBy = req.user.id
+        }
+
         if (operation === 'update' && doc.status === 'Inscrito') {
           try {
             // Verificar que tenemos todos los datos necesarios

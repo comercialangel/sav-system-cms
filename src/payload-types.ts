@@ -1046,6 +1046,8 @@ export interface Brand {
   id: string;
   brand: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1058,6 +1060,8 @@ export interface Model {
   brand: string | Brand;
   model: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1071,6 +1075,8 @@ export interface Version {
   version: string;
   modelversion?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1082,6 +1088,8 @@ export interface Color {
   id: string;
   color: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1093,6 +1101,8 @@ export interface Fuel {
   id: string;
   fuel: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1324,6 +1334,8 @@ export interface Typeuse {
   id: string;
   typeuse: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1450,6 +1462,8 @@ export interface Internalplate {
     observationsreturn?: string | null;
   };
   status: 'liberada' | 'asignada';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1480,6 +1494,8 @@ export interface Motivecancellationinternalplate {
   id: string;
   motivecancellation: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1837,7 +1853,7 @@ export interface Purchasereception {
     seat: number;
     rimnumber: number;
     typerim: string | Typerim;
-    mileage?: string | null;
+    mileage?: number | null;
     vehiclekey?: number | null;
     licensePlatesNumber?: string | null;
     licensePlateUsageType?: (string | null) | Typeuse;
@@ -1871,6 +1887,8 @@ export interface Transmission {
   id: string;
   transmission: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1882,6 +1900,8 @@ export interface Traction {
   id: string;
   traction: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1893,6 +1913,8 @@ export interface Carbody {
   id: string;
   carbody: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1904,6 +1926,8 @@ export interface Category {
   id: string;
   category: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1915,6 +1939,8 @@ export interface Typerim {
   id: string;
   typerim: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2120,6 +2146,8 @@ export interface Basicequipment {
   id: string;
   basicequipment: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2131,6 +2159,8 @@ export interface Internalequipment {
   id: string;
   internalequipment: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2161,6 +2191,8 @@ export interface Externalequipment {
   id: string;
   externalequipment: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2188,7 +2220,7 @@ export interface Vehicleregistrationprocedure {
         expensedate_tz: SupportedTimezones;
         conceptexpense: string | Expenseproceduresunarp;
         typecurrency: string | Typecurrency;
-        expensevalue: string;
+        expensevalue: number;
         mediaexpenseproceduresunarp?: (string | null) | Mediaexpenseproceduresunarp;
         observations?: string | null;
         id?: string | null;
@@ -2213,6 +2245,8 @@ export interface Vehicleregistrationprocedure {
     mediative?: (string | null) | Mediative;
   };
   status: 'En proceso' | 'Inscrito' | 'Tachado' | 'Cancelado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2224,6 +2258,8 @@ export interface Registryofficeprocedure {
   id: string;
   registryofficeprocedure: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2242,6 +2278,8 @@ export interface Registrationprocessor {
   address: string;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2253,6 +2291,8 @@ export interface Expenseproceduresunarp {
   id: string;
   expense: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2371,6 +2411,8 @@ export interface Vehicletitletransferprocedure {
     mediative?: (string | null) | Mediative;
   };
   status: 'En proceso' | 'Inscrito' | 'Tachado' | 'Cancelado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2401,6 +2443,8 @@ export interface Expenseproceduretitletransfer {
   id: string;
   expense: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2465,6 +2509,8 @@ export interface Proceduresunarp {
     mediative?: (string | null) | Mediative;
   };
   status: 'En proceso' | 'Inscrito' | 'Tachado' | 'Cancelado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2476,6 +2522,8 @@ export interface Typeproceduresunarp {
   id: string;
   typeprocedure: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2542,6 +2590,8 @@ export interface Procedureaap {
     enddate?: string | null;
   };
   processstatus: 'en proceso' | 'inscripto' | 'tachado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2553,6 +2603,8 @@ export interface Typeprocedureaap {
   id: string;
   typeprocedure: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2564,6 +2616,8 @@ export interface Expenseprocedureaap {
   id: string;
   expense: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -3136,7 +3190,7 @@ export interface Movement {
   typemovement: 'entrada' | 'salida';
   motivemovement: string;
   warehouse?: (string | null) | Warehouse;
-  status?: ('activo' | 'cancelado') | null;
+  status?: ('efectuado' | 'cancelado') | null;
   relocationId?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -3176,7 +3230,8 @@ export interface Relocation {
         id?: string | null;
       }[]
     | null;
-  status: 'en transito' | 'recepcionada' | 'anulado';
+  status: 'en tránsito' | 'recepcionada' | 'anulado';
+  motivecancellation?: string | null;
   warehouseorigin?: (string | null) | Warehouse;
   receptionrelocation?: {
     docs?: (string | Receptionrelocation)[];
@@ -3315,7 +3370,7 @@ export interface Licenseplateissuanceprocedure {
         expensedate_tz: SupportedTimezones;
         conceptexpense: string | Expenseprocedureaap;
         typecurrency: string | Typecurrency;
-        expensevalue: string;
+        expensevalue: number;
         expenseAAPfiles?:
           | {
               mediaexpenseprocedureaap: string | Mediaexpenseprocedureaap;
@@ -3336,6 +3391,8 @@ export interface Licenseplateissuanceprocedure {
     registrationprocessor?: (string | null) | Registrationprocessor;
   };
   status: 'Pendiente' | 'Pago pendiente' | 'Trámite en proceso' | 'Recibido';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -5749,6 +5806,8 @@ export interface InternalplatesSelect<T extends boolean = true> {
         observationsreturn?: T;
       };
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5800,6 +5859,8 @@ export interface MediainternalplatesSelect<T extends boolean = true> {
 export interface MotivecancellationinternalplatesSelect<T extends boolean = true> {
   motivecancellation?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5869,6 +5930,7 @@ export interface RelocationSelect<T extends boolean = true> {
         id?: T;
       };
   status?: T;
+  motivecancellation?: T;
   warehouseorigin?: T;
   receptionrelocation?: T;
   createdBy?: T;
@@ -6474,6 +6536,8 @@ export interface PricelistsSelect<T extends boolean = true> {
 export interface BrandSelect<T extends boolean = true> {
   brand?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6485,6 +6549,8 @@ export interface ModelSelect<T extends boolean = true> {
   brand?: T;
   model?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6497,6 +6563,8 @@ export interface VersionSelect<T extends boolean = true> {
   version?: T;
   modelversion?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6507,6 +6575,8 @@ export interface VersionSelect<T extends boolean = true> {
 export interface ColorSelect<T extends boolean = true> {
   color?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6517,6 +6587,8 @@ export interface ColorSelect<T extends boolean = true> {
 export interface FuelSelect<T extends boolean = true> {
   fuel?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6527,6 +6599,8 @@ export interface FuelSelect<T extends boolean = true> {
 export interface CarbodySelect<T extends boolean = true> {
   carbody?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6537,6 +6611,8 @@ export interface CarbodySelect<T extends boolean = true> {
 export interface CategorySelect<T extends boolean = true> {
   category?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6547,6 +6623,8 @@ export interface CategorySelect<T extends boolean = true> {
 export interface TractionSelect<T extends boolean = true> {
   traction?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6557,6 +6635,8 @@ export interface TractionSelect<T extends boolean = true> {
 export interface TyperimSelect<T extends boolean = true> {
   typerim?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6567,6 +6647,8 @@ export interface TyperimSelect<T extends boolean = true> {
 export interface TransmissionSelect<T extends boolean = true> {
   transmission?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6577,6 +6659,8 @@ export interface TransmissionSelect<T extends boolean = true> {
 export interface TypeuseSelect<T extends boolean = true> {
   typeuse?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6587,6 +6671,8 @@ export interface TypeuseSelect<T extends boolean = true> {
 export interface BasicequipmentSelect<T extends boolean = true> {
   basicequipment?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6597,6 +6683,8 @@ export interface BasicequipmentSelect<T extends boolean = true> {
 export interface InternalequipmentSelect<T extends boolean = true> {
   internalequipment?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6607,6 +6695,8 @@ export interface InternalequipmentSelect<T extends boolean = true> {
 export interface ExternalequipmentSelect<T extends boolean = true> {
   externalequipment?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6789,6 +6879,8 @@ export interface VehicleregistrationprocedureSelect<T extends boolean = true> {
         mediative?: T;
       };
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6833,6 +6925,8 @@ export interface LicenseplateissuanceprocedureSelect<T extends boolean = true> {
         registrationprocessor?: T;
       };
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6873,6 +6967,8 @@ export interface VehicletitletransferprocedureSelect<T extends boolean = true> {
         mediative?: T;
       };
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6916,6 +7012,8 @@ export interface ProceduresunarpSelect<T extends boolean = true> {
         mediative?: T;
       };
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6961,6 +7059,8 @@ export interface ProcedureaapSelect<T extends boolean = true> {
         enddate?: T;
       };
   processstatus?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6971,6 +7071,8 @@ export interface ProcedureaapSelect<T extends boolean = true> {
 export interface TypeproceduresunarpSelect<T extends boolean = true> {
   typeprocedure?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6981,6 +7083,8 @@ export interface TypeproceduresunarpSelect<T extends boolean = true> {
 export interface TypeprocedureaapSelect<T extends boolean = true> {
   typeprocedure?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6991,6 +7095,8 @@ export interface TypeprocedureaapSelect<T extends boolean = true> {
 export interface RegistryofficeprocedureSelect<T extends boolean = true> {
   registryofficeprocedure?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -7008,6 +7114,8 @@ export interface RegistrationprocessorSelect<T extends boolean = true> {
   address?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -7018,6 +7126,8 @@ export interface RegistrationprocessorSelect<T extends boolean = true> {
 export interface ExpenseproceduresunarpSelect<T extends boolean = true> {
   expense?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -7028,6 +7138,8 @@ export interface ExpenseproceduresunarpSelect<T extends boolean = true> {
 export interface ExpenseproceduretitletransferSelect<T extends boolean = true> {
   expense?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -7038,6 +7150,8 @@ export interface ExpenseproceduretitletransferSelect<T extends boolean = true> {
 export interface ExpenseprocedureaapSelect<T extends boolean = true> {
   expense?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -213,7 +213,42 @@ export const VehicleTitleTransferProcedure: CollectionConfig = {
       options: ['En proceso', 'Inscrito', 'Tachado', 'Cancelado'],
       defaultValue: 'En proceso',
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
+  },
   endpoints: [
     // Endpoint para eliminar un archivo
     {

@@ -263,6 +263,7 @@ export const PurchaseReceptions: CollectionConfig = {
               label: 'Número de aro',
               type: 'number',
               required: true,
+              defaultValue: 0,
               admin: {
                 width: '33%',
               },
@@ -282,9 +283,9 @@ export const PurchaseReceptions: CollectionConfig = {
             {
               name: 'mileage',
               label: 'Kilometraje',
-              type: 'text',
+              type: 'number',
               required: false,
-              defaultValue: '0',
+              defaultValue: 0,
               admin: {
                 width: '33%',
               },
@@ -294,6 +295,7 @@ export const PurchaseReceptions: CollectionConfig = {
               label: 'Llaves de contacto',
               type: 'number',
               required: false,
+              defaultValue: 0,
               admin: {
                 width: '33%',
               },

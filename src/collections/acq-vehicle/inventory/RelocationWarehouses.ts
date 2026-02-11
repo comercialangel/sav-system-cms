@@ -278,7 +278,7 @@ export const RelocationWarehouses: CollectionConfig = {
                 typemovement: 'salida',
                 motivemovement: 'Salida vehicular a otro almacén',
                 warehouse: originId, // Sale del origen
-                status: 'activo',
+                status: 'efectuado',
                 relocationId: doc.id, // Ojo: Verifica que en movements tengas este campo o uses generic relationship
               },
               req,
@@ -294,7 +294,7 @@ export const RelocationWarehouses: CollectionConfig = {
                 typemovement: 'entrada',
                 motivemovement: 'Ingreso vehicular a nuevo almacén',
                 warehouse: doc.warehousedestination, // Entra al destino
-                status: 'activo',
+                status: 'efectuado',
                 relocationId: doc.id,
               },
               req,
