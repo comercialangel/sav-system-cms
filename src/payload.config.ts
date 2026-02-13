@@ -555,7 +555,7 @@ export default buildConfig({
           prefix: 'mediaproceduresunarp',
         },
         mediaprocedureregistration: {
-          prefix: 'mediaregistration',
+          prefix: 'mediaprocedureregistration',
         },
         mediaregistration: {
           prefix: 'mediaregistration',
