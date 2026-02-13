@@ -486,61 +486,121 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
       },
     },
 
-    //endpoint para lista de registros de tramites
+    //endpoint para lista de registros de tramites de inscripción vehicular
     {
       path: '/procedurelist',
       method: 'get',
       handler: async (req) => {
+        const { payload } = req
+
         try {
-          const { payload } = req
-
-          // 1. Obtener todos los vehículos en proceso de registro
-          const vehiclesInProcess = await payload.find({
-            collection: 'vehicleregistrationprocedure',
-            where: {
-              status: { equals: 'En proceso' },
-            },
-            depth: 1, // Solo necesitamos el ID del vehículo
-            limit: 50,
-          })
-
-          // 2. Extraer IDs de vehículos a excluir
-          const excludedVehicleIds = vehiclesInProcess.docs
-            .map((doc) => (typeof doc.vehicle === 'object' ? doc.vehicle.id : doc.vehicle))
-            .filter(Boolean)
-
-          // 3. Obtener vehículos de inventario que NO están en proceso
-          const inventoryVehicles = await payload.find({
+          // =================================================================
+          // PASO 1: Obtener TODOS los vehículos "Nuevos" del Inventario
+          // (Esta es tu fuente de verdad)
+          // =================================================================
+          const inventoryRes = await payload.find({
             collection: 'inventory',
             where: {
-              and: [
-                { status: { in: ['En Stock', 'En Tránsito'] } },
-                { vehicle: { not_in: excludedVehicleIds } },
-                { 'vehicle.conditionvehicle.condition': { equals: 'Nuevo' } },
-              ],
+              // Condición 1: Que el vehículo sea Nuevo
+              'vehicle.conditionvehicle.condition': { equals: 'Nuevo' },
+              // Condición 2: Que esté disponible (filtra vendidos si es necesario)
+              status: { in: ['En Stock', 'En Tránsito', 'Reservado'] },
             },
-            depth: 2, // Para poblar relaciones básicas
-            limit: 1000,
+            depth: 2, // Para traer datos del vehículo (Marca, Modelo, etc.)
+            limit: 100, // Ajusta según paginación
+            sort: '-createdAt',
           })
 
-          // 4. Formatear respuesta simple
+          // Extraemos los IDs de los vehículos encontrados
+          const vehicleIds = inventoryRes.docs.map((item) =>
+            typeof item.vehicle === 'object' ? item.vehicle.id : item.vehicle,
+          )
+
+          // =================================================================
+          // PASO 2: Buscar si existen trámites para esos vehículos
+          // =================================================================
+          const proceduresMap = new Map()
+
+          if (vehicleIds.length > 0) {
+            const proceduresRes = await payload.find({
+              collection: 'vehicleregistrationprocedure',
+              where: {
+                vehicle: { in: vehicleIds },
+                // Opcional: status: { not_equals: 'Cancelado' }
+              },
+              depth: 2, // Necesitamos detalles básicos
+              limit: 100,
+            })
+
+            // Convertimos a un Map para búsqueda rápida por ID de vehículo
+            proceduresRes.docs.forEach((proc) => {
+              const vId = typeof proc.vehicle === 'object' ? proc.vehicle.id : proc.vehicle
+              proceduresMap.set(vId, proc)
+            })
+          }
+
+          // =================================================================
+          // PASO 3: Combinar (Merge) y Formatear
+          // =================================================================
+          const formattedData = inventoryRes.docs.map((inv) => {
+            const vehicle = typeof inv.vehicle === 'object' ? inv.vehicle : null
+            const vehicleId = vehicle?.id
+
+            // Buscamos si tiene trámite
+            const proc = proceduresMap.get(vehicleId)
+
+            // ESTADO CALCULADO:
+            // Si hay trámite -> Usar el estado del trámite
+            // Si no hay trámite -> "Pendiente de inicio" (o null, según tu frontend)
+            const computedStatus = proc ? proc.status : 'Pendiente'
+
+            const procedureFinishData = proc?.procedurefinish
+              ? {
+                  enddate: proc.procedurefinish.enddate || null,
+                  licenseplate: proc.procedurefinish.licenseplate || null,
+                  licensePlateUsageType: proc.procedurefinish.licensePlateUsageType || null, // Vendrá poblado (id, nombre, etc.)
+                  mediaregistration: proc.procedurefinish.mediaregistration || null, // Vendrá poblado (url, filename, etc.)
+                  mediative: proc.procedurefinish.mediative || null, // Vendrá poblado
+                }
+              : null
+
+            return {
+              // --- DATOS DEL INVENTARIO / VEHÍCULO ---
+              inventoryId: inv.id,
+              vehicleId: vehicleId || 'N/A',
+              brand: typeof vehicle?.brand === 'object' ? vehicle.brand.brand : vehicle?.brand,
+              model: typeof vehicle?.model === 'object' ? vehicle.model.model : vehicle?.model,
+              version:
+                typeof vehicle?.version === 'object' ? vehicle.version.version : vehicle?.version,
+              color: typeof vehicle?.color === 'object' ? vehicle.color.color : vehicle?.color,
+              yearmodel: vehicle?.yearmodel,
+              vin: vehicle?.vin,
+              motor: vehicle?.motor,
+              fuel: typeof vehicle?.fuel === 'object' ? vehicle.fuel.fuel : vehicle?.fuel,
+              condition: 'Nuevo', // Ya sabemos que es nuevo por el filtro
+
+              // --- DATOS DEL TRÁMITE (Pueden ser null si no ha iniciado) ---
+              hasProcedure: !!proc, // Booleano útil para el frontend
+              procedureId: proc?.id || null,
+              status: computedStatus,
+
+              // Campos específicos del trámite (usamos optional chaining ?.)
+              optionsprocedure: proc?.optionsprocedure || null,
+              startdate: proc?.startdate || null,
+              procedurefinish: procedureFinishData,
+              registryofficeprocedure: proc?.procedurecompany?.registryofficeprocedure || null,
+              titlenumber: proc?.procedurecompany?.titlenumber || null,
+              registrationprocessor: proc?.procedurecompany?.registrationprocessor || null,
+              expenselist: proc?.expenselist || [],
+              registrationprocedurefiles: proc?.registrationprocedurefiles || [],
+            }
+          })
+
           return Response.json(
             {
               success: true,
-              data: inventoryVehicles.docs.map((vehicle) => ({
-                id: vehicle.id,
-                brand: typeof vehicle.vehicle === 'object' ? vehicle.vehicle.brand : 'sin marca',
-                model: typeof vehicle.vehicle === 'object' ? vehicle.vehicle.model : 'Sin modelo',
-                version:
-                  typeof vehicle.vehicle === 'object' ? vehicle.vehicle.version : 'Sin version',
-                color: typeof vehicle.vehicle === 'object' ? vehicle.vehicle.color : 'Sin color',
-                yearmodel:
-                  typeof vehicle.vehicle === 'object' ? vehicle.vehicle.yearmodel : 'Sin modelo',
-                vin: typeof vehicle.vehicle === 'object' ? vehicle.vehicle.vin : 'Sin chasis',
-                motor: typeof vehicle.vehicle === 'object' ? vehicle.vehicle.motor : 'Sin motor',
-                status: vehicle.status,
-              })),
-              count: inventoryVehicles.totalDocs,
+              count: inventoryRes.totalDocs, // Total de vehículos disponibles
+              docs: formattedData,
             },
             {
               headers: headersWithCors({ headers: new Headers(), req }),
@@ -551,7 +611,7 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
           return Response.json(
             {
               success: false,
-              error: 'Error al obtener vehículos disponibles',
+              error: 'Error al obtener inventario vehicular para trámites',
             },
             {
               status: 500,
