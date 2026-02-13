@@ -2683,6 +2683,8 @@ export interface Assignmentgp {
   installationgps?: (string | null) | Installationgp;
   periodusegps?: (string | null) | Periodusegp;
   gpscancellation?: (string | null) | Gpscancellation;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2733,6 +2735,8 @@ export interface Suppliergp {
   email?: string | null;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2744,6 +2748,8 @@ export interface Typegp {
   id: string;
   typegps: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2756,6 +2762,8 @@ export interface Typesino {
   typesino: string;
   image?: (string | null) | Mediatypesino;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2786,6 +2794,8 @@ export interface Motivecancellationdevice {
   id: string;
   motivecancellation: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2834,6 +2844,8 @@ export interface Ownersim {
   email?: string | null;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2845,6 +2857,8 @@ export interface Typeoperator {
   id: string;
   typeoperator: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2903,6 +2917,8 @@ export interface Installergp {
   nameinstaller: string;
   observations?: string | null;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2918,6 +2934,8 @@ export interface Otherplaceinstallation {
   distrito: string | Distrito;
   address: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2951,6 +2969,8 @@ export interface Periodusegp {
   typeresponsible: 'comprador' | 'proveedor';
   observations?: string | null;
   renewalsgps?: (string | Renewalsgp)[] | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -2974,6 +2994,8 @@ export interface Renewalsgp {
   mediarenewal?: (string | null) | Mediarenewal;
   observations?: string | null;
   statusrenewal: 'vigente' | 'vencido' | 'por vencer' | 'finalizado';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -3306,6 +3328,8 @@ export interface Motivecancellationcardsim {
   id: string;
   motivecancellation: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -6022,6 +6046,8 @@ export interface AssignmentgpsSelect<T extends boolean = true> {
   installationgps?: T;
   periodusegps?: T;
   gpscancellation?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6059,6 +6085,8 @@ export interface PeriodusegpsSelect<T extends boolean = true> {
   typeresponsible?: T;
   observations?: T;
   renewalsgps?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6078,6 +6106,8 @@ export interface RenewalsgpsSelect<T extends boolean = true> {
   mediarenewal?: T;
   observations?: T;
   statusrenewal?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6178,6 +6208,8 @@ export interface SuppliergpsSelect<T extends boolean = true> {
   email?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6197,6 +6229,8 @@ export interface OwnersimSelect<T extends boolean = true> {
   email?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6210,6 +6244,8 @@ export interface InstallergpsSelect<T extends boolean = true> {
   nameinstaller?: T;
   observations?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6221,6 +6257,8 @@ export interface TypesinoSelect<T extends boolean = true> {
   typesino?: T;
   image?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6231,6 +6269,8 @@ export interface TypesinoSelect<T extends boolean = true> {
 export interface TypegpsSelect<T extends boolean = true> {
   typegps?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6241,6 +6281,8 @@ export interface TypegpsSelect<T extends boolean = true> {
 export interface TypeoperatorSelect<T extends boolean = true> {
   typeoperator?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6255,6 +6297,8 @@ export interface OtherplaceinstallationSelect<T extends boolean = true> {
   distrito?: T;
   address?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6265,6 +6309,8 @@ export interface OtherplaceinstallationSelect<T extends boolean = true> {
 export interface MotivecancellationdeviceSelect<T extends boolean = true> {
   motivecancellation?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6275,6 +6321,8 @@ export interface MotivecancellationdeviceSelect<T extends boolean = true> {
 export interface MotivecancellationcardsimSelect<T extends boolean = true> {
   motivecancellation?: T;
   status?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
