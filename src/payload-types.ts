@@ -2809,7 +2809,7 @@ export interface Cardsim {
   dateacquisition_tz: SupportedTimezones;
   ownersim: string | Ownersim;
   typeoperator: string | Typeoperator;
-  codesim: string;
+  codesim?: string | null;
   numbersim?: string | null;
   typecurrency: string | Typecurrency;
   exchangerate?: number | null;

@@ -593,6 +593,7 @@ export const VehicleRegistrationProcedure: CollectionConfig = {
               registrationprocessor: proc?.procedurecompany?.registrationprocessor || null,
               expenselist: proc?.expenselist || [],
               registrationprocedurefiles: proc?.registrationprocedurefiles || [],
+              observations: proc?.observations || null,
             }
           })
 
