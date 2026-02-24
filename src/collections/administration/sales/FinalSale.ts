@@ -611,7 +611,7 @@ export const FinalSale: CollectionConfig = {
                   typemovement: 'salida',
                   motivemovement: 'Venta final',
                   warehouse: item.location,
-                  status: 'activo',
+                  status: 'efectuado',
                 },
               })
             }

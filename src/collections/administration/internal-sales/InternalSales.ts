@@ -325,7 +325,7 @@ export const InternalSales: CollectionConfig = {
                 typemovement: 'salida',
                 motivemovement: 'Venta interna',
                 warehouse: sellerInventoryItem.location,
-                status: 'activo',
+                status: 'efectuado',
                 relocationId: id, // Vincular al documento de InternalSales
               },
             })
@@ -342,7 +342,7 @@ export const InternalSales: CollectionConfig = {
                 typemovement: 'entrada',
                 motivemovement: 'Compra interna',
                 warehouse: sellerInventoryItem.location,
-                status: 'activo',
+                status: 'efectuado',
                 relocationId: id, // Vincular al documento de InternalSales
               },
             })
