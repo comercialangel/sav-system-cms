@@ -127,37 +127,37 @@ export const PeriodUseGPS: CollectionConfig = {
       },
     ],
 
-    afterChange: [
-      async ({ doc, req, operation }) => {
-        const { payload } = req
+    // afterChange: [
+    //   async ({ doc, req, operation }) => {
+    //     const { payload } = req
 
-        try {
-          // Solo procesar si hay una asignación GPS asociada
-          if (doc.assignmentgps) {
-            const assignmentId =
-              typeof doc.assignmentgps === 'object' ? doc.assignmentgps.id : doc.assignmentgps
+    //     try {
+    //       // Solo procesar si hay una asignación GPS asociada
+    //       if (doc.assignmentgps) {
+    //         const assignmentId =
+    //           typeof doc.assignmentgps === 'object' ? doc.assignmentgps.id : doc.assignmentgps
 
-            // Actualizar la asignación GPS con la referencia al periodo de uso
-            await payload.update({
-              collection: 'assignmentgps',
-              id: assignmentId,
-              data: {
-                periodusegps: doc.id, // Establecemos la relación inversa
-              },
-            })
+    //         // Actualizar la asignación GPS con la referencia al periodo de uso
+    //         await payload.update({
+    //           collection: 'assignmentgps',
+    //           id: assignmentId,
+    //           data: {
+    //             periodusegps: doc.id, // Establecemos la relación inversa
+    //           },
+    //         })
 
-            console.log(`Asignación GPS ${assignmentId} actualizada con periodo de uso ${doc.id}`)
-          }
-        } catch (error) {
-          console.error('Error en hook de PeriodUseGPS:', {
-            error: error,
-            stack: error,
-            docId: doc.id,
-            operation,
-          })
-          throw new Error('No se pudo agregar la asignación GPS con el periodo de uso')
-        }
-      },
-    ],
+    //         console.log(`Asignación GPS ${assignmentId} actualizada con periodo de uso ${doc.id}`)
+    //       }
+    //     } catch (error) {
+    //       console.error('Error en hook de PeriodUseGPS:', {
+    //         error: error,
+    //         stack: error,
+    //         docId: doc.id,
+    //         operation,
+    //       })
+    //       throw new Error('No se pudo agregar la asignación GPS con el periodo de uso')
+    //     }
+    //   },
+    // ],
   },
 }

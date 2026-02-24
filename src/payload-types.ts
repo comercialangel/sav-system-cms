@@ -269,6 +269,11 @@ export interface Config {
     relocation: {
       receptionrelocation: 'receptionrelocation';
     };
+    assignmentgps: {
+      installationgps: 'installationgps';
+      periodusegps: 'periodusegps';
+      gpscancellation: 'gpscancellation';
+    };
     vehicle: {
       'vehicleRegistration.vehicleRegistrationProcedure': 'vehicleregistrationprocedure';
       'vehicleRegistration.vehicleTitleTransferProcedure': 'vehicletitletransferprocedure';
@@ -2680,9 +2685,21 @@ export interface Assignmentgp {
   observations?: string | null;
   statusassignment: 'vigente' | 'no vigente';
   statusinstallation: 'pendiente' | 'instalado';
-  installationgps?: (string | null) | Installationgp;
-  periodusegps?: (string | null) | Periodusegp;
-  gpscancellation?: (string | null) | Gpscancellation;
+  installationgps?: {
+    docs?: (string | Installationgp)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  periodusegps?: {
+    docs?: (string | Periodusegp)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  gpscancellation?: {
+    docs?: (string | Gpscancellation)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
   updatedAt: string;

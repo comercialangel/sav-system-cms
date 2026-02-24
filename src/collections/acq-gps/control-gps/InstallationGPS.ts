@@ -266,7 +266,6 @@ export const InstallationGps: CollectionConfig = {
               id: assignmentId,
               data: {
                 statusinstallation: 'instalado',
-                installationgps: doc.id, // Relación inversa
               },
               overrideAccess: false,
             })
@@ -360,9 +359,26 @@ export const InstallationGps: CollectionConfig = {
           // Procesar cada asignación
           for (const assignment of assignments.docs) {
             // Obtener el costo de instalación desde installationgps
-            if (assignment.installationgps && typeof assignment.installationgps === 'object') {
-              totalUSD += Number(assignment.installationgps.totalExpenseUSD || 0)
-              totalPEN += Number(assignment.installationgps.totalExpensePEN || 0)
+
+            // if (assignment.installationgps && typeof assignment.installationgps === 'object') {
+            //   totalUSD += Number(assignment.installationgps.totalExpenseUSD || 0)
+            //   totalPEN += Number(assignment.installationgps.totalExpensePEN || 0)
+            // }
+            // Obtener el costo de instalación desde installationgps
+
+            // Verificamos si installationgps tiene la propiedad 'docs' (es un join paginado)
+            if (
+              assignment.installationgps &&
+              typeof assignment.installationgps === 'object' &&
+              'docs' in assignment.installationgps
+            ) {
+              // Accedemos al primer documento de instalación de esa asignación
+              const instalacion = assignment.installationgps.docs?.[0]
+
+              if (instalacion && typeof instalacion === 'object') {
+                totalUSD += Number(instalacion.totalExpenseUSD || 0)
+                totalPEN += Number(instalacion.totalExpensePEN || 0)
+              }
             }
 
             // Obtener el costo del dispositivo GPS desde devicegps
