@@ -274,6 +274,9 @@ export interface Config {
       periodusegps: 'periodusegps';
       gpscancellation: 'gpscancellation';
     };
+    periodusegps: {
+      renewalsgps: 'renewalsgps';
+    };
     vehicle: {
       'vehicleRegistration.vehicleRegistrationProcedure': 'vehicleregistrationprocedure';
       'vehicleRegistration.vehicleTitleTransferProcedure': 'vehicletitletransferprocedure';
@@ -2985,7 +2988,11 @@ export interface Periodusegp {
   periodgps: 'mensual' | 'anual';
   typeresponsible: 'comprador' | 'proveedor';
   observations?: string | null;
-  renewalsgps?: (string | Renewalsgp)[] | null;
+  renewalsgps?: {
+    docs?: (string | Renewalsgp)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
   updatedAt: string;
@@ -3006,7 +3013,7 @@ export interface Renewalsgp {
   enddate?: string | null;
   enddate_tz?: SupportedTimezones;
   typecurrency: string | Typecurrency;
-  renewalvalue: string;
+  renewalvalue: number;
   collaborator?: (string | null) | Collaborator;
   mediarenewal?: (string | null) | Mediarenewal;
   observations?: string | null;

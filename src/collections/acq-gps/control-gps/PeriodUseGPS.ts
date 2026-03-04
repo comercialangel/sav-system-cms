@@ -81,15 +81,12 @@ export const PeriodUseGPS: CollectionConfig = {
     },
     {
       name: 'renewalsgps',
-      type: 'relationship',
+      type: 'join',
       label: 'Renovaciones',
-      relationTo: 'renewalsgps',
-      required: false,
+      collection: 'renewalsgps',
+      on: 'periodusegps',
+      maxDepth: 2,
       hasMany: true,
-      admin: {
-        readOnly: false,
-        allowEdit: false,
-      },
     },
     {
       type: 'relationship',

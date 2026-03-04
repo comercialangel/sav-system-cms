@@ -6,6 +6,8 @@ export const InstallationGps: CollectionConfig = {
   access: {
     read: () => true,
     create: () => true,
+    update: () => true,
+    delete: () => true,
   },
   admin: {
     group: "Adquisiciones de GPS y SIM's",
