@@ -33,8 +33,7 @@ export const Inventory: CollectionConfig = {
       label: 'Recepción de compra asociada',
       type: 'relationship',
       relationTo: 'purchasereceptions',
-      required: true,
-      unique: false, // Cada recepción solo puede tener un ítem en inventory
+      required: false, //dado que en liquidaciones también se crean registros en inventory sin pasar por una recepción de compra, este campo no puede ser obligatorio
       admin: {
         description: 'Vínculo al documento donde se registró la recepción del vehículo',
       },
@@ -65,7 +64,7 @@ export const Inventory: CollectionConfig = {
       name: 'operation',
       label: 'Operación realizada',
       type: 'select',
-      options: ['Compra', 'Venta'],
+      options: ['Compra', 'Venta', 'Adjudicación', 'Consignación'],
       defaultValue: 'Compra',
       required: true,
     },
@@ -83,27 +82,26 @@ export const Inventory: CollectionConfig = {
     {
       name: 'priceAssignment',
       label: 'Asignación de precio',
-      type: 'relationship',
-      relationTo: 'priceassignment',
-      required: false,
-      index: true,
+      type: 'join', // Cambiado a join
+      collection: 'priceassignment',
+      on: 'inventoryItem', // Apunta al campo en PriceAssignment
       admin: {
-        description: 'Precio de venta para este vehículo.',
+        description: 'Precio base asignado a este vehículo.',
       },
     },
-    {
-      name: 'activePricelist',
-      label: 'Lista de Precios Activa',
-      type: 'relationship',
-      relationTo: 'pricelists',
-      required: false,
-      hasMany: true,
-      index: true,
-      admin: {
-        description: 'Lista de precios activa para este vehículo.',
-        condition: (data) => data?.status !== 'Vendido',
-      },
-    },
+    // {
+    //   name: 'activePricelist',
+    //   label: 'Lista de Precios Activa',
+    //   type: 'relationship',
+    //   relationTo: 'pricelists',
+    //   required: false,
+    //   hasMany: true,
+    //   index: true,
+    //   admin: {
+    //     description: 'Lista de precios activa para este vehículo.',
+    //     condition: (data) => data?.status !== 'Vendido',
+    //   },
+    // },
   ],
 
   endpoints: [
@@ -216,8 +214,7 @@ export const Inventory: CollectionConfig = {
         }
       },
     },
-
-    //endpoint obtener vehículos disponibles (en stock)
+    //endpoint obtener vehículos disponibles (en stock) CON PRECIOS
     {
       path: '/available-vehicles',
       method: 'get',
@@ -225,6 +222,7 @@ export const Inventory: CollectionConfig = {
         const { payload } = req
 
         try {
+          // 1. Buscamos el inventario
           const inventoryItems = await payload.find({
             collection: 'inventory',
             where: { status: { equals: 'En Stock' } },
@@ -233,11 +231,81 @@ export const Inventory: CollectionConfig = {
             sort: '-createdAt',
           })
 
-          const result = inventoryItems.docs.map((item) => {
-            const v = item.vehicle // TypeScript infiere: string | PopulatedVehicle
-            const d = item.dealership // string | PopulatedDealership
+          // NUEVO: BÚSQUEDA MASIVA DE PRECIOS
+          // A. Extraemos todos los IDs de los vehículos encontrados
+          const vehicleIds = inventoryItems.docs
+            .map((item) => (typeof item.vehicle === 'object' ? item.vehicle?.id : item.vehicle))
+            .filter(Boolean)
 
-            // === VEHÍCULO (solo nombres, sin any) ===
+          // B. Hacemos UNA SOLA CONSULTA a la tabla de precios
+          const currentDate = new Date().toISOString()
+          const activePrices = await payload.find({
+            collection: 'pricelists',
+            where: {
+              and: [
+                { vehicle: { in: vehicleIds } },
+                { status: { equals: 'active' } },
+                {
+                  or: [
+                    { validityDate: { greater_than_equal: currentDate } },
+                    { validityDate: { exists: false } },
+                  ],
+                },
+              ],
+            },
+            depth: 1, // Para traer el codecurrency
+            pagination: false,
+          })
+
+          // C. Agrupamos los precios por ID de vehículo para un acceso ultra-rápido (Diccionario)
+          type PriceRecord = {
+            id: string
+            pricelistName: string
+            price: number
+            exchangeRate: number
+            currency: {
+              id: string
+              codecurrency: string
+              symbol: string
+            }
+          }
+          type PricesByVehicle = Record<string, PriceRecord[]>
+
+          const pricesByVehicle: PricesByVehicle = activePrices.docs.reduce<PricesByVehicle>(
+            (acc, priceItem) => {
+              const vId =
+                typeof priceItem.vehicle === 'object' ? priceItem.vehicle?.id : priceItem.vehicle
+              if (vId) {
+                if (!acc[vId]) acc[vId] = []
+                acc[vId].push({
+                  id: priceItem.id,
+                  pricelistName: priceItem?.pricelistName || priceItem.displayName || '',
+                  price: Number(priceItem.price) || 0,
+                  exchangeRate: Number(priceItem.exchangeRate) || 0,
+                  currency: {
+                    id:
+                      typeof priceItem.currency === 'object'
+                        ? priceItem.currency.id
+                        : priceItem.currency,
+                    codecurrency:
+                      typeof priceItem.currency === 'object'
+                        ? priceItem.currency.codecurrency
+                        : 'USD',
+                    symbol: typeof priceItem.currency === 'object' ? priceItem.currency.symbol : '',
+                  },
+                })
+              }
+              return acc
+            },
+            {},
+          )
+          // ✨ FIN DE BÚSQUEDA MASIVA ✨
+
+          const result = inventoryItems.docs.map((item) => {
+            const v = item.vehicle
+            const d = item.dealership
+
+            // ... (Todo tu mapeo actual de brand, model, version, color, year se mantiene exactamente igual) ...
             const brand =
               typeof v === 'string'
                 ? ''
@@ -276,7 +344,6 @@ export const Inventory: CollectionConfig = {
               `${brand} ${model} ${color} ${year} / ${version}`.trim().replace(/\s+/g, ' ') ||
               'Vehículo no identificado'
 
-            // === CONDICIÓN, FOTO, PLACA ===
             const condition =
               typeof v === 'string' ? 'Nuevo' : v.conditionvehicle?.condition || 'Nuevo'
             const referenceimage =
@@ -289,25 +356,22 @@ export const Inventory: CollectionConfig = {
               typeof v === 'string' ? null : (v.licensePlates?.licensePlatesNumber ?? null)
             const vehicleId = typeof v === 'string' ? v : v.id
 
-            // === DEALERSHIP ===
             const dealership = typeof d === 'string' ? d : (d?.idcode ?? '')
             const dealershipName = typeof d === 'string' ? '' : (d?.companyname ?? '')
             const dealershipID = d ? (typeof d === 'string' ? d : d.id || null) : null
             const dealershipRuc = typeof d === 'string' ? '' : (d?.identificationnumber ?? '')
-            // === NUEVO: LOCATION (almacén) ===
+
             const locationName = item.location
               ? typeof item.location === 'string'
                 ? 'Desconocido'
                 : item.location.warehousename || 'Sin nombre'
               : 'Sin ubicación'
-
             const locationID = item.location
               ? typeof item.location === 'string'
                 ? item.location
                 : item.location.id || null
               : null
 
-            // === ESTABLECIMIENTO (dentro de location.establishment) ===
             const establishmentName =
               item.location &&
               typeof item.location !== 'string' &&
@@ -339,6 +403,8 @@ export const Inventory: CollectionConfig = {
               establishmentID,
               locationName,
               locationID,
+              // ✨ AQUÍ INYECTAMOS LOS PRECIOS AL FRONTEND ✨
+              prices: pricesByVehicle[vehicleId as string] || [],
             }
           })
 
