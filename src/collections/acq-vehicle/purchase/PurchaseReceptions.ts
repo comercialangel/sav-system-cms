@@ -437,7 +437,7 @@ export const PurchaseReceptions: CollectionConfig = {
             const purchaseAssociated = await payload.findByID({
               collection: 'purchase',
               id: purchaseId,
-              depth: 1,
+              depth: 2,
             })
 
             if (!purchaseAssociated || !purchaseAssociated.company) {
@@ -463,7 +463,10 @@ export const PurchaseReceptions: CollectionConfig = {
                   },
                   licensePlates: {
                     licensePlatesNumber: doc.vehicle.licensePlatesNumber,
-                    licensePlateUsageType: doc.vehicle.licensePlateUsageType,
+                    licensePlateUsageType:
+                      typeof doc.vehicle.licensePlateUsageType === 'object'
+                        ? doc.vehicle.licensePlateUsageType?.id
+                        : doc.vehicle.licensePlateUsageType,
                   },
                   equipmentbasic: {
                     vehiclekey: doc.vehicle.vehiclekey,
@@ -471,17 +474,42 @@ export const PurchaseReceptions: CollectionConfig = {
                 },
               })
 
+              let initialInventoryStatus: 'En Stock' | 'Reservado' | 'En Tránsito' | 'Vendido' =
+                'En Stock' // Estado por defecto para compras normales
+              if (purchaseAssociated.purchaseReason === 'order_fulfillment') {
+                initialInventoryStatus = 'Reservado' // Protegemos el auto del público general
+
+                // Extraer el ID del pedido asociado
+                const orderId =
+                  typeof purchaseAssociated.vehicleorder === 'object'
+                    ? purchaseAssociated.vehicleorder?.id
+                    : purchaseAssociated.vehicleorder
+
+                if (orderId) {
+                  // Actualizamos el Pedido para avisar que el auto ya está en tienda
+                  await payload.update({
+                    collection: 'saleorder',
+                    id: orderId,
+                    data: {
+                      status: 'unidad_en_almacen', // actualizamos estado en SaleOrder
+                      reception: doc.id, // Vínculo de la recepción en el pedido para trazabilidad
+                    },
+                  })
+                }
+              }
+
               //2.2 Crear registro en inventario
               await payload.create({
                 collection: 'inventory',
                 data: {
                   quantity: 1,
                   vehicle: newVehicle.id,
-                  purchaseReception: doc.id, // ¡Aquí vinculamos la recepción!
+                  purchaseReception: doc.id,
                   transactionDate: new Date().toISOString(),
                   dealership: companyId,
-                  status: 'En Stock',
-                  operation: 'Compra',
+                  status: initialInventoryStatus,
+                  operation:
+                    purchaseAssociated.typepurchase === 'Consignación' ? 'Consignación' : 'Compra', // Distinguimos si es propio o de tercero
                   location: doc.warehouse,
                 },
               })
@@ -519,7 +547,10 @@ export const PurchaseReceptions: CollectionConfig = {
                     },
                     licensePlates: {
                       licensePlatesNumber: doc.vehicle.licensePlatesNumber,
-                      licensePlateUsageType: doc.vehicle.licensePlateUsageType.id,
+                      licensePlateUsageType:
+                        typeof doc.vehicle.licensePlateUsageType === 'object'
+                          ? doc.vehicle.licensePlateUsageType?.id
+                          : doc.vehicle.licensePlateUsageType,
                     },
                     equipmentbasic: {
                       vehiclekey: doc.vehicle.vehiclekey,
@@ -569,7 +600,6 @@ export const PurchaseReceptions: CollectionConfig = {
               id: purchaseId,
               data: {
                 statusreception: 'recepcionado',
-                // receptions: doc.id,
               },
             })
           }
