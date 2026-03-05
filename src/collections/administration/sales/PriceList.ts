@@ -15,7 +15,7 @@ export const PriceLists: CollectionConfig = {
     read: () => true,
     create: () => true,
     update: () => true,
-    delete: () => true,
+    delete: () => false,
   },
   fields: [
     {
@@ -64,7 +64,7 @@ export const PriceLists: CollectionConfig = {
           label: 'Nombre de la Lista',
           type: 'text',
           required: true,
-          defaultValue: 'Precio público',
+          defaultValue: 'Precio base',
           admin: {
             width: '50%',
             description: 'Ej. "Retail", "Mayorista", "Promoción".',
@@ -150,14 +150,15 @@ export const PriceLists: CollectionConfig = {
       admin: { readOnly: true, position: 'sidebar' },
     },
   ],
+
   hooks: {
     beforeChange: [
-      async ({ req: { user }, data, originalDoc }) => {
+      async ({ req, data, operation }) => {
+        const { user } = req
         if (user) {
-          if (!originalDoc?.createdBy) data.createdBy = user.id
+          if (operation === 'create') data.createdBy = user.id
           data.updatedBy = user.id
         }
-        return data
       },
     ],
   },
