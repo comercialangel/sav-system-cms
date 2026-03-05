@@ -217,7 +217,7 @@ export const SaleOrder: CollectionConfig = {
               },
             },
             {
-              name: 'exchargerate',
+              name: 'exchangerate',
               label: 'Tipo de cambio',
               type: 'text',
               required: false,
@@ -562,7 +562,7 @@ export const SaleOrder: CollectionConfig = {
                   },
                 },
                 {
-                  name: 'exchargeratepenaltycollection',
+                  name: 'exchangeratepenaltycollection',
                   label: 'Tipo de cambio',
                   type: 'text',
                   required: true,
@@ -573,7 +573,7 @@ export const SaleOrder: CollectionConfig = {
                 {
                   name: 'valuepenaltycollection',
                   label: 'Valor de penalidad',
-                  type: 'date',
+                  type: 'number',
                   required: true,
                   admin: {
                     width: '34%',
@@ -629,6 +629,16 @@ export const SaleOrder: CollectionConfig = {
       ],
     },
     {
+      name: 'reception', // Recepción a la que está asociado el pedido, sirve de apoyo
+      label: 'Recepción',
+      type: 'relationship',
+      relationTo: 'purchasereceptions',
+      required: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'status',
       label: 'Estado',
       type: 'select',
@@ -639,18 +649,22 @@ export const SaleOrder: CollectionConfig = {
       options: [
         {
           label: 'En proceso',
-          value: 'en proceso',
+          value: 'en_proceso',
+        },
+        {
+          label: 'Unidad en almacén',
+          value: 'unidad_en_almacen',
         },
         {
           label: 'Venta realizada',
-          value: 'venta realizada',
+          value: 'venta_realizada',
         },
         {
           label: 'Anulado',
           value: 'anulado',
         },
       ],
-      defaultValue: 'en proceso',
+      defaultValue: 'en_proceso',
     },
   ],
 }
