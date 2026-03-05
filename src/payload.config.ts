@@ -187,6 +187,11 @@ import { ReceiptCreditPayment } from './collections/administration/sales/sales-c
 import { PriceAssignment } from './collections/administration/sales/PriceAssignment'
 import { PriceLists } from './collections/administration/sales/PriceList'
 import { Counters } from './collections/counters/Counters'
+import { calculateLateFeesHandler } from './tasks/calculateLateFees'
+import { Adjudications } from './collections/administration/recoveries/Adjudications'
+import { Recoveries } from './collections/administration/recoveries/Recoveries'
+import { MediaReleaseDocument } from './collections/administration/recoveries/MediareleaseDocument'
+import { MediaJudicialOrder } from './collections/administration/recoveries/MediajudicialOrder'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -391,6 +396,12 @@ export default buildConfig({
     CourtCases,
     CounselCourtCases,
     MediaCourtCases,
+
+    //postventa y legales
+    Recoveries,
+    Adjudications,
+    MediaJudicialOrder,
+    MediaReleaseDocument,
 
     //Administración del sistema ---------------
     Company,
@@ -600,6 +611,14 @@ export default buildConfig({
           prefix: 'mediacourtcases',
         },
 
+        //postventa y legales----------------------
+        // mediajudicialorder: {
+        //   prefix: 'mediajudicialorder',
+        // },
+        // mediareleasedocument: {
+        //   prefix: 'mediareleasedocument',
+        // },
+
         //Administración del sistema------------
         mediacompany: {
           prefix: 'mediacompany',
@@ -624,4 +643,162 @@ export default buildConfig({
       acl: 'Public',
     }),
   ],
+
+  // jobs: {
+  //   tasks: [
+  //     {
+  //       slug: 'calculateLateFees',
+  //       retries: 3,
+  //       handler: async ({ req }) => {
+  //         const { payload } = req
+  //         payload.logger.info('Iniciando cálculo diario de mora...')
+
+  //         const today = new Date()
+  //         today.setHours(0, 0, 0, 0)
+
+  //         let processed = 0
+  //         let updatedPlansCount = 0
+
+  //         // 1. Buscar cuotas pendientes o parciales vencidas
+  //         const pendingInstallments = await payload.find({
+  //           collection: 'creditinstallment',
+  //           where: {
+  //             status: { in: ['pendiente', 'parcial'] },
+  //             dueDate: { less_than: today.toISOString() },
+  //           },
+  //           pagination: false,
+  //           req,
+  //         })
+
+  //         // 2. Iterar y actualizar cuotas
+  //         for (const inst of pendingInstallments.docs) {
+  //           const dueDate = new Date(inst.dueDate)
+  //           dueDate.setHours(0, 0, 0, 0)
+
+  //           const daysLate = Math.floor(
+  //             (today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
+  //           )
+
+  //           const planId =
+  //             typeof inst.creditPlan === 'object' ? inst.creditPlan.id : inst.creditPlan
+
+  //           const plan = await payload.findByID({
+  //             collection: 'creditplan',
+  //             id: planId,
+  //             req,
+  //           })
+
+  //           const dailyRate = plan?.lateFeeRate || 0.01
+  //           const debtForThisInstallment = inst.totalDue - (inst.paidAmount || 0)
+  //           const newLateFee = Math.round(debtForThisInstallment * dailyRate * daysLate * 100) / 100
+
+  //           if (
+  //             inst.daysLate !== daysLate ||
+  //             inst.lateFee !== newLateFee ||
+  //             inst.status !== 'vencida'
+  //           ) {
+  //             await payload.update({
+  //               collection: 'creditinstallment',
+  //               id: inst.id,
+  //               data: {
+  //                 daysLate,
+  //                 lateFee: newLateFee,
+  //                 status: 'vencida',
+  //               },
+  //               context: { skipMoraCalculation: true },
+  //               req,
+  //             })
+  //             processed++
+  //           }
+  //         }
+
+  //         // 3. Actualizar estado de los Planes a "moroso"
+  //         const activePlans = await payload.find({
+  //           collection: 'creditplan',
+  //           where: { status: { equals: 'activo' } },
+  //           pagination: false,
+  //           req,
+  //         })
+
+  //         for (const plan of activePlans.docs) {
+  //           const lateDocs = await payload.count({
+  //             collection: 'creditinstallment',
+  //             where: {
+  //               creditPlan: { equals: plan.id },
+  //               status: { equals: 'vencida' },
+  //             },
+  //             req,
+  //           })
+
+  //           if (lateDocs.totalDocs > 0) {
+  //             await payload.update({
+  //               collection: 'creditplan',
+  //               id: plan.id,
+  //               data: { status: 'moroso' },
+  //               req,
+  //             })
+  //             updatedPlansCount++
+  //           }
+  //         }
+
+  //         payload.logger.info('Cálculo de mora finalizado.')
+
+  //         // Devolvemos el resultado para que Payload lo guarde en el historial del Job
+  //         return {
+  //           output: {
+  //             processedInstallments: processed,
+  //             updatedPlans: updatedPlansCount,
+  //           },
+  //         }
+  //       },
+  //     },
+  //   ],
+  // },
+
+  jobs: {
+    tasks: [
+      {
+        slug: 'calculateLateFees',
+        retries: 3,
+        schedule: [{ cron: '0 1 * * *', queue: 'finance' }],
+        inputSchema: [],
+        // Coincide con tu LateFeesTaskIO
+        outputSchema: [
+          { name: 'processedInstallments', type: 'number' },
+          { name: 'updatedPlans', type: 'number' },
+        ],
+        handler: calculateLateFeesHandler,
+      },
+    ],
+    // (Recuerda: Deja esto solo si usas un servidor dedicado. Si usas Vercel, elimínalo)
+    autoRun: [
+      {
+        cron: '* * * * *',
+        queue: 'finance',
+      },
+    ],
+    // 3. Opcional -  Hacemos visible el historial en el Panel de Admin
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => {
+      if (!defaultJobsCollection.admin) {
+        defaultJobsCollection.admin = {}
+      }
+      defaultJobsCollection.admin.hidden = false
+      return defaultJobsCollection
+    },
+
+    //4. Si se usa Vercel (Serverless). En tu archivo vercel.json (raíz del proyecto): Le dices a Vercel que llame a Payload a la 1:00 AM para decirle "Encola los trabajos" y luego a la 1:05 AM para decirle "Ejecuta los trabajos".
+
+    //     {
+    //   "crons": [
+    //     {
+    //       "path": "/api/payload-jobs/handle-schedules?queue=daily-jobs",
+    //       "schedule": "0 1 * * *"
+    //     },
+    //     {
+    //       "path": "/api/payload-jobs/run?queue=daily-jobs",
+    //       "schedule": "5 1 * * *"
+    //     }
+    //   ]
+    // }
+  },
 })
