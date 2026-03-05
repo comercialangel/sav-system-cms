@@ -209,6 +209,10 @@ export interface Config {
     courtcases: Courtcase;
     counselcourtcases: Counselcourtcase;
     mediacourtcases: Mediacourtcase;
+    recoveries: Recovery;
+    adjudications: Adjudication;
+    mediajudicialorder: Mediajudicialorder;
+    mediareleasedocument: Mediareleasedocument;
     company: Company;
     companyinformation: Companyinformation;
     accountcompany: Accountcompany;
@@ -246,6 +250,7 @@ export interface Config {
     distrito: Distrito;
     counters: Counter;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -265,6 +270,9 @@ export interface Config {
       suppliercontact: 'suppliercontact';
       supplieraddress: 'supplieraddress';
       supplieraccount: 'supplierbankaccount';
+    };
+    inventory: {
+      priceAssignment: 'priceassignment';
     };
     relocation: {
       receptionrelocation: 'receptionrelocation';
@@ -429,6 +437,10 @@ export interface Config {
     courtcases: CourtcasesSelect<false> | CourtcasesSelect<true>;
     counselcourtcases: CounselcourtcasesSelect<false> | CounselcourtcasesSelect<true>;
     mediacourtcases: MediacourtcasesSelect<false> | MediacourtcasesSelect<true>;
+    recoveries: RecoveriesSelect<false> | RecoveriesSelect<true>;
+    adjudications: AdjudicationsSelect<false> | AdjudicationsSelect<true>;
+    mediajudicialorder: MediajudicialorderSelect<false> | MediajudicialorderSelect<true>;
+    mediareleasedocument: MediareleasedocumentSelect<false> | MediareleasedocumentSelect<true>;
     company: CompanySelect<false> | CompanySelect<true>;
     companyinformation: CompanyinformationSelect<false> | CompanyinformationSelect<true>;
     accountcompany: AccountcompanySelect<false> | AccountcompanySelect<true>;
@@ -466,6 +478,7 @@ export interface Config {
     distrito: DistritoSelect<false> | DistritoSelect<true>;
     counters: CountersSelect<false> | CountersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -473,14 +486,24 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'payload-jobs-stats': PayloadJobsStat;
+  };
+  globalsSelect: {
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
   };
   jobs: {
-    tasks: unknown;
+    tasks: {
+      calculateLateFees: TaskCalculateLateFees;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -510,13 +533,17 @@ export interface Purchase {
   id: string;
   purchaseNumber: string;
   company: string | Company;
-  typepurchase: 'Convencional' | 'Pedido' | 'Interna' | 'Consignación';
-  purchasedate: string;
-  purchasedate_tz: SupportedTimezones;
+  typepurchase: 'Convencional' | 'Consignación' | 'Interna';
+  purchaseReason: 'stock' | 'order_fulfillment';
   /**
-   * Seleccione un opción si el tipo de compra es PEDIDO
+   * Seleccione el pedido si el motivo es Atención de Pedido
    */
   vehicleorder?: (string | null) | Saleorder;
+  consignmentTerms?: {
+    contractDurationDays?: number | null;
+  };
+  purchasedate: string;
+  purchasedate_tz: SupportedTimezones;
   supplier: string | Supplier;
   suppliercontact?: (string | null) | Suppliercontact;
   typecurrency: string | Typecurrency;
@@ -891,7 +918,7 @@ export interface Saleorder {
   condition: {
     typesale?: ('contado' | 'crédito') | null;
     typecurrency: string | Typecurrency;
-    exchargerate?: string | null;
+    exchangerate?: string | null;
     /**
      * Esta sección debe ser llenado exclusivamente para pedidos con ventas al crédito
      */
@@ -943,8 +970,8 @@ export interface Saleorder {
     motivecancellationsale?: (string | null) | Motivecancellationsale;
     penaltycollection: {
       typecurrencypenaltycollection: string | Typecurrency;
-      exchargeratepenaltycollection: string;
-      valuepenaltycollection: string;
+      exchangeratepenaltycollection: string;
+      valuepenaltycollection: number;
       typepaymentpenaltycollection: string | Typepayment;
       mediareturn?: (string | null) | Mediaordersale;
       mediareturnpenalty?: (string | null) | Mediaordersale;
@@ -952,7 +979,8 @@ export interface Saleorder {
     };
     observationscancellation?: string | null;
   };
-  status: 'en proceso' | 'venta realizada' | 'anulado';
+  reception?: (string | null) | Purchasereception;
+  status: 'en_proceso' | 'unidad_en_almacen' | 'venta_realizada' | 'anulado';
   updatedAt: string;
   createdAt: string;
 }
@@ -1243,120 +1271,50 @@ export interface Motivecancellationsale {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "supplier".
+ * via the `definition` "purchasereceptions".
  */
-export interface Supplier {
+export interface Purchasereception {
   id: string;
-  typeidentificationdocument?: (string | null) | Typeidentificationdocument;
-  identificationnumber: string;
-  suppliername?: string | null;
+  /**
+   * Compra a la que pertenece esta recepción
+   */
+  purchase: string | Purchase;
+  /**
+   * Traslado que se utilizó para transportar este vehículo
+   */
+  transportation?: (string | null) | Purchasetransportation;
+  datereception: string;
+  datereception_tz: SupportedTimezones;
+  warehouse?: (string | null) | Warehouse;
+  receivedby?: (string | null) | Collaborator;
   observations?: string | null;
-  namedocument?: string | null;
-  suppliercontact?: {
-    docs?: (string | Suppliercontact)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  vehicle: {
+    brand: string | Brand;
+    model: string | Model;
+    version: string | Version;
+    color: string | Color;
+    yearmanufacture?: number | null;
+    yearmodel: number;
+    vin: string;
+    motor: string;
+    cylindercapacity: number;
+    fuel: string | Fuel;
+    transmission: string | Transmission;
+    traction: string | Traction;
+    carbody: string | Carbody;
+    category: string | Category;
+    seat: number;
+    rimnumber: number;
+    typerim: string | Typerim;
+    mileage?: number | null;
+    vehiclekey?: number | null;
+    licensePlatesNumber?: string | null;
+    licensePlateUsageType?: (string | null) | Typeuse;
   };
-  supplieraddress?: {
-    docs?: (string | Supplieraddress)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  supplieraccount?: {
-    docs?: (string | Supplierbankaccount)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  status: 'activo' | 'inactivo';
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "suppliercontact".
- */
-export interface Suppliercontact {
-  id: string;
-  supplier: string | Supplier;
-  namesuppliercontact: string;
-  jobposition: string;
-  observations?: string | null;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "supplieraddress".
- */
-export interface Supplieraddress {
-  id: string;
-  supplier: string | Supplier;
-  sede: string;
-  address: string;
-  observations?: string | null;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "supplierbankaccount".
- */
-export interface Supplierbankaccount {
-  id: string;
-  supplier: string | Supplier;
-  fullaccountbank?: string | null;
-  abbreviationaccountbank?: string | null;
-  typebank: string | Typebank;
-  typeaccount: string | Typeaccount;
-  typecurrency: string | Typecurrency;
-  accountnumber: string;
-  cci?: string | null;
-  observations?: string | null;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "typeuse".
- */
-export interface Typeuse {
-  id: string;
-  typeuse: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediapurchase".
- */
-export interface Mediapurchase {
-  id: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1552,6 +1510,91 @@ export interface Driver {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplieraddress".
+ */
+export interface Supplieraddress {
+  id: string;
+  supplier: string | Supplier;
+  sede: string;
+  address: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplier".
+ */
+export interface Supplier {
+  id: string;
+  typeidentificationdocument?: (string | null) | Typeidentificationdocument;
+  identificationnumber: string;
+  suppliername?: string | null;
+  observations?: string | null;
+  namedocument?: string | null;
+  suppliercontact?: {
+    docs?: (string | Suppliercontact)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  supplieraddress?: {
+    docs?: (string | Supplieraddress)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  supplieraccount?: {
+    docs?: (string | Supplierbankaccount)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliercontact".
+ */
+export interface Suppliercontact {
+  id: string;
+  supplier: string | Supplier;
+  namesuppliercontact: string;
+  jobposition: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supplierbankaccount".
+ */
+export interface Supplierbankaccount {
+  id: string;
+  supplier: string | Supplier;
+  fullaccountbank?: string | null;
+  abbreviationaccountbank?: string | null;
+  typebank: string | Typebank;
+  typeaccount: string | Typeaccount;
+  typecurrency: string | Typecurrency;
+  accountnumber: string;
+  cci?: string | null;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "establishment".
  */
 export interface Establishment {
@@ -1602,6 +1645,119 @@ export interface Expense {
   updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "warehouse".
+ */
+export interface Warehouse {
+  id: string;
+  establishment: string | Establishment;
+  warehousename: string;
+  address: string;
+  observations?: string | null;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transmission".
+ */
+export interface Transmission {
+  id: string;
+  transmission: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "traction".
+ */
+export interface Traction {
+  id: string;
+  traction: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carbody".
+ */
+export interface Carbody {
+  id: string;
+  carbody: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category".
+ */
+export interface Category {
+  id: string;
+  category: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typerim".
+ */
+export interface Typerim {
+  id: string;
+  typerim: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "typeuse".
+ */
+export interface Typeuse {
+  id: string;
+  typeuse: string;
+  status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediapurchase".
+ */
+export interface Mediapurchase {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1818,134 +1974,6 @@ export interface Mediapurchaseinvoice {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "purchasereceptions".
- */
-export interface Purchasereception {
-  id: string;
-  /**
-   * Compra a la que pertenece esta recepción
-   */
-  purchase: string | Purchase;
-  /**
-   * Traslado que se utilizó para transportar este vehículo
-   */
-  transportation?: (string | null) | Purchasetransportation;
-  datereception: string;
-  datereception_tz: SupportedTimezones;
-  warehouse?: (string | null) | Warehouse;
-  receivedby?: (string | null) | Collaborator;
-  observations?: string | null;
-  vehicle: {
-    brand: string | Brand;
-    model: string | Model;
-    version: string | Version;
-    color: string | Color;
-    yearmanufacture?: number | null;
-    yearmodel: number;
-    vin: string;
-    motor: string;
-    cylindercapacity: number;
-    fuel: string | Fuel;
-    transmission: string | Transmission;
-    traction: string | Traction;
-    carbody: string | Carbody;
-    category: string | Category;
-    seat: number;
-    rimnumber: number;
-    typerim: string | Typerim;
-    mileage?: number | null;
-    vehiclekey?: number | null;
-    licensePlatesNumber?: string | null;
-    licensePlateUsageType?: (string | null) | Typeuse;
-  };
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "warehouse".
- */
-export interface Warehouse {
-  id: string;
-  establishment: string | Establishment;
-  warehousename: string;
-  address: string;
-  observations?: string | null;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "transmission".
- */
-export interface Transmission {
-  id: string;
-  transmission: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "traction".
- */
-export interface Traction {
-  id: string;
-  traction: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "carbody".
- */
-export interface Carbody {
-  id: string;
-  carbody: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category".
- */
-export interface Category {
-  id: string;
-  category: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "typerim".
- */
-export interface Typerim {
-  id: string;
-  typerim: string;
-  status: 'activo' | 'inactivo';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inventory".
  */
 export interface Inventory {
@@ -1955,23 +1983,23 @@ export interface Inventory {
   /**
    * Vínculo al documento donde se registró la recepción del vehículo
    */
-  purchaseReception: string | Purchasereception;
+  purchaseReception?: (string | null) | Purchasereception;
   transactionDate?: string | null;
   dealership: string | Company;
   status: 'En Stock' | 'Reservado' | 'En Tránsito' | 'Vendido';
-  operation: 'Compra' | 'Venta';
+  operation: 'Compra' | 'Venta' | 'Adjudicación' | 'Consignación';
   /**
    * Ubicación del vehículo (o "Entregado al cliente" si está entregado)
    */
   location: string | Warehouse;
   /**
-   * Precio de venta para este vehículo.
+   * Precio base asignado a este vehículo.
    */
-  priceAssignment?: (string | null) | Priceassignment;
-  /**
-   * Lista de precios activa para este vehículo.
-   */
-  activePricelist?: (string | Pricelist)[] | null;
+  priceAssignment?: {
+    docs?: (string | Priceassignment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2009,7 +2037,7 @@ export interface Vehicle {
   vehicle?: string | null;
   conditionvehicle: {
     condition: 'Nuevo' | 'Usado';
-    mileage?: string | null;
+    mileage?: number | null;
     note?: string | null;
   };
   equipmentbasic?: {
@@ -3161,47 +3189,6 @@ export interface Priceassignment {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pricelists".
- */
-export interface Pricelist {
-  id: string;
-  displayName?: string | null;
-  /**
-   * Vehículo al que se aplica el precio.
-   */
-  vehicle: string | Vehicle;
-  /**
-   * Fecha hasta la cual el precio es válido (opcional).
-   */
-  validityDate?: string | null;
-  /**
-   * Ej. "Retail", "Mayorista", "Promoción".
-   */
-  pricelistName: string;
-  /**
-   * Moneda del precio
-   */
-  currency: string | Typecurrency;
-  /**
-   * Precio del vehículo en la moneda seleccionada, redondeado a 2 decimales.
-   */
-  price: number;
-  /**
-   * Tasa de cambio a USD (ej. 0.27 para PEN, 1 para USD). Ingresar manualmente o vía API externa.
-   */
-  exchangeRate: number;
-  /**
-   * Notas sobre esta lista de precios.
-   */
-  notes?: string | null;
-  status: 'active' | 'inactive';
-  createdBy?: (string | null) | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "movements".
  */
 export interface Movement {
@@ -3328,6 +3315,47 @@ export interface Motivecancellationcardsim {
   id: string;
   motivecancellation: string;
   status: 'activo' | 'inactivo';
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricelists".
+ */
+export interface Pricelist {
+  id: string;
+  displayName?: string | null;
+  /**
+   * Vehículo al que se aplica el precio.
+   */
+  vehicle: string | Vehicle;
+  /**
+   * Fecha hasta la cual el precio es válido (opcional).
+   */
+  validityDate?: string | null;
+  /**
+   * Ej. "Retail", "Mayorista", "Promoción".
+   */
+  pricelistName: string;
+  /**
+   * Moneda del precio
+   */
+  currency: string | Typecurrency;
+  /**
+   * Precio del vehículo en la moneda seleccionada, redondeado a 2 decimales.
+   */
+  price: number;
+  /**
+   * Tasa de cambio a USD (ej. 0.27 para PEN, 1 para USD). Ingresar manualmente o vía API externa.
+   */
+  exchangeRate: number;
+  /**
+   * Notas sobre esta lista de precios.
+   */
+  notes?: string | null;
+  status: 'active' | 'inactive';
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
   updatedAt: string;
@@ -3535,6 +3563,9 @@ export interface Creditplan {
   monthlyPayment: number;
   startDate: string;
   termMonths: number;
+  /**
+   * Tasa mensual (Ej: 2 para cobrar 2% mensual)
+   */
   interestRate: number;
   /**
    * Plan del que proviene este (si fue refinanciado)
@@ -3544,14 +3575,16 @@ export interface Creditplan {
    * Planes generados a partir de este
    */
   refinancedPlans?: (string | Creditplan)[] | null;
-  refinancingReason?: ('mora' | 'mejor_tasa' | 'extension_plazo' | 'otro') | null;
+  refinancingReason?: ('mora' | 'mejor_tasa' | 'extension_plazo' | 'reprogramacion_fechas' | 'otro') | null;
   totalPaid: number;
   remainingBalance?: number | null;
   /**
    * Tasa diaria de mora (ej: 0.01 = 1%)
    */
   lateFeeRate?: number | null;
-  status?: ('activo' | 'refinanciado' | 'reprogramado' | 'completado' | 'moroso' | 'cancelado') | null;
+  status?:
+    | ('activo' | 'moroso' | 'completado' | 'refinanciado' | 'reprogramado' | 'en_recuperacion' | 'liquidado')
+    | null;
   installments?: {
     docs?: (string | Creditinstallment)[];
     hasNextPage?: boolean;
@@ -3575,7 +3608,9 @@ export interface Creditinstallment {
   paidAmount?: number | null;
   daysLate?: number | null;
   lateFee?: number | null;
-  status: 'pendiente' | 'parcial' | 'pagada' | 'vencida';
+  lateFeeForgiven?: number | null;
+  lateFeePaid?: number | null;
+  status: 'pendiente' | 'parcial' | 'pagada' | 'vencida' | 'refinanciada' | 'reprogramada' | 'liquidada';
   creditPlan: string | Creditplan;
   payments?: {
     docs?: (string | Creditpayment)[];
@@ -3607,6 +3642,10 @@ export interface Creditpayment {
     id?: string | null;
   }[];
   totalPaid: number;
+  /**
+   * Monto de la mora que gerencia autoriza perdonar (no aplica a capital).
+   */
+  lateFeeDiscount?: number | null;
   receipt?: {
     docs?: (string | Receiptcreditpayment)[];
     hasNextPage?: boolean;
@@ -3627,10 +3666,12 @@ export interface Receiptcreditpayment {
   creditPayment: string | Creditpayment;
   issueDate: string;
   totalPaid: number;
+  lateFeeDiscount?: number | null;
   appliedDetails: {
     installment: string | Creditinstallment;
     installmentNumber: number;
     amountApplied: number;
+    discountApplied?: number | null;
     statusBefore: string;
     statusAfter: string;
     id?: string | null;
@@ -4319,6 +4360,113 @@ export interface Counselcourtcase {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recoveries".
+ */
+export interface Recovery {
+  id: string;
+  originalSale: string | Finalsale;
+  status?: ('seizure_order' | 'in_custody' | 'release_authorized' | 'returned_to_customer' | 'adjudicated') | null;
+  seizureDetails?: {
+    judicialOrder?: (string | null) | Mediajudicialorder;
+    issueDate?: string | null;
+    entity?: string | null;
+  };
+  custodyDetails?: {
+    /**
+     * Lugar físico donde se encuentra guardado el vehículo mientras se resuelve el caso.
+     */
+    warehouse: string | Warehouse;
+    entryDate: string;
+    /**
+     * Ej: Llegó en grúa, con llanta baja, falta radio, etc.
+     */
+    custodyNotes?: string | null;
+  };
+  redemptionDetails?: {
+    paymentProof: string;
+    releaseDate: string;
+    releaseDocument?: (string | null) | Mediareleasedocument;
+  };
+  /**
+   * El cliente debe reembolsar los gastos operativos de la recuperación.
+   */
+  recoveryCosts?:
+    | {
+        type?: ('Abogado' | 'Traslado' | 'Almacén/Cochera' | 'Reparaciones Mínimas') | null;
+        amount?: number | null;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Cuánto vale el auto en el estado en que se recuperó.
+   */
+  appraisalValue?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediajudicialorder".
+ */
+export interface Mediajudicialorder {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareleasedocument".
+ */
+export interface Mediareleasedocument {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adjudications".
+ */
+export interface Adjudication {
+  id: string;
+  recoveryCase: string | Recovery;
+  vehicleData: {
+    currentMileage: number;
+    vehiclekey?: number | null;
+    color?: string | null;
+    licensePlateUsageType?: string | null;
+  };
+  conditionRating: 'Excelente' | 'Bueno' | 'Regular' | 'Malo/Para Reparar';
+  accountingValue: number;
+  observations?: string | null;
+  /**
+   * Almacén de destino para este vehículo adjudicado. Es importante para la logística de almacenamiento.
+   */
+  inboundwarehouse: string | Warehouse;
+  status?: ('draft' | 'processed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "companyinformation".
  */
 export interface Companyinformation {
@@ -4597,6 +4745,107 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: string;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'calculateLateFees';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'calculateLateFees') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -5170,6 +5419,22 @@ export interface PayloadLockedDocument {
         value: string | Mediacourtcase;
       } | null)
     | ({
+        relationTo: 'recoveries';
+        value: string | Recovery;
+      } | null)
+    | ({
+        relationTo: 'adjudications';
+        value: string | Adjudication;
+      } | null)
+    | ({
+        relationTo: 'mediajudicialorder';
+        value: string | Mediajudicialorder;
+      } | null)
+    | ({
+        relationTo: 'mediareleasedocument';
+        value: string | Mediareleasedocument;
+      } | null)
+    | ({
         relationTo: 'company';
         value: string | Company;
       } | null)
@@ -5363,9 +5628,15 @@ export interface PurchaseSelect<T extends boolean = true> {
   purchaseNumber?: T;
   company?: T;
   typepurchase?: T;
+  purchaseReason?: T;
+  vehicleorder?: T;
+  consignmentTerms?:
+    | T
+    | {
+        contractDurationDays?: T;
+      };
   purchasedate?: T;
   purchasedate_tz?: T;
-  vehicleorder?: T;
   supplier?: T;
   suppliercontact?: T;
   typecurrency?: T;
@@ -5902,7 +6173,6 @@ export interface InventorySelect<T extends boolean = true> {
   operation?: T;
   location?: T;
   priceAssignment?: T;
-  activePricelist?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -7618,7 +7888,7 @@ export interface SaleorderSelect<T extends boolean = true> {
     | {
         typesale?: T;
         typecurrency?: T;
-        exchargerate?: T;
+        exchangerate?: T;
         credit?:
           | T
           | {
@@ -7669,7 +7939,7 @@ export interface SaleorderSelect<T extends boolean = true> {
           | T
           | {
               typecurrencypenaltycollection?: T;
-              exchargeratepenaltycollection?: T;
+              exchangeratepenaltycollection?: T;
               valuepenaltycollection?: T;
               typepaymentpenaltycollection?: T;
               mediareturn?: T;
@@ -7678,6 +7948,7 @@ export interface SaleorderSelect<T extends boolean = true> {
             };
         observationscancellation?: T;
       };
+  reception?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -7869,6 +8140,8 @@ export interface CreditinstallmentSelect<T extends boolean = true> {
   paidAmount?: T;
   daysLate?: T;
   lateFee?: T;
+  lateFeeForgiven?: T;
+  lateFeePaid?: T;
   status?: T;
   creditPlan?: T;
   payments?: T;
@@ -7895,6 +8168,7 @@ export interface CreditpaymentSelect<T extends boolean = true> {
         id?: T;
       };
   totalPaid?: T;
+  lateFeeDiscount?: T;
   receipt?: T;
   status?: T;
   observations?: T;
@@ -7933,12 +8207,14 @@ export interface ReceiptcreditpaymentSelect<T extends boolean = true> {
   creditPayment?: T;
   issueDate?: T;
   totalPaid?: T;
+  lateFeeDiscount?: T;
   appliedDetails?:
     | T
     | {
         installment?: T;
         installmentNumber?: T;
         amountApplied?: T;
+        discountApplied?: T;
         statusBefore?: T;
         statusAfter?: T;
         id?: T;
@@ -8427,6 +8703,102 @@ export interface CounselcourtcasesSelect<T extends boolean = true> {
  */
 export interface MediacourtcasesSelect<T extends boolean = true> {
   prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recoveries_select".
+ */
+export interface RecoveriesSelect<T extends boolean = true> {
+  originalSale?: T;
+  status?: T;
+  seizureDetails?:
+    | T
+    | {
+        judicialOrder?: T;
+        issueDate?: T;
+        entity?: T;
+      };
+  custodyDetails?:
+    | T
+    | {
+        warehouse?: T;
+        entryDate?: T;
+        custodyNotes?: T;
+      };
+  redemptionDetails?:
+    | T
+    | {
+        paymentProof?: T;
+        releaseDate?: T;
+        releaseDocument?: T;
+      };
+  recoveryCosts?:
+    | T
+    | {
+        type?: T;
+        amount?: T;
+        date?: T;
+        id?: T;
+      };
+  appraisalValue?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adjudications_select".
+ */
+export interface AdjudicationsSelect<T extends boolean = true> {
+  recoveryCase?: T;
+  vehicleData?:
+    | T
+    | {
+        currentMileage?: T;
+        vehiclekey?: T;
+        color?: T;
+        licensePlateUsageType?: T;
+      };
+  conditionRating?: T;
+  accountingValue?: T;
+  observations?: T;
+  inboundwarehouse?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediajudicialorder_select".
+ */
+export interface MediajudicialorderSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mediareleasedocument_select".
+ */
+export interface MediareleasedocumentSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -9111,6 +9483,38 @@ export interface PayloadKvSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  meta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -9140,6 +9544,45 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: string;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCalculateLateFees".
+ */
+export interface TaskCalculateLateFees {
+  input?: unknown;
+  output: {
+    processedInstallments?: number | null;
+    updatedPlans?: number | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
