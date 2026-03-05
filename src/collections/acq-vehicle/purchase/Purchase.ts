@@ -49,16 +49,64 @@ export const Purchase: CollectionConfig = {
     {
       type: 'row',
       fields: [
+        // 1. Naturaleza de la compra
         {
           name: 'typepurchase',
           label: 'Tipo de compra',
           type: 'select',
-          admin: {
-            width: '50%',
-          },
+          admin: { width: '50%' },
           required: true,
-          options: ['Convencional', 'Pedido', 'Interna', 'Consignación'],
+          options: ['Convencional', 'Consignación', 'Interna'],
           defaultValue: 'Convencional',
+        },
+        // 2. Motivo operativo / logistico
+        {
+          name: 'purchaseReason',
+          label: 'Motivo de Adquisición',
+          type: 'select',
+          options: [
+            { label: 'Para Stock General', value: 'stock' },
+            { label: 'Atención de Pedido', value: 'order_fulfillment' },
+          ],
+          defaultValue: 'stock',
+          required: true,
+          admin: { width: '50%' },
+        },
+        // 3. Vínculo (Solo si es a pedido)
+        {
+          name: 'vehicleorder',
+          label: 'Pedido vehicular asociado',
+          type: 'relationship',
+          relationTo: 'saleorder',
+          required: false,
+          admin: {
+            description: 'Seleccione el pedido si el motivo es Atención de Pedido',
+            allowCreate: false,
+            condition: (data) => data.purchaseReason === 'order_fulfillment',
+          },
+        },
+
+        // 4: Términos de consignación (Solo si el tipo es Consignación)
+        {
+          name: 'consignmentTerms',
+          label: 'Términos del Contrato de Consignación',
+          type: 'group',
+          admin: {
+            condition: (data) => data.typepurchase === 'Consignación',
+          },
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'contractDurationDays',
+                  type: 'number',
+                  label: 'Días de Exclusividad (Contrato)',
+                  admin: { width: '50%' },
+                },
+              ],
+            },
+          ],
         },
         {
           name: 'purchasedate',
@@ -71,18 +119,6 @@ export const Purchase: CollectionConfig = {
             date: {
               displayFormat: 'd MMM yyy',
             },
-          },
-        },
-        {
-          name: 'vehicleorder',
-          label: 'Pedido vehicular',
-          type: 'relationship',
-          relationTo: 'saleorder',
-          required: false,
-          admin: {
-            description: 'Seleccione un opción si el tipo de compra es PEDIDO',
-            allowCreate: false,
-            condition: (data) => data.typepurchase === 'Pedido',
           },
         },
         {
@@ -506,79 +542,6 @@ export const Purchase: CollectionConfig = {
 
         // ============================================================
         // 2. GENERADOR DE CORRELATIVO SEGURO (Anti-Race Condition)
-        // ============================================================
-        // if (operation === 'create' && !data.purchaseNumber) {
-        //   console.log('Generando correlativo en Purchase...')
-        //   const year = new Date().getFullYear()
-        //   const prefix = `COM-${year}-`
-
-        //   let nextNumber = 1
-
-        //   // A. Buscar el último número existente
-        //   try {
-        //     const lastRecord = await payload.find({
-        //       collection: 'purchase',
-        //       where: {
-        //         purchaseNumber: { like: `${prefix}%` },
-        //       },
-        //       sort: '-purchaseNumber',
-        //       limit: 1,
-        //     })
-
-        //     if (lastRecord.docs.length > 0) {
-        //       const lastCode = lastRecord.docs[0]?.purchaseNumber
-        //       if (typeof lastCode === 'string') {
-        //         // Extrae solo los números del final
-        //         const match = lastCode.match(/(\d+)$/)
-        //         if (match) {
-        //           nextNumber = parseInt(match[0], 10) + 1
-        //         }
-        //       }
-        //     }
-        //   } catch (err) {
-        //     console.error('Error buscando última compra:', err)
-        //   }
-
-        //   // B. Bucle de Seguridad (Retry)
-        //   // Generamos el candidato inicial (ej: COM-2025-000001)
-        //   let purchaseNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
-
-        //   let isUnique = false
-        //   let attempts = 0
-
-        //   while (!isUnique && attempts < 5) {
-        //     // Verificamos si ya existe ese número en la DB
-        //     const existing = await payload.find({
-        //       collection: 'purchase',
-        //       where: {
-        //         purchaseNumber: { equals: purchaseNumber },
-        //       },
-        //       limit: 1,
-        //     })
-
-        //     if (existing.docs.length === 0) {
-        //       isUnique = true
-        //     } else {
-        //       // Si existe, incrementamos y probamos de nuevo
-        //       console.warn(`Colisión detectada en ${purchaseNumber}. Reintentando...`)
-        //       nextNumber++
-        //       purchaseNumber = `${prefix}${String(nextNumber).padStart(6, '0')}`
-        //       attempts++
-        //     }
-        //   }
-
-        //   // C. Fallback de Emergencia
-        //   // Si después de 5 intentos sigue habiendo colisión, usamos timestamp para no perder la data
-        //   if (!isUnique) {
-        //     const timestamp = Date.now().toString().slice(-6)
-        //     const random = Math.floor(Math.random() * 1000)
-        //     purchaseNumber = `${prefix}ERR-${timestamp}-${random}`
-        //     console.error('Fallo al generar correlativo único. Usando fallback:', purchaseNumber)
-        //   }
-
-        //   data.purchaseNumber = purchaseNumber
-        // }
-
         // En Purchase
         if (operation === 'create' && !data.purchaseNumber) {
           data.purchaseNumber = await generateSequence(payload, {
