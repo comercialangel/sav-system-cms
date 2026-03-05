@@ -545,9 +545,6 @@ export const FinalSale: CollectionConfig = {
 
             if (inventoryResult.docs.length > 0) {
               const item = inventoryResult.docs[0]
-              // const dealershipId =
-              //   typeof item.dealership === 'object' ? item.dealership.id : item.dealership
-
               await payload.update({
                 collection: 'inventory',
                 id: item.id,
@@ -558,22 +555,7 @@ export const FinalSale: CollectionConfig = {
                 },
                 req,
               })
-
-              // await payload.create({
-              //   collection: 'movements',
-              //   data: {
-              //     vehicle: vehicleId,
-              //     company: dealershipId,
-              //     movementdate: saledate,
-              //     typemovement: 'salida',
-              //     motivemovement: 'Venta final',
-              //     warehouse: item.location,
-              //     status: 'efectuado',
-              //   },
-              //   req,
-              // })
             }
-
             await payload.create({
               collection: 'receiptsale',
               data: { finalsale: doc.id, status: 'pendiente' },

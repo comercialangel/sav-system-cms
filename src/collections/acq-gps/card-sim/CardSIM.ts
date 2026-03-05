@@ -58,7 +58,7 @@ export const CardSIM: CollectionConfig = {
           name: 'codesim',
           label: 'Código de tarjeta',
           type: 'text',
-          required: true,
+          required: false,
           admin: {
             width: '33%',
           },

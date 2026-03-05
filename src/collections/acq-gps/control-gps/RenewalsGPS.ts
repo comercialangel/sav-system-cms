@@ -70,7 +70,7 @@ export const RenewalsGPS: CollectionConfig = {
         {
           name: 'renewalvalue',
           label: 'Valor',
-          type: 'text',
+          type: 'number',
           required: true,
           admin: {
             width: '50%',
@@ -155,9 +155,109 @@ export const RenewalsGPS: CollectionConfig = {
       },
     },
   ],
+  // hooks: {
+  //   beforeChange: [
+  //     async ({ data, req, operation }) => {
+  //       if (req.user) {
+  //         if (operation === 'create') {
+  //           data.createdBy = req.user.id
+  //         }
+  //         data.updatedBy = req.user.id
+  //       }
+
+  //       if (operation === 'create' && data.periodusegps) {
+  //         const { payload } = req
+
+  //         try {
+  //           // 1. Buscar TODAS las renovaciones anteriores del mismo periodusegps (excepto las ya finalizadas)
+  //           const previousRenewals = await payload.find({
+  //             collection: 'renewalsgps',
+  //             where: {
+  //               and: [
+  //                 { periodusegps: { equals: data.periodusegps } }, // Mismo GPS
+  //                 { statusrenewal: { not_equals: 'finalizada' } }, // Cualquier estado que no sea "finalizada"
+  //                 { id: { not_equals: data.id } }, // Excluir la nueva renovación (si ya existe ID)
+  //               ],
+  //             },
+  //             limit: 50, // Límite para incluir todo el historial
+  //             sort: '-createdAt', // La más reciente primero
+  //           })
+
+  //           // 2. Actualizar todas las renovaciones encontradas a "finalizada"
+  //           if (previousRenewals.docs.length > 0) {
+  //             await Promise.all(
+  //               previousRenewals.docs.map(async (doc) => {
+  //                 try {
+  //                   await payload.update({
+  //                     collection: 'renewalsgps',
+  //                     id: doc.id,
+  //                     data: { statusrenewal: 'finalizado' },
+  //                   })
+  //                 } catch (updateError) {
+  //                   console.error(`Error al finalizar renovación ${doc.id}:`, updateError)
+  //                   // Continuar con las demás actualizaciones
+  //                 }
+  //               }),
+  //             )
+
+  //             console.log(
+  //               `Se finalizaron ${previousRenewals.docs.length} renovaciones anteriores para el periodo ${data.periodusegps}`,
+  //             )
+  //           }
+  //         } catch (error) {
+  //           console.error('Error al buscar o finalizar renovaciones anteriores:', error)
+  //           // No bloquear la creación si falla este proceso
+  //         }
+  //       }
+  //       return data
+  //     },
+  //   ],
+  //   afterChange: [
+  //     async ({ doc, req, operation }) => {
+  //       const { payload } = req
+  //       try {
+  //         if (operation === 'create' && doc.periodusegps) {
+  //           // 1. Obtener el periodo de uso relacionado
+  //           const periodUse = await payload.findByID({
+  //             collection: 'periodusegps',
+  //             id: typeof doc.periodusegps === 'object' ? doc.periodusegps.id : doc.periodusegps,
+  //             depth: 1,
+  //             req,
+  //           })
+
+  //           // 2. Calcular lastDate basado en el tipo de periodo (select)
+  //           const lastDate = new Date(doc.startdate)
+
+  //           if (periodUse.periodgps === 'mensual') {
+  //             lastDate.setMonth(lastDate.getMonth() + 1)
+  //           } else if (periodUse.periodgps === 'anual') {
+  //             lastDate.setFullYear(lastDate.getFullYear() + 1)
+  //           }
+
+  //           // 3. Actualizar la renovación con los datos calculados
+  //           await payload.update({
+  //             collection: 'renewalsgps',
+  //             id: doc.id,
+  //             data: {
+  //               enddate: lastDate.toISOString(),
+  //             },
+  //             req,
+  //           })
+  //         }
+  //       } catch (error) {
+  //         console.error('Error en hook de renovación:', error)
+  //         throw new Error('No se pudo completar la configuracion de la renovacion')
+  //       }
+  //     },
+  //   ],
+  // },
+
   hooks: {
     beforeChange: [
       async ({ data, req, operation }) => {
+        const { payload } = req
+
+        // 1. Manejo de usuarios
         if (req.user) {
           if (operation === 'create') {
             data.createdBy = req.user.id
@@ -165,25 +265,51 @@ export const RenewalsGPS: CollectionConfig = {
           data.updatedBy = req.user.id
         }
 
-        if (operation === 'create' && data.periodusegps) {
-          const { payload } = req
-
+        // 2. CÁLCULO DE ENDDATE (Movido desde afterChange)
+        // Lo hacemos aquí para modificar 'data' antes de que se guarde, evitando el error 404
+        if (data.periodusegps && data.startdate) {
           try {
-            // 1. Buscar TODAS las renovaciones anteriores del mismo periodusegps (excepto las ya finalizadas)
+            const periodUseId =
+              typeof data.periodusegps === 'object' ? data.periodusegps.id : data.periodusegps
+
+            const periodUse = await payload.findByID({
+              collection: 'periodusegps',
+              id: periodUseId,
+              depth: 0,
+              req, // Usamos la misma transacción
+            })
+
+            const lastDate = new Date(data.startdate)
+
+            if (periodUse.periodgps === 'mensual') {
+              lastDate.setMonth(lastDate.getMonth() + 1)
+            } else if (periodUse.periodgps === 'anual') {
+              lastDate.setFullYear(lastDate.getFullYear() + 1)
+            }
+
+            // Inyectamos el valor calculado directamente en la data a guardar
+            data.enddate = lastDate.toISOString()
+          } catch (error) {
+            console.error('Error al calcular la fecha de finalización:', error)
+          }
+        }
+
+        // 3. Finalizar renovaciones anteriores (Tu lógica original)
+        if (operation === 'create' && data.periodusegps) {
+          try {
             const previousRenewals = await payload.find({
               collection: 'renewalsgps',
               where: {
                 and: [
-                  { periodusegps: { equals: data.periodusegps } }, // Mismo GPS
-                  { statusrenewal: { not_equals: 'finalizada' } }, // Cualquier estado que no sea "finalizada"
-                  { id: { not_equals: data.id } }, // Excluir la nueva renovación (si ya existe ID)
+                  { periodusegps: { equals: data.periodusegps } },
+                  { statusrenewal: { not_equals: 'finalizado' } },
                 ],
               },
-              limit: 50, // Límite para incluir todo el historial
-              sort: '-createdAt', // La más reciente primero
+              limit: 50,
+              sort: '-createdAt',
+              req,
             })
 
-            // 2. Actualizar todas las renovaciones encontradas a "finalizada"
             if (previousRenewals.docs.length > 0) {
               await Promise.all(
                 previousRenewals.docs.map(async (doc) => {
@@ -192,74 +318,26 @@ export const RenewalsGPS: CollectionConfig = {
                       collection: 'renewalsgps',
                       id: doc.id,
                       data: { statusrenewal: 'finalizado' },
+                      req,
                     })
                   } catch (updateError) {
                     console.error(`Error al finalizar renovación ${doc.id}:`, updateError)
-                    // Continuar con las demás actualizaciones
                   }
                 }),
               )
-
               console.log(
                 `Se finalizaron ${previousRenewals.docs.length} renovaciones anteriores para el periodo ${data.periodusegps}`,
               )
             }
           } catch (error) {
             console.error('Error al buscar o finalizar renovaciones anteriores:', error)
-            // No bloquear la creación si falla este proceso
           }
         }
+
         return data
       },
     ],
-    afterChange: [
-      async ({ doc, req, operation }) => {
-        const { payload } = req
-
-        try {
-          if (operation === 'create' && doc.periodusegps) {
-            // 1. Obtener el periodo de uso relacionado
-            const periodUse = await payload.findByID({
-              collection: 'periodusegps',
-              id: typeof doc.periodusegps === 'object' ? doc.periodusegps.id : doc.periodusegps,
-              depth: 1,
-            })
-
-            // 2. Calcular lastDate basado en el tipo de periodo (select)
-            const lastDate = new Date(doc.startdate)
-
-            if (periodUse.periodgps === 'mensual') {
-              lastDate.setMonth(lastDate.getMonth() + 1)
-            } else if (periodUse.periodgps === 'anual') {
-              lastDate.setFullYear(lastDate.getFullYear() + 1)
-            }
-
-            // 3. Actualizar la renovación con los datos calculados
-            await payload.update({
-              collection: 'renewalsgps',
-              id: doc.id,
-              data: {
-                enddate: lastDate.toISOString(),
-              },
-            })
-
-            // 4. Actualizar el periodo de uso con la referencia
-            await payload.update({
-              collection: 'periodusegps',
-              id: periodUse.id,
-              data: {
-                renewalsgps: [...(periodUse.renewalsgps || []), doc.id],
-              },
-            })
-          }
-        } catch (error) {
-          console.error('Error en hook de renovación:', error)
-          throw new Error('No se pudo completar la configuración de la renovación')
-        }
-      },
-    ],
   },
-
   endpoints: [
     {
       path: '/check-status',

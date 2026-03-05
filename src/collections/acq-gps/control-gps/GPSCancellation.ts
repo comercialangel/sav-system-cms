@@ -139,7 +139,6 @@ export const GPSCancellation: CollectionConfig = {
               id: assignmentId,
               data: {
                 statusassignment: 'no vigente',
-                gpscancellation: doc.id, // Establecer relación inversa
               },
             })
 
