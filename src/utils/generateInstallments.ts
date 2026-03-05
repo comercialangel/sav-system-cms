@@ -1,5 +1,5 @@
 // // utils/generateInstallments.ts
-// import type { Payload } from 'payload'
+// import type { Payload, PayloadRequest } from 'payload'
 // import { addMonths } from 'date-fns'
 
 // export async function generateInstallments(
@@ -9,6 +9,7 @@
 //   termMonths: number,
 //   startDate: string | Date,
 //   interestRate: number,
+//   req: PayloadRequest,
 // ): Promise<void> {
 //   if (!planId || !financedAmount || !termMonths || !startDate || interestRate == null) {
 //     throw new Error('Faltan parámetros para generar cuotas')
@@ -28,10 +29,9 @@
 //   installmentAmount = Math.round(installmentAmount)
 
 //   let balance = financedAmount
-//   const createdIds: string[] = []
 
 //   try {
-//     // CAMBIO CLAVE: secuencial en lugar de Promise.all
+//     // Generación secuencial
 //     for (let i = 1; i <= termMonths; i++) {
 //       const interest = Math.round(financedAmount * decimalInterestRate)
 //       let principal = installmentAmount - interest
@@ -46,11 +46,11 @@
 
 //       const dueDate = addMonths(baseDate, i)
 
-//       // Crea una por una (nunca falla con WriteConflict)
-//       const doc = await payload.create({
+//       // 2. PASAMOS REQ AL CREATE
+//       await payload.create({
 //         collection: 'creditinstallment',
 //         data: {
-//           creditPlan: planId,
+//           creditPlan: planId, // Relación física (Padre)
 //           installmentNumber: i,
 //           dueDate: dueDate.toISOString(),
 //           principal,
@@ -61,31 +61,18 @@
 //           lateFee: 0,
 //           status: 'pendiente',
 //         },
+//         req,
 //       })
-
-//       createdIds.push(doc.id)
 //     }
-
-//     // Actualiza la relación hasMany
-//     await payload.update({
-//       collection: 'creditplan',
-//       id: planId,
-//       data: { installments: createdIds },
-//     })
+//     console.log(`Generadas ${termMonths} cuotas exitosamente para el plan ${planId}`)
 //   } catch (err) {
-//     console.error('Error generando cuotas:', err)
-//     // Rollback: borra las cuotas creadas
-//     for (const id of createdIds) {
-//       try {
-//         await payload.delete({ collection: 'creditinstallment', id })
-//       } catch {}
-//     }
+//     console.error(`Error generando cuotas para el plan ${planId}:`, err)
 //     throw err
 //   }
 // }
 
 // utils/generateInstallments.ts
-import type { Payload } from 'payload'
+import type { Payload, PayloadRequest } from 'payload'
 import { addMonths } from 'date-fns'
 
 export async function generateInstallments(
@@ -94,7 +81,8 @@ export async function generateInstallments(
   financedAmount: number,
   termMonths: number,
   startDate: string | Date,
-  interestRate: number,
+  interestRate: number, // <-- Tasa MENSUAL en porcentaje (ej: 2 para 2% mensual)
+  req: PayloadRequest,
 ): Promise<void> {
   if (!planId || !financedAmount || !termMonths || !startDate || interestRate == null) {
     throw new Error('Faltan parámetros para generar cuotas')
@@ -105,40 +93,40 @@ export async function generateInstallments(
     throw new Error('Fecha de inicio inválida')
   }
 
-  // Fórmula de la empresa (interés simple lineal)
+  // 1. Fórmula de la empresa (interés simple lineal mensual)
   const decimalInterestRate = interestRate / 100
-  let installmentAmount =
+
+  // Mantenemos TODOS los decimales durante el cálculo inicial
+  const rawInstallmentAmount =
     (financedAmount * decimalInterestRate * termMonths + financedAmount) / termMonths
 
-  // Redondeo a entero más cercano
-  installmentAmount = Math.round(installmentAmount)
+  // ✨ AJUSTE 1: Redondeo exacto a 2 decimales (Céntimos/Centavos)
+  const installmentAmount = Math.round(rawInstallmentAmount * 100) / 100
 
   let balance = financedAmount
-
-  // Mantenemos este array SOLO para el manejo de errores (Rollback),
-  // ya no para actualizar al padre.
-  const createdIds: string[] = []
 
   try {
     // Generación secuencial
     for (let i = 1; i <= termMonths; i++) {
-      const interest = Math.round(financedAmount * decimalInterestRate)
-      let principal = installmentAmount - interest
+      // Calculamos el interés fijo por cuota a 2 decimales
+      const interest = Math.round(financedAmount * decimalInterestRate * 100) / 100
+      let principal = Math.round((installmentAmount - interest) * 100) / 100
 
-      // Ajuste última cuota para balance 0
+      // Ajuste última cuota para balance 0 absoluto
       if (i === termMonths) {
         principal = balance
       }
 
-      const totalDue = principal + interest
-      balance = Math.max(0, balance - principal)
+      const totalDue = Math.round((principal + interest) * 100) / 100
+      balance = Math.round((balance - principal) * 100) / 100
 
       const dueDate = addMonths(baseDate, i)
 
-      const doc = await payload.create({
+      // 2. PASAMOS REQ AL CREATE
+      await payload.create({
         collection: 'creditinstallment',
         data: {
-          creditPlan: planId, // <--- Esto es lo único necesario para que el JOIN funcione
+          creditPlan: planId, // Relación física (Padre)
           installmentNumber: i,
           dueDate: dueDate.toISOString(),
           principal,
@@ -147,29 +135,21 @@ export async function generateInstallments(
           paidAmount: 0,
           daysLate: 0,
           lateFee: 0,
+          lateFeeForgiven: 0, // ✨ AJUSTE 3: Nuevos campos en cero
+          lateFeePaid: 0, // ✨ AJUSTE 3: Nuevos campos en cero
           status: 'pendiente',
         },
+        req, // <--- MAGIA: Esto une la creación a la transacción global
+        overrideAccess: true, // ✨ AJUSTE 2: Bypassea la restricción de create: () => false
       })
-
-      createdIds.push(doc.id)
     }
 
-    // --- ELIMINADO ---
-    // Ya NO hacemos el payload.update de 'creditplan'.
-    // Al haber guardado 'creditPlan: planId' en cada cuota,
-    // el campo 'join' del padre las detectará automáticamente.
-
-    console.log(`Generadas ${termMonths} cuotas exitosamente para el plan ${planId}`)
+    payload.logger.info(`Generadas ${termMonths} cuotas exitosamente para el plan ${planId}`)
   } catch (err) {
-    console.error('Error generando cuotas:', err)
+    payload.logger.error(`Error generando cuotas para el plan ${planId}: ${err}`)
 
-    // Rollback: borra las cuotas creadas si algo falló a la mitad
-    // (Esta lógica sigue siendo muy útil)
-    for (const id of createdIds) {
-      try {
-        await payload.delete({ collection: 'creditinstallment', id })
-      } catch {}
-    }
+    // ADIÓS ROLLBACK MANUAL
+    // Al lanzar el error, Payload le dirá a la Base de Datos: "¡Abortar Transacción!"
     throw err
   }
 }
