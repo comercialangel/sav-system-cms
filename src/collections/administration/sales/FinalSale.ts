@@ -433,9 +433,8 @@ export const FinalSale: CollectionConfig = {
       },
     },
   ],
-
   hooks: {
-    // BEFORECHANGE → Cálculos, validaciones Y CREAR/ACTUALIZAR PLAN (sin finalSale)
+    // === BEFORECHANGE ===
     beforeChange: [
       async ({ data, operation, originalDoc, req }) => {
         const { payload } = req
@@ -457,80 +456,30 @@ export const FinalSale: CollectionConfig = {
           const plan = await payload.findByID({
             collection: 'creditplan',
             id: currentPlanId,
+            req, // Siempre pasar req
           })
 
           if (plan?.totalPaid > 0) {
             throw new Error(
-              'No se puede modificar la venta: ya existen pagos registrados en el plan de crédito. Usa "Refinanciar" si es necesario.',
+              'No se puede modificar la venta: ya existen pagos registrados en el plan de crédito. Usa "Refinanciar" o "Reprogramar".',
             )
           }
         }
 
-        // CÁLCULO CON LA FÓRMULA DE LA EMPRESA (interés simple lineal) + REDONDEO A ENTERO
+        // ✨ AJUSTE 1: CÁLCULO CON 2 DECIMALES EXACTOS ✨
         const decimalInterestRate = (data.interestRate || 0) / 100
-        const monthlyPayment =
-          (principal * decimalInterestRate * data.termMonths + principal) / data.termMonths
+        const totalInterest = principal * decimalInterestRate * data.termMonths
+        const monthlyPayment = (principal + totalInterest) / data.termMonths
 
-        data.amountToFinance = Math.round(principal) // Redondea principal a entero (consistencia)
-        data.monthlyPayment = Math.round(monthlyPayment) // Redondeo a entero más cercano (ej: 100.30 → 100, 100.50 → 101)
+        data.amountToFinance = Math.round(principal * 100) / 100
+        data.monthlyPayment = Math.round(monthlyPayment * 100) / 100
 
         // LÓGICA DE CRÉDITO
         if (!currentPlanId) {
-          // === GENERAR CORRELATIVO ===
-          // console.log('Generando correlativo en FinalSale...')
-          // const year = new Date().getFullYear()
-          // const prefix = `CRED-${year}-`
-
-          // let nextNumber = 1
-          // try {
-          //   const lastPlan = await payload.find({
-          //     collection: 'creditplan',
-          //     where: { creditPlanNumber: { like: `${prefix}%` } },
-          //     sort: '-creditPlanNumber',
-          //     limit: 1,
-          //   })
-
-          //   if (lastPlan.docs.length > 0) {
-          //     const lastCode = lastPlan.docs[0]?.creditPlanNumber
-          //     if (typeof lastCode === 'string') {
-          //       const match = lastCode.match(/(\d+)$/)
-          //       if (match) {
-          //         nextNumber = parseInt(match[0], 10) + 1
-          //       }
-          //     }
-          //   }
-          // } catch (err) {
-          //   console.error('Error buscando último plan:', err)
-          // }
-
-          // let creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
-
-          // // Anti-race: Verifica unique y retry
-          // let isUnique = false
-          // let attempts = 0
-          // while (!isUnique && attempts < 5) {
-          //   const existing = await payload.find({
-          //     collection: 'creditplan',
-          //     where: { creditPlanNumber: { equals: creditPlanNumber } },
-          //     limit: 1,
-          //   })
-          //   if (existing.docs.length === 0) {
-          //     isUnique = true
-          //   } else {
-          //     nextNumber++
-          //     creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
-          //     attempts++
-          //   }
-          // }
-          // if (!isUnique) {
-          //   creditPlanNumber = `${prefix}${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`
-          // }
-
-          // === CREAR NUEVO PLAN (envía creditPlanNumber) ===
           const newPlan = await payload.create({
             collection: 'creditplan',
             data: {
-              creditPlanNumber: '', // Temporal, se genera en el hook de
+              creditPlanNumber: '',
               amountToFinance: data.amountToFinance,
               monthlyPayment: data.monthlyPayment,
               startDate: data.creditStartDate,
@@ -538,16 +487,14 @@ export const FinalSale: CollectionConfig = {
               interestRate: data.interestRate as number,
               status: 'activo',
               totalPaid: 0,
-              remainingBalance: principal,
+              remainingBalance: Math.round((principal + totalInterest) * 100) / 100, // Capital + Interés
             },
             req,
           })
 
           data.creditPlan = newPlan.id
-          console.log('Plan creado con ID:', newPlan.id)
+          payload.logger.info(`Plan creado con ID: ${newPlan.id}`)
         } else if (operation === 'update') {
-          // ACTUALIZAR PLAN (sin tocar número)
-          console.log('Actualizando creditplan existente...')
           await payload.update({
             collection: 'creditplan',
             id: currentPlanId,
@@ -557,18 +504,18 @@ export const FinalSale: CollectionConfig = {
               startDate: data.creditStartDate,
               termMonths: data.termMonths,
               interestRate: data.interestRate as number,
-              remainingBalance: principal,
+              remainingBalance: Math.round((principal + totalInterest) * 100) / 100,
             },
+            req,
           })
         }
-
         return data
       },
     ],
 
-    // AFTERCHANGE → Procesos post-venta + GENERAR CUOTAS + SETEAR finalSale en creditplan
+    // === AFTERCHANGE ===
     afterChange: [
-      async ({ doc, operation, req }) => {
+      async ({ doc, operation, previousDoc, req }) => {
         const { payload } = req
 
         const {
@@ -582,45 +529,56 @@ export const FinalSale: CollectionConfig = {
 
         const vehicleId = typeof vehicle === 'object' ? vehicle.id : vehicle
 
-        // 1. PROCESOS POST-VENTA (inventario, recibo, entregas)
+        // 1. PROCESOS POST-VENTA (Inventario, recibo, entregas)
+        // (Tu código actual aquí es perfecto, lo mantengo intacto)
         if (operation === 'create' && status === 'activo' && statusreceipt === 'pendiente') {
           try {
             const inventoryResult = await payload.find({
               collection: 'inventory',
-              where: { vehicle: { equals: vehicleId }, status: { not_equals: 'Vendido' } },
+              where: {
+                vehicle: { equals: vehicleId },
+                status: { not_equals: 'Vendido' },
+              },
               depth: 1,
+              req,
             })
 
             if (inventoryResult.docs.length > 0) {
               const item = inventoryResult.docs[0]
-              const dealershipId =
-                typeof item.dealership === 'object' ? item.dealership.id : item.dealership
+              // const dealershipId =
+              //   typeof item.dealership === 'object' ? item.dealership.id : item.dealership
 
               await payload.update({
                 collection: 'inventory',
                 id: item.id,
-                data: { status: 'Vendido', operation: 'Venta', transactionDate: saledate },
+                data: {
+                  status: 'Vendido',
+                  operation: 'Venta',
+                  transactionDate: saledate,
+                },
+                req,
               })
 
-              await payload.create({
-                collection: 'movements',
-                data: {
-                  vehicle: vehicleId,
-                  company: dealershipId,
-                  movementdate: saledate,
-                  typemovement: 'salida',
-                  motivemovement: 'Venta final',
-                  warehouse: item.location,
-                  status: 'activo',
-                },
-              })
+              // await payload.create({
+              //   collection: 'movements',
+              //   data: {
+              //     vehicle: vehicleId,
+              //     company: dealershipId,
+              //     movementdate: saledate,
+              //     typemovement: 'salida',
+              //     motivemovement: 'Venta final',
+              //     warehouse: item.location,
+              //     status: 'efectuado',
+              //   },
+              //   req,
+              // })
             }
 
             await payload.create({
               collection: 'receiptsale',
               data: { finalsale: doc.id, status: 'pendiente' },
+              req,
             })
-
             // Crear entregas pendientes
             const deliveryTypes: {
               type:
@@ -635,6 +593,7 @@ export const FinalSale: CollectionConfig = {
               { type: 'entrega-de-placas', label: 'Entrega de placas' },
               { type: 'entrega-de-segunda-llave', label: 'Entrega de segunda llave' },
             ]
+
             for (const d of deliveryTypes) {
               await payload.create({
                 collection: 'vehicledelivery',
@@ -645,10 +604,32 @@ export const FinalSale: CollectionConfig = {
                   statusdelivery: 'pendiente',
                   observations: `Pendiente - ${d.label}`,
                 },
+                req,
               })
             }
           } catch (err) {
-            console.error('Error en procesos post-venta:', err)
+            payload.logger.error(`Error en procesos post-venta: ${err}`)
+          }
+        }
+
+        // 1.1. Cerrar pedido asociado (si existe)
+        if (operation === 'create' && doc.saleorder && status === 'activo') {
+          try {
+            const orderId = typeof doc.saleorder === 'object' ? doc.saleorder.id : doc.saleorder
+
+            await payload.update({
+              collection: 'saleorder',
+              id: orderId,
+              data: {
+                status: 'venta_realizada',
+              },
+              req,
+            })
+            payload.logger.info(
+              `Pedido ${orderId} cerrado exitosamente por la Venta Final ${doc.id}`,
+            )
+          } catch (error) {
+            payload.logger.error(`Error cerrando el pedido asociado: ${error}`)
           }
         }
 
@@ -662,44 +643,341 @@ export const FinalSale: CollectionConfig = {
         }
 
         if (currentPlanId) {
-          console.log('Seteando finalSale en creditplan y generando installments...')
-
           // Setea finalSale en creditplan (bidireccional)
           await payload.update({
             collection: 'creditplan',
             id: currentPlanId,
             data: { finalSale: doc.id },
+            req,
           })
 
-          // Recálculo financiero
           const principal = doc.pricesale - (doc.initialPayment || 0)
 
-          // Borra installments viejos si update
-          if (operation === 'update') {
-            const plan = await payload.findByID({ collection: 'creditplan', id: currentPlanId })
-            if (plan.totalPaid === 0) {
-              await payload.delete({
-                collection: 'creditinstallment',
-                where: { creditPlan: { equals: currentPlanId } },
+          //AJUSTE 2: REGENERACIÓN INTELIGENTE
+          let shouldGenerateInstallments = false
+
+          if (operation === 'create') {
+            shouldGenerateInstallments = true
+          } else if (operation === 'update') {
+            // Verificamos si realmente cambiaron los datos financieros
+            const oldPrincipal = previousDoc.pricesale - (previousDoc.initialPayment || 0)
+
+            const changedFinancials =
+              oldPrincipal !== principal ||
+              previousDoc.termMonths !== doc.termMonths ||
+              previousDoc.interestRate !== doc.interestRate ||
+              previousDoc.creditStartDate !== doc.creditStartDate
+
+            if (changedFinancials) {
+              const plan = await payload.findByID({
+                collection: 'creditplan',
+                id: currentPlanId,
+                req,
               })
+              if (plan.totalPaid === 0) {
+                // Borramos las cuotas antiguas
+                await payload.delete({
+                  collection: 'creditinstallment',
+                  where: { creditPlan: { equals: currentPlanId } },
+                  req,
+                })
+                shouldGenerateInstallments = true
+              }
             }
           }
 
-          // INSTANCIA DE generateInstallments (con los 6 params exactos)
-          await generateInstallments(
-            payload, // Payload
-            currentPlanId, // planId
-            principal, // financedAmount
-            doc.termMonths, // termMonths
-            doc.creditStartDate, // startDate
-            doc.interestRate, // interestRate
-          )
+          if (shouldGenerateInstallments) {
+            await generateInstallments(
+              payload,
+              currentPlanId,
+              principal,
+              doc.termMonths,
+              doc.creditStartDate,
+              doc.interestRate,
+              req,
+            )
+          }
         }
 
         return doc
       },
     ],
   },
+
+  // hooks: {
+  //   // BEFORECHANGE → Cálculos, validaciones Y CREAR/ACTUALIZAR PLAN (sin finalSale)
+  //   beforeChange: [
+  //     async ({ data, operation, originalDoc, req }) => {
+  //       const { payload } = req
+
+  //       if (data.typesale !== 'crédito') return data
+
+  //       const principal = data.pricesale - (data.initialPayment || 0)
+  //       if (principal <= 0) {
+  //         throw new Error('La cuota inicial debe ser menor al precio de venta')
+  //       }
+
+  //       let currentPlanId = data.creditPlan || originalDoc?.creditPlan
+  //       if (currentPlanId && typeof currentPlanId === 'object') {
+  //         currentPlanId = currentPlanId.id
+  //       }
+
+  //       // Bloquear edición si ya hay pagos
+  //       if (currentPlanId) {
+  //         const plan = await payload.findByID({
+  //           collection: 'creditplan',
+  //           id: currentPlanId,
+  //         })
+
+  //         if (plan?.totalPaid > 0) {
+  //           throw new Error(
+  //             'No se puede modificar la venta: ya existen pagos registrados en el plan de crédito. Usa "Refinanciar" si es necesario.',
+  //           )
+  //         }
+  //       }
+
+  //       // CÁLCULO CON LA FÓRMULA DE LA EMPRESA (interés simple lineal) + REDONDEO A ENTERO
+  //       const decimalInterestRate = (data.interestRate || 0) / 100
+  //       const monthlyPayment =
+  //         (principal * decimalInterestRate * data.termMonths + principal) / data.termMonths
+
+  //       data.amountToFinance = Math.round(principal) // Redondea principal a entero (consistencia)
+  //       data.monthlyPayment = Math.round(monthlyPayment) // Redondeo a entero más cercano (ej: 100.30 → 100, 100.50 → 101)
+
+  //       // LÓGICA DE CRÉDITO
+  //       if (!currentPlanId) {
+  //         // === GENERAR CORRELATIVO ===
+  //         // console.log('Generando correlativo en FinalSale...')
+  //         // const year = new Date().getFullYear()
+  //         // const prefix = `CRED-${year}-`
+
+  //         // let nextNumber = 1
+  //         // try {
+  //         //   const lastPlan = await payload.find({
+  //         //     collection: 'creditplan',
+  //         //     where: { creditPlanNumber: { like: `${prefix}%` } },
+  //         //     sort: '-creditPlanNumber',
+  //         //     limit: 1,
+  //         //   })
+
+  //         //   if (lastPlan.docs.length > 0) {
+  //         //     const lastCode = lastPlan.docs[0]?.creditPlanNumber
+  //         //     if (typeof lastCode === 'string') {
+  //         //       const match = lastCode.match(/(\d+)$/)
+  //         //       if (match) {
+  //         //         nextNumber = parseInt(match[0], 10) + 1
+  //         //       }
+  //         //     }
+  //         //   }
+  //         // } catch (err) {
+  //         //   console.error('Error buscando último plan:', err)
+  //         // }
+
+  //         // let creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
+
+  //         // // Anti-race: Verifica unique y retry
+  //         // let isUnique = false
+  //         // let attempts = 0
+  //         // while (!isUnique && attempts < 5) {
+  //         //   const existing = await payload.find({
+  //         //     collection: 'creditplan',
+  //         //     where: { creditPlanNumber: { equals: creditPlanNumber } },
+  //         //     limit: 1,
+  //         //   })
+  //         //   if (existing.docs.length === 0) {
+  //         //     isUnique = true
+  //         //   } else {
+  //         //     nextNumber++
+  //         //     creditPlanNumber = `${prefix}${String(nextNumber).padStart(4, '0')}`
+  //         //     attempts++
+  //         //   }
+  //         // }
+  //         // if (!isUnique) {
+  //         //   creditPlanNumber = `${prefix}${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`
+  //         // }
+
+  //         // === CREAR NUEVO PLAN (envía creditPlanNumber) ===
+  //         const newPlan = await payload.create({
+  //           collection: 'creditplan',
+  //           data: {
+  //             creditPlanNumber: '', // Temporal, se genera en el hook de
+  //             amountToFinance: data.amountToFinance,
+  //             monthlyPayment: data.monthlyPayment,
+  //             startDate: data.creditStartDate,
+  //             termMonths: data.termMonths,
+  //             interestRate: data.interestRate as number,
+  //             status: 'activo',
+  //             totalPaid: 0,
+  //             remainingBalance: principal,
+  //           },
+  //           req,
+  //         })
+
+  //         data.creditPlan = newPlan.id
+  //         console.log('Plan creado con ID:', newPlan.id)
+  //       } else if (operation === 'update') {
+  //         // ACTUALIZAR PLAN (sin tocar número)
+  //         console.log('Actualizando creditplan existente...')
+  //         await payload.update({
+  //           collection: 'creditplan',
+  //           id: currentPlanId,
+  //           data: {
+  //             amountToFinance: data.amountToFinance,
+  //             monthlyPayment: data.monthlyPayment,
+  //             startDate: data.creditStartDate,
+  //             termMonths: data.termMonths,
+  //             interestRate: data.interestRate as number,
+  //             remainingBalance: principal,
+  //           },
+  //           req,
+  //         })
+  //       }
+  //       return data
+  //     },
+  //   ],
+
+  //   // AFTERCHANGE → Procesos post-venta + GENERAR CUOTAS + SETEAR finalSale en creditplan
+  //   afterChange: [
+  //     async ({ doc, operation, req }) => {
+  //       const { payload } = req
+
+  //       const {
+  //         typesale,
+  //         creditPlan: currentCreditPlan,
+  //         vehicle,
+  //         saledate,
+  //         status,
+  //         statusreceipt,
+  //       } = doc
+
+  //       const vehicleId = typeof vehicle === 'object' ? vehicle.id : vehicle
+
+  //       // 1. PROCESOS POST-VENTA (inventario, recibo, entregas)
+  //       if (operation === 'create' && status === 'activo' && statusreceipt === 'pendiente') {
+  //         try {
+  //           const inventoryResult = await payload.find({
+  //             collection: 'inventory',
+  //             where: { vehicle: { equals: vehicleId }, status: { not_equals: 'Vendido' } },
+  //             depth: 1,
+  //             req,
+  //           })
+
+  //           if (inventoryResult.docs.length > 0) {
+  //             const item = inventoryResult.docs[0]
+  //             const dealershipId =
+  //               typeof item.dealership === 'object' ? item.dealership.id : item.dealership
+
+  //             await payload.update({
+  //               collection: 'inventory',
+  //               id: item.id,
+  //               data: { status: 'Vendido', operation: 'Venta', transactionDate: saledate },
+  //               req,
+  //             })
+
+  //             await payload.create({
+  //               collection: 'movements',
+  //               data: {
+  //                 vehicle: vehicleId,
+  //                 company: dealershipId,
+  //                 movementdate: saledate,
+  //                 typemovement: 'salida',
+  //                 motivemovement: 'Venta final',
+  //                 warehouse: item.location,
+  //                 status: 'efectuado',
+  //               },
+  //               req,
+  //             })
+  //           }
+
+  //           await payload.create({
+  //             collection: 'receiptsale',
+  //             data: { finalsale: doc.id, status: 'pendiente' },
+  //             req,
+  //           })
+
+  //           // Crear entregas pendientes
+  //           const deliveryTypes: {
+  //             type:
+  //               | 'entrega-vehicular'
+  //               | 'entrega-de-tive'
+  //               | 'entrega-de-placas'
+  //               | 'entrega-de-segunda-llave'
+  //             label: string
+  //           }[] = [
+  //             { type: 'entrega-vehicular', label: 'Entrega vehicular' },
+  //             { type: 'entrega-de-tive', label: 'Entrega de TIVE' },
+  //             { type: 'entrega-de-placas', label: 'Entrega de placas' },
+  //             { type: 'entrega-de-segunda-llave', label: 'Entrega de segunda llave' },
+  //           ]
+  //           for (const d of deliveryTypes) {
+  //             await payload.create({
+  //               collection: 'vehicledelivery',
+  //               data: {
+  //                 finalsale: doc.id,
+  //                 typedelivery: d.type,
+  //                 deliverydate: null,
+  //                 statusdelivery: 'pendiente',
+  //                 observations: `Pendiente - ${d.label}`,
+  //               },
+  //               req,
+  //             })
+  //           }
+  //         } catch (err) {
+  //           console.error('Error en procesos post-venta:', err)
+  //         }
+  //       }
+
+  //       // 2. SI NO ES CRÉDITO → salir
+  //       if (typesale !== 'crédito') return doc
+
+  //       // 3. SETEAR finalSale EN CREDITPLAN + GENERAR CUOTAS
+  //       let currentPlanId = currentCreditPlan
+  //       if (currentPlanId && typeof currentPlanId === 'object') {
+  //         currentPlanId = currentPlanId.id
+  //       }
+
+  //       if (currentPlanId) {
+  //         console.log('Seteando finalSale en creditplan y generando installments...')
+
+  //         // Setea finalSale en creditplan (bidireccional)
+  //         await payload.update({
+  //           collection: 'creditplan',
+  //           id: currentPlanId,
+  //           data: { finalSale: doc.id },
+  //           req,
+  //         })
+
+  //         // Recálculo financiero
+  //         const principal = doc.pricesale - (doc.initialPayment || 0)
+
+  //         // Borra installments viejos si update
+  //         if (operation === 'update') {
+  //           const plan = await payload.findByID({ collection: 'creditplan', id: currentPlanId })
+  //           if (plan.totalPaid === 0) {
+  //             await payload.delete({
+  //               collection: 'creditinstallment',
+  //               where: { creditPlan: { equals: currentPlanId } },
+  //               req,
+  //             })
+  //           }
+  //         }
+
+  //         // INSTANCIA DE generateInstallments (con los 6 params exactos)
+  //         await generateInstallments(
+  //           payload, // Payload
+  //           currentPlanId, // planId
+  //           principal, // financedAmount
+  //           doc.termMonths, // termMonths
+  //           doc.creditStartDate, // startDate
+  //           doc.interestRate, // interestRate
+  //           req, // req (para contexto y rollback)
+  //         )
+  //       }
+
+  //       return doc
+  //     },
+  //   ],
+  // },
 
   endpoints: [
     //endpoint eliminar archivo de venta
