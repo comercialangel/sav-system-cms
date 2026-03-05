@@ -54,6 +54,14 @@ export const ReceiptCreditPayment: CollectionConfig = {
       required: true,
       admin: { readOnly: true },
     },
+    // ✨ NUEVO: DESCUENTO TOTAL APLICADO EN ESTE RECIBO ✨
+    {
+      name: 'lateFeeDiscount',
+      label: 'Descuento por Mora Condonada',
+      type: 'number',
+      defaultValue: 0,
+      admin: { readOnly: true },
+    },
 
     // === DETALLE DE CUOTAS APLICADAS ===
     {
@@ -77,9 +85,18 @@ export const ReceiptCreditPayment: CollectionConfig = {
         },
         {
           name: 'amountApplied',
+          label: 'Efectivo Aplicado',
           type: 'number',
           defaultValue: 0,
           required: true,
+          admin: { readOnly: true },
+        },
+        // ✨ NUEVO: DESCUENTO APLICADO A ESTA CUOTA ESPECÍFICA ✨
+        {
+          name: 'discountApplied',
+          label: 'Mora Perdonada',
+          type: 'number',
+          defaultValue: 0,
           admin: { readOnly: true },
         },
         {
@@ -155,12 +172,12 @@ export const ReceiptCreditPayment: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ data, operation, req }) => {
-        const { payload } = req
+        const { payload, user } = req
 
-        // if (user) {
-        //   if (operation === 'create') data.createdBy = user.id
-        //   data.updatedBy = user.id
-        // }
+        if (user) {
+          if (operation === 'create') data.createdBy = user.id
+          data.updatedBy = user.id
+        }
 
         if (operation === 'create' && !data.receiptNumber) {
           data.receiptNumber = await generateSequence(payload, {
