@@ -285,12 +285,46 @@ export const PurchasePayment: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {
+        const { payload } = req
+
+        // 1. Auditoría
         if (req.user) {
           if (operation === 'create') {
             data.createdBy = req.user.id
           }
           data.updatedBy = req.user.id
         }
+
+        // 2. REGLA DE NEGOCIO: Candado de Moneda (Pagar con la misma moneda que la compra)
+        if (
+          (operation === 'create' || operation === 'update') &&
+          data.purchase &&
+          data.typecurrency
+        ) {
+          const purchaseId = typeof data.purchase === 'object' ? data.purchase.id : data.purchase
+          const paymentCurrencyId =
+            typeof data.typecurrency === 'object' ? data.typecurrency.id : data.typecurrency
+
+          // Consultamos la compra original
+          const purchaseAssociated = await payload.findByID({
+            collection: 'purchase',
+            id: purchaseId,
+            req,
+          })
+
+          const purchaseCurrencyId =
+            typeof purchaseAssociated.typecurrency === 'object'
+              ? purchaseAssociated.typecurrency.id
+              : purchaseAssociated.typecurrency
+
+          // Comparamos los IDs de las monedas
+          if (paymentCurrencyId !== purchaseCurrencyId) {
+            throw new Error(
+              'Operación denegada: La moneda del pago debe ser EXACTAMENTE la misma moneda en la que se registró la compra original.',
+            )
+          }
+        }
+
         return data
       },
     ],
