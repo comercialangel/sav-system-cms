@@ -310,7 +310,7 @@ export const Vehicle: CollectionConfig = {
             {
               name: 'mileage',
               label: 'Kilometraje',
-              type: 'text',
+              type: 'number',
               required: false,
               admin: {
                 width: '50%',
