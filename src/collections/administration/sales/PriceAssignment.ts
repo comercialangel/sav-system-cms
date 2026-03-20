@@ -30,7 +30,6 @@ export const PriceAssignment: CollectionConfig = {
       },
       filterOptions: {
         status: { equals: 'En Stock' },
-        'priceAssignment.id': { exists: false },
       },
     },
     {
@@ -82,21 +81,12 @@ export const PriceAssignment: CollectionConfig = {
             readOnly: false,
             description: 'Suma de compra + traslado + GPS, redondeado a 2 decimales.',
           },
-          hooks: {
-            beforeChange: [
-              ({ data }) => {
-                const total = (data?.purchaseCost || 0) + (data?.transportCost || 0)
-                return parseFloat(total.toFixed(2))
-              },
-            ],
-          },
         },
         {
           name: 'profitMargin',
           label: 'Margen de Ganancia',
           type: 'number',
           min: 0,
-          max: 4000,
           defaultValue: 0,
           admin: {
             width: '50%',
@@ -150,9 +140,42 @@ export const PriceAssignment: CollectionConfig = {
         description: 'Notas sobre ajustes manuales en el precio.',
       },
     },
+    {
+      type: 'relationship',
+      name: 'createdBy',
+      label: 'Creado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'updatedBy',
+      label: 'Actualizado por',
+      relationTo: 'users',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        allowEdit: false,
+      },
+    },
   ],
 
   hooks: {
+    beforeChange: [
+      async ({ req, data, operation }) => {
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
+        }
+        return data
+      },
+    ],
     // afterChange: [
     //   async ({ doc, req, operation }) => {
     //     const { payload } = req

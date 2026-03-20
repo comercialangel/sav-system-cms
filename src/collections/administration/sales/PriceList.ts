@@ -15,7 +15,7 @@ export const PriceLists: CollectionConfig = {
     read: () => true,
     create: () => true,
     update: () => true,
-    delete: () => false,
+    delete: () => true,
   },
   fields: [
     {
@@ -78,7 +78,7 @@ export const PriceLists: CollectionConfig = {
           required: true,
           admin: {
             width: '33%',
-            readOnly: true,
+            readOnly: false,
             description: 'Moneda del precio',
           },
         },
@@ -154,11 +154,13 @@ export const PriceLists: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ req, data, operation }) => {
-        const { user } = req
-        if (user) {
-          if (operation === 'create') data.createdBy = user.id
-          data.updatedBy = user.id
+        if (req.user) {
+          if (operation === 'create') {
+            data.createdBy = req.user.id
+          }
+          data.updatedBy = req.user.id
         }
+        return data
       },
     ],
   },

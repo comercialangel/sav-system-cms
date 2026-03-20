@@ -305,6 +305,48 @@ export const Inventory: CollectionConfig = {
             const v = item.vehicle
             const d = item.dealership
 
+            // ✨ NUEVO: Extracción segura de Compra, Moneda y Traslados ✨
+            const pr = item.purchaseReception
+            let purchaseId: string | null = null
+            let purchaseCurrency: { id: string; codecurrency: string; symbol: string } | null = null
+            let pricepurchase: number = 0
+            let totalExpensesPEN: number = 0
+            let totalExpensesUSD: number = 0
+
+            // Validamos que exista la recepción y sea un objeto poblado
+            if (pr && typeof pr === 'object') {
+              // 1. Extraer datos de la Compra (Purchase)
+              if (pr.purchase) {
+                const purchaseObj = pr.purchase
+                purchaseId =
+                  typeof purchaseObj === 'object' ? purchaseObj.id : (purchaseObj as string)
+
+                if (typeof purchaseObj === 'object') {
+                  pricepurchase = Number(purchaseObj.pricepurchase) || 0
+
+                  if (purchaseObj.typecurrency) {
+                    const tCurr = purchaseObj.typecurrency
+                    purchaseCurrency = {
+                      id: typeof tCurr === 'object' ? tCurr.id : (tCurr as string),
+                      // Si viene poblado, sacamos el código, si no, queda vacío para evitar errores
+                      codecurrency: typeof tCurr === 'object' ? tCurr.codecurrency : '',
+                      symbol: typeof tCurr === 'object' ? tCurr.symbol || '' : '',
+                    }
+                  }
+                }
+              }
+
+              // 2. Extraer datos del Traslado (Transportation)
+              if (pr.transportation) {
+                const transportObj = pr.transportation
+                if (typeof transportObj === 'object') {
+                  totalExpensesPEN = Number(transportObj.totalExpensesPEN) || 0
+                  totalExpensesUSD = Number(transportObj.totalExpensesUSD) || 0
+                }
+              }
+            }
+            // ✨ FIN DE EXTRACCIÓN ✨
+
             // ... (Todo tu mapeo actual de brand, model, version, color, year se mantiene exactamente igual) ...
             const brand =
               typeof v === 'string'
@@ -405,6 +447,12 @@ export const Inventory: CollectionConfig = {
               locationID,
               // ✨ AQUÍ INYECTAMOS LOS PRECIOS AL FRONTEND ✨
               prices: pricesByVehicle[vehicleId as string] || [],
+              // ✨ AQUÍ DEVOLVEMOS LOS NUEVOS CAMPOS AL FRONTEND ✨
+              purchaseId,
+              purchaseCurrency,
+              pricepurchase,
+              totalExpensesPEN,
+              totalExpensesUSD,
             }
           })
 

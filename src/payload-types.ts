@@ -2133,6 +2133,8 @@ export interface Vehicle {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -3208,6 +3210,8 @@ export interface Priceassignment {
    * Notas sobre ajustes manuales en el precio.
    */
   notes?: string | null;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -6832,6 +6836,8 @@ export interface VehicleSelect<T extends boolean = true> {
   observations?: T;
   assignmentgps?: T;
   expenseaditional?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6849,6 +6855,8 @@ export interface PriceassignmentSelect<T extends boolean = true> {
   suggestedPrice?: T;
   status?: T;
   notes?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
