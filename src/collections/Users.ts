@@ -1,18 +1,13 @@
-import type { Access, CollectionConfig } from 'payload'
-
-const adminsAndUser: Access = ({ req: { user } }) => {
-  if (!user) return false
-  return {
-    id: {
-      equals: user.id,
-    },
-  }
-}
+import { isAdmin, isAdminOrSelf } from '@/access/access'
+import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
   access: {
-    update: adminsAndUser,
+    read: isAdminOrSelf,
+    update: isAdminOrSelf,
+    create: isAdmin,
+    delete: isAdmin,
   },
   admin: {
     useAsTitle: 'email',

@@ -1,18 +1,15 @@
+import { isAdmin, isAuthenticated } from '@/access/access'
 import { generateSequence } from '@/utils/generateSequence'
-import type { Access, CollectionConfig } from 'payload'
+import type { CollectionConfig } from 'payload'
 import { headersWithCors } from 'payload'
-
-const isAuthenticated: Access = ({ req: { user } }) => {
-  return Boolean(user)
-}
 
 export const Purchase: CollectionConfig = {
   slug: 'purchase',
   access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: isAuthenticated,
+    read: isAuthenticated, // Cualquier empleado puede ver las compras
+    create: isAuthenticated, // Cualquier empleado puede registrar compras
+    update: isAuthenticated, // Cualquier empleado puede editar compras
+    delete: isAdmin, // SOLO los administradores pueden borrar registros financieros
   },
   admin: {
     useAsTitle: 'purchaseNumber',
@@ -597,6 +594,13 @@ export const Purchase: CollectionConfig = {
       path: '/:id/remove-file/:fileArrayId',
       method: 'delete',
       handler: async (req) => {
+        //agregar seguridad para que solo usuarios autenticados puedan eliminar archivos
+        if (!req.user) {
+          return Response.json(
+            { error: 'No autorizado. Debes iniciar sesión.' },
+            { status: 401, headers: headersWithCors({ headers: new Headers(), req }) },
+          )
+        }
         try {
           //1. Acceso correcto a los parámetros de ruta
           const id = req.routeParams?.id as string
@@ -707,6 +711,13 @@ export const Purchase: CollectionConfig = {
       path: '/purchase-summary',
       method: 'get',
       handler: async (req) => {
+        // Seguridad: Solo usuarios autenticados pueden acceder a este endpoint
+        if (!req.user) {
+          return Response.json(
+            { error: 'No autorizado. Debes iniciar sesión.' },
+            { status: 401, headers: headersWithCors({ headers: new Headers(), req }) },
+          )
+        }
         try {
           const { payload, query } = req
 
