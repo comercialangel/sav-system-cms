@@ -238,19 +238,19 @@ export const Inventory: CollectionConfig = {
             .filter(Boolean)
 
           // B. Hacemos UNA SOLA CONSULTA a la tabla de precios
-          const currentDate = new Date().toISOString()
+          // const currentDate = new Date().toISOString()
           const activePrices = await payload.find({
             collection: 'pricelists',
             where: {
               and: [
                 { vehicle: { in: vehicleIds } },
                 { status: { equals: 'active' } },
-                {
-                  or: [
-                    { validityDate: { greater_than_equal: currentDate } },
-                    { validityDate: { exists: false } },
-                  ],
-                },
+                // {
+                //   or: [
+                //     // { validityDate: { greater_than_equal: currentDate } },
+                //     { validityDate: { exists: false } },
+                //   ],
+                // },
               ],
             },
             depth: 1, // Para traer el codecurrency
